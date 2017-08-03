@@ -11,7 +11,8 @@ const state = {
     allData: [],
     partnerList: [],
     platTableData: [],
-    joinTableData: []
+    joinTableData: [],
+    keepParnterAccount:[]
 }
 
 const mutations = {
@@ -60,6 +61,9 @@ const mutations = {
         }
         state.partnerList = arrDeled
         console.log(arrDeled)
+    },
+    keepParnterAccount(state,obj){
+        state.keepParnterAccount.unshift(obj)
     }
 }
 

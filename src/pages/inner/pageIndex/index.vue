@@ -3,7 +3,7 @@
     <div class="incomming module">
       <el-row>
         <el-col class="incomeTitle">
-          <span class="title">今日营收<small>每10分钟自动刷新数据</small></span><span @click="handlePush" class="detail_right">&gt;&gt;</span>
+          <span class="title">今日营收<small>每10分钟自动刷新数据</small></span><span class="detail_right">&gt;&gt;</span>
         </el-col>
         <el-col>
           <incomingVueChart></incomingVueChart>
