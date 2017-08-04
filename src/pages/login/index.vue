@@ -234,7 +234,7 @@ export default {
       } else {
         request
           // .post(host + 'franchisee/adminLogin')
-          .post(host + 'jurong/admin/login/loginSystem')
+          .post(host + 'beepartner/test/test')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
@@ -248,7 +248,6 @@ export default {
               console.log('error:', error)
             } else {
               console.log(res)
-              // console.log(JSON.parse(res.text).code)
               // if (JSON.parse(res.text).code === 0) {
               //   this.$message({
               //     message: '登录成功！',

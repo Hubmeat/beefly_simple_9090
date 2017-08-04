@@ -7,13 +7,13 @@
  * 海波测试端口
  */
 // export const host = 'http://192.168.3.78:7099/'
-// export const host = 'http://192.168.3.77:7099/'
+// export const host = 'http://192.168.3.77:8080/'
 
 /**
  * 孙薇测试端口
  */
 export const host = 'http://192.168.3.139:80/'
-
+// export const host = 'http://192.168.3.139/'
 /**
  * 公网测试端口
  */

@@ -164,9 +164,9 @@
         </div>
       </div>
     </el-tabs>
-    <!--<div v-show='router_show' >-->
+
+    <!-- 添加账号  -->
     <router-view id="account_router"></router-view>
-    <!--</div>-->
   </div>
 </template>
 
@@ -258,7 +258,7 @@ export default {
          if (this.accountOrUsername.trim().length > 0 || this.telOrMail.trim().length > 0) {
           request.post(host + 'franchisee/account/getAllAdminUser')
             .send(obj)
-             .withCredentials()
+            .withCredentials()
             .set({
                 'content-type': 'application/x-www-form-urlencoded'
             })
@@ -375,7 +375,6 @@ export default {
       if (this.activeName === '平台') {
         var that = this
         this.loading = true
-        this.loadingText = '拼命加载中'
         getAllAdminUser({ franchiseeId: '123456', userId: 'admin' }, 1, function (err, res) {
           if (err) {
             console.log(err)
