@@ -1,7 +1,7 @@
 /**
  * 内网测试服务端口
  */
-// export const host = 'http://192.168.3.7:7099/'
+export const host = 'http://192.168.3.7:7099/'
 
 /**
  * 海波测试端口
