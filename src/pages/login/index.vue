@@ -234,20 +234,22 @@ export default {
       } else {
         request
           // .post(host + 'franchisee/adminLogin')
-          .post(host + 'beepartner/test/test')
+          .post(host + 'beepartner/system/login/loginSystem')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
           .send({
-            'name': this.formLabelAlign.username,
-            'description': this.formLabelAlign.password
+            'userName': this.formLabelAlign.username,
+            'passWord': this.formLabelAlign.password
           })
           .end((error, res) => {
             if (error) {
               console.log('error:', error)
             } else {
               console.log(res)
+              // localStorage.setItem('user_cookie')
+              console.log(document.cookie('user_cookie'))
               // if (JSON.parse(res.text).code === 0) {
               //   this.$message({
               //     message: '登录成功！',
@@ -309,7 +311,12 @@ export default {
       this.$refs.findPsd.validate((valid) => {
         if (valid) {
           // 这里 还需要 对验证码进行验证 若验证 通过 则可以 找回密码
-          request.post(host + 'franchisee/account/checkPhoneAndVerCode')
+          // request.post(host + 'franchisee/account/checkPhoneAndVerCode')
+          request.post(host + 'beepartner/admin/test')
+            .withCredentials()
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
             .send({
               phoneNo: that.findForm.tel,
               verCode: that.findForm.verificationCode

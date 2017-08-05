@@ -2,7 +2,7 @@ import request from 'superagent'
 import { host } from '../config/index.js'
 export const modifyAdminState = function(query, cb) {
     request
-        .post(host + 'franchisee/account/modifyAdminState')
+        .post(host + 'beepartner/admin/User/updateAdminUserStatus')
         .withCredentials()
         .set({
             'content-type': 'application/x-www-form-urlencoded'

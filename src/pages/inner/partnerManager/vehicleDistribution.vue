@@ -29,7 +29,8 @@
 
         <div class='table'>
           <el-table
-               @select="handleSelectChange" 
+               @select="handleSelectChange"
+               @select-all="handleSelectionAll"
               :empty-text="emptyText"
               v-loading="loading2"
               element-loading-text="拼命加载中"
@@ -40,7 +41,8 @@
               style="width: 100%; font-size: 13px;">
               <el-table-column
                 type="selection"
-                min-width="55">
+                min-width="55"
+                >
               </el-table-column>
               <el-table-column
                 prop="boxCode"
@@ -79,9 +81,9 @@
       </div>
 
       <div id='right_hasbeen_distribution'>
-          <h6>你选择的车辆: <span>{{this.multipleSelection.length}}辆</span><span>清空</span></h6>
-          <ul class="list">
-            <li :key="list.bikeCode" v-for="list of countAllotCars">{{list.boxCode}} <span><i class="iconfont">&#xe60a;</i></span></li>
+          <h6>你选择的车辆: <span>{{this.countAllotCars.length}}辆</span><span @click="cleanCar">清空</span></h6>
+          <ul>
+            <li :key="item" v-for="(item,index) of countAllotCars">{{item}} <span><i class="iconfont" @click="removeCar(index)">&#xe60a;</i></span></li>
           </ul>
           <el-row class="allot">
             <el-button>确定</el-button> 
@@ -277,6 +279,7 @@ table.franchiseeDetail tr td span{text-align: right;width:100px;display:inline-b
   background: #fff;
   min-height: 230px;
 }
+.el-pagination{margin-left:0;margin-top:20px;margin-bottom:10px;padding-left:0;border-left:0;}
 </style>
 
 <script>
@@ -289,6 +292,7 @@ import moment from 'moment'
 export default {
   data () {
     return {
+      selectCars:[],
       franchiseeDetail:{},
       cityCode:'',
       currentPage3:1,
@@ -302,8 +306,32 @@ export default {
     }
   },
   methods:{
+    cleanCar(){
+      this.countAllotCars = []
+    },
+    removeCar(index){
+      this.countAllotCars.splice(index,1)
+    },
     handleSelectChange(selection,row) {
-      console.log(row.boxCode)
+      if(this.countAllotCars.indexOf(row.boxCode) === -1){
+         this.countAllotCars.push(row.boxCode)    
+      }else{
+        this.countAllotCars.splice(this.countAllotCars.indexOf(row.boxCode),1)
+      }
+      new Set(this.countAllotCars)
+    },
+    handleSelectionAll(selection){
+      var iterator = selection.entries()
+      if(selection.length>0){
+        for(var e of iterator){
+          this.countAllotCars.push(e[1].boxCode)
+         }
+      }else{
+        this.countAllotCars = []
+      }
+    },
+    handleSelectionChange(selection){
+      console.log(selection)
     },
     handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -312,8 +340,20 @@ export default {
         console.log(`当前页: ${val}`);
       }
   },
+  updated:function(){
+    console.log(this.selectCars)
+    var dom = $('.el-table__body-wrapper tbody td div.cell')
+    for(var i=0;i<dom.length;i++){
+      if(this.selectCars.indexOf(dom.eq(i).text())!== -1){
+        console.log(dom.eq(i).parent().prev())
+        //this.$refs.multipleTable.toggleRowSelection(this.tableData_distribution[i]);
+        //dom.eq(i).parent().prev().find('.el-checkbox__input').addClass('is-checked is-focus')
+      }
+    }
+  },
   mounted () {
         var franchiseeId = this.$route.params.id
+        this.loading2  = true
         request
           .post(host + 'franchisee/franchiseeManager/getFranchiseeDetail')
           .withCredentials()
@@ -325,9 +365,10 @@ export default {
           })
           .end((err, res) => {
             if (err) {
-              //this.loading = false
+              this.loading2 = false
               console.log('err:' + err)
             } else {
+              this.loading2 = false
               // console.log(JSON.parse(res.text))
               var res = JSON.parse(res.text)
               this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
@@ -374,6 +415,7 @@ export default {
     currentPage3:{
       handler:function(val,oldVal){
         if(this.cityCode.length>0){
+          this.loading2 = true
           request.post(host + 'franchisee/franchiseeManager/getNotAllotBikes?page=' + val)
             .withCredentials()
             .set({
@@ -385,12 +427,21 @@ export default {
             .end((error,res)=>{
               if(error){
                 console.log(error)
+                this.loading2 = false
               }else{
+                this.loading2 = false
                 var data = JSON.parse(res.text).list
                 var newData = data.map((item)=>{
                   return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
                 })
                 this.tableData_distribution = newData
+                this.countAllotCars.forEach((row)=>{
+                  this.tableData_distribution.map((item,index)=>{
+                    if(item.boxCode===row){
+                       this.selectCars.push(row)
+                    }
+                  })
+                })
                 var totalPage = JSON.parse(res.text).totalPage
                 if(totalPage>1){
                   this.pageShow = true
@@ -398,7 +449,7 @@ export default {
                   this.pageShow = false
                 }
                 this.totalItems = JSON.parse(res.text).totalItems
-                console.log(data)
+                //console.log(data)
               }
             })
         }
