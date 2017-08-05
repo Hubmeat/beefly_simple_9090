@@ -403,29 +403,6 @@ export default {
             that.initData = that.platTableData
           }
         })
-      } else {
-        request.post(host + 'beepartner/admin/User/findFranchiseeUser')
-          .withCredentials()
-          .set({
-            'content-type': 'application/x-www-form-urlencoded'
-          })
-          .send({
-            cityId: $('.city span.active').attr('name')
-          }).end(function (error, res) {
-            if (error) {
-              console.log(error)
-            } else {
-              var arr = JSON.parse(res.text).data
-              that.platTableData = that.handleData(arr)
-              that.totalItems = Number(JSON.parse(res.text).totalItems)
-              var totalPage = Number(JSON.parse(res.text).totalPage)
-              if (totalPage > 1) {
-                that.pageShow = true
-              } else {
-                that.pageShow = false
-              }
-            }
-          })
       }
     },
    initQuery() {
@@ -477,8 +454,8 @@ export default {
               }, 6000)
             } else {
               that.loading = false
-              that.totalPage = JSON.parse(res.text).totalPage
-              var arr = JSON.parse(res.text).list
+              that.totalPage = Number(JSON.parse(res.text).totalPage)
+              var arr = JSON.parse(res.text).data
               if (that.totalPage > 1) {
                 that.emptyText = ' '
                 that.pageShow = true
@@ -486,7 +463,7 @@ export default {
                 that.emptyText = '暂无数据'
                 that.pageShow = false
               }
-              that.totalItems = JSON.parse(res.text).totalItems
+              that.totalItems = Number(JSON.parse(res.text).totalItems)
               that.$store.state.accountMangerData = that.handleData(arr)
               that.initData = that.$store.state.accountMangerData
               that.joinTableData = that.$store.state.accountMangerData
@@ -949,34 +926,43 @@ export default {
       } else {
         this.loading = true
         this.currentPage = 1
-        getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId:'0' }, 1, function (error, res) {
-          if (error) {
-            console.log(error)
-            setTimeout(function () {
-              that.loading = false
-              that.loadingText = '服务器链接超时'
-            }, 5000)
-            setTimeout(function () {
-              that.emptyText = '暂无数据'
-            }, 6000)
-          } else {
-            that.loading = false
-            that.totalPage = JSON.parse(res.text).totalPage || 20
-            var arr = JSON.parse(res.text).list
-            that.totalItems = JSON.parse(res.text).totalItems
-            if (that.totalPage > 1) {
-              that.emptyText = ' '
-              that.pageShow = true
+        request
+          .post(host + 'beepartner/admin/User/findFranchiseeUser')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            cityId: $('.citys span.active').attr('name')
+          })
+          .end((error, res) => {
+            if (error) {
+              console.log(error)
+              setTimeout(function () {
+                that.loading = false
+                that.loadingText = '服务器链接超时'
+              }, 5000)
+              setTimeout(function () {
+                that.emptyText = '暂无数据'
+              }, 6000)
             } else {
-              that.emptyText = '暂无数据'
-              that.pageShow = false
+              that.loading = false
+              that.totalPage = Number(JSON.parse(res.text).totalPage)
+              var arr = JSON.parse(res.text).data
+              that.totalItems = Number(JSON.parse(res.text).totalItems)
+              if (that.totalPage > 1) {
+                that.emptyText = ' '
+                that.pageShow = true
+              } else {
+                that.emptyText = '暂无数据'
+                that.pageShow = false
+              }
+              that.$store.state.joinTableData = that.handleData(arr)
+              that.joinTableData = that.$store.state.joinTableData
+              that.initData = that.joinTableData
+              //that.setPage(arr,that.totalPage)
             }
-            that.$store.state.joinTableData = that.handleData(arr)
-            that.joinTableData = that.$store.state.joinTableData
-            that.initData = that.joinTableData
-            //that.setPage(arr,that.totalPage)
-          }
-        })
+          })
       }
     },
     setPage(arr, totalPage) {
@@ -1089,7 +1075,7 @@ export default {
                 that.loading = false
               } else {
                 that.loading = false
-                var arr = JSON.parse(res.text).list
+                var arr = JSON.parse(res.text).data
                 var totalPage = JSON.parse(res.text).totalPage
                 if (totalPage>1) {
                    that.pageShow = true
@@ -1119,7 +1105,7 @@ export default {
                   that.loading = false
                 } else {
                   that.loading = false
-                  var arr = JSON.parse(res.text).list
+                  var arr = JSON.parse(res.text).data
                   that.joinTableData = that.handleData(arr)
                   that.totalItems = JSON.parse(res.text).totalItems
                   var totalPage = JSON.parse(res.text).totalPage
