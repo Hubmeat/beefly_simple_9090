@@ -88,7 +88,7 @@
             <span>联系方式 :</span>
             <input type="text" v-model="telOrMail" placeholder="邮箱/手机号" @blur="initQuery" class="account_my_input">
           </label>
-          <button type="submit" class="my_btn" @click="queryAccountInfo">查询</button>
+          <el-button id="accountSearchBtn2" @click="queryAccountInfo" class="timeSelect_button">查询</el-button>
         </div>
         <!-- account -->
         <div class="account">
@@ -148,7 +148,7 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <div>
+      <div style="border: 1px solid #e7ecf1; border-top: none; border-bottom: none;">
         <el-pagination 
           v-show="pageShow"
            @size-change="handleSizeChange"
@@ -243,7 +243,7 @@ export default {
       var obj = {
         queryName: this.accountOrUsername,
         queryNumber: this.telOrMail,
-        cityId: 0
+        cityId: $('.citys span.active').attr('name')
       }
       if(this.accountOrUsername.trim().length===0&&this.telOrMail.trim().length===0){
           this.$message({
@@ -284,10 +284,10 @@ export default {
           } else {
             request.post(host + 'franchisee/account/getAllAdminUser')
             .send(obj)
-             .withCredentials()
-              .set({
-                  'content-type': 'application/x-www-form-urlencoded'
-              })
+            .withCredentials()
+            .set({
+                'content-type': 'application/x-www-form-urlencoded'
+            })
             .end(function (error, res) {
               if (error) {
                 console.log(error)
@@ -310,65 +310,34 @@ export default {
           }
       }else{
           this.loading = true
-          if (this.accountOrUsername.trim().length > 0 || this.telOrMail.trim().length > 0) {
-            getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId:this.cityId,name:this.accountOrUsername,phone: this.telOrMail }, 1, function (error, res) {
-              if (error) {
-                console.log(error)
-                setTimeout(function () {
-                  that.loading = false
-                  that.loadingText = '服务器链接超时'
-                }, 5000)
-                setTimeout(function () {
-                  that.emptyText = '暂无数据'
-                }, 6000)
-              } else {
+          getAllAccount({ cityId:this.cityId,queryName:this.accountOrUsername,queryNumber: this.telOrMail }, function (error, res) {
+            if (error) {
+              console.log(error)
+              setTimeout(function () {
                 that.loading = false
-                that.totalPage = JSON.parse(res.text).totalPage || 20
-                var arr = JSON.parse(res.text).list
-                that.totalItems = JSON.parse(res.text).totalItems
-                if (that.totalPage > 1) {
-                  that.emptyText = ' '
-                  that.pageShow = true
-                } else {
-                  that.emptyText = '暂无数据'
-                  that.pageShow = false
-                }
-                that.$store.state.joinTableData = that.handleData(arr)
-                that.joinTableData = that.$store.state.joinTableData
-                that.initData = that.joinTableData
-                //that.setPage(arr,that.totalPage)
+                that.loadingText = '服务器链接超时'
+              }, 5000)
+              setTimeout(function () {
+                that.emptyText = '暂无数据'
+              }, 6000)
+            } else {
+              that.loading = false
+              that.totalPage = Number(JSON.parse(res.text).totalPage)
+              var arr = JSON.parse(res.text).data
+              console.log(arr)
+              that.totalItems = Number(JSON.parse(res.text).totalItems)
+              if (that.totalPage > 1) {
+                that.emptyText = ' '
+                that.pageShow = true
+              } else {
+                that.emptyText = '暂无数据'
+                that.pageShow = false
               }
-            })
-          } else {
-             getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId:this.cityId }, 1, function (error, res) {
-                if (error) {
-                  console.log(error)
-                  setTimeout(function () {
-                    that.loading = false
-                    that.loadingText = '服务器链接超时'
-                  }, 5000)
-                  setTimeout(function () {
-                    that.emptyText = '暂无数据'
-                  }, 6000)
-                } else {
-                  that.loading = false
-                  that.totalPage = JSON.parse(res.text).totalPage || 20
-                  var arr = JSON.parse(res.text).list
-                  that.totalItems = JSON.parse(res.text).totalItems
-                  if (that.totalPage > 1) {
-                    that.emptyText = ' '
-                    that.pageShow = true
-                  } else {
-                    that.emptyText = '暂无数据'
-                    that.pageShow = false
-                  }
-                  that.$store.state.joinTableData = that.handleData(arr)
-                  that.joinTableData = that.$store.state.joinTableData
-                  that.initData = that.joinTableData
-                  //that.setPage(arr,that.totalPage)
-                }
-              })
-          }
+              that.$store.state.joinTableData = that.handleData(arr)
+              that.joinTableData = that.$store.state.joinTableData
+              //that.setPage(arr,that.totalPage)
+            }
+          })
       }
     },
     loadData() {
@@ -605,16 +574,16 @@ export default {
       e.target.setAttribute('class', 'active')
       this.cityId = e.target.getAttribute('name')
       this.loading = true
-       getAllAccount({ franchiseeId: '123456', userId: 'admin',name: this.accountOrUsername,phone:this.telOrMail,cityId:this.cityId }, 1, function (error, res) {
+       getAllAccount({ cityId:this.cityId }, function (error, res) {
           if (error) {
             console.log(error)
             this.loading = false
             this.pageShow = false
           } else {
             that.loading = false
-            that.totalPage = JSON.parse(res.text).totalPage
-            var arr = JSON.parse(res.text).list
-            that.totalItems = JSON.parse(res.text).totalItems
+            that.totalPage = Number(JSON.parse(res.text).totalPage)
+            var arr = JSON.parse(res.text).data
+            that.totalItems = Number(JSON.parse(res.text).totalItems)
             if (that.totalPage > 1) {
               that.emptyText = ' '
               that.pageShow = true
@@ -1162,8 +1131,7 @@ export default {
       },
       deep: true
     },
-    '$route': 'loadData',
-    'joinTableData':'loadData'
+    '$route': 'loadData'
   }
 }
 </script>
@@ -1404,6 +1372,24 @@ button#accountSearchBtn:hover {
   background: rgba(52, 52, 67, 1);
 }
 
+button#accountSearchBtn2 {
+  width: 80px;
+  /* float: right; */
+  height: 36px;
+  line-height: 11px;
+  margin-right: 30px;
+  color: #fff;
+  outline: none;
+  border: none;
+  /* border-radius: 4px; */
+  background: rgba(52, 52, 67, 0.8);
+}
+
+button#accountSearchBtn2:hover {
+  color: #fff;
+  background: rgba(52, 52, 67, 1);
+}
+
 .accountMangerBtn {
   width: 120px;
   height: 50px;
@@ -1454,14 +1440,13 @@ div.el-input {
 }
 
 div.el-pagination {
-  margin-left: 0;
+  margin-left: 32px;
   padding-left: 0;
   border-left: 0;
-  margin-top: 20px;
-  margin-bottom: 10px
 }
 div.selectPlace {
   margin-bottom: 20px;
+  margin-left: 30px;
 }
 
 div.selectPlace address {

@@ -235,7 +235,7 @@ export default {
       var radio = this.checkList.toString()
       this.loading2 = true
       request
-        .post(host + 'beepartner/adminBike/findBike')
+        .post(host + 'beepartner/admin/Bike/findBike')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -284,7 +284,7 @@ export default {
         // 根据用户选择不同状态进行数据的筛选
         var radio = this.checkList.toString()
         request
-          .post(host + 'beepartner/adminBike/findBike')
+          .post(host + 'beepartner/admin/Bike/findBike')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
@@ -332,7 +332,7 @@ export default {
       var radio = this.checkList.toString()
       console.log(radio)
       request
-        .post(host + 'beepartner/adminBike/findBike')
+        .post(host + 'beepartner/admin/Bike/findBike')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -371,7 +371,7 @@ export default {
       
       this.loading2 = true
       request
-        .post(host + 'beepartner/adminBike/findBike')
+        .post(host + 'beepartner/admin/Bike/findBike')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -404,7 +404,7 @@ export default {
     getDateByTabName (type) {
       this.loading2 = true
       request
-        .post(host + 'beepartner/adminBike/findBike')
+        .post(host + 'beepartner/admin/Bike/findBike')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -483,7 +483,7 @@ export default {
 
           var radio = this.checkList.toString()
           request
-              .post(host + 'beepartner/adminBike/findBike')
+              .post(host + 'beepartner/admin/Bike/findBike')
               .withCredentials()
               .set({
                 'content-type': 'application/x-www-form-urlencoded'
