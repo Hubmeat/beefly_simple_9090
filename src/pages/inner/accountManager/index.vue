@@ -97,14 +97,14 @@
           </h1>
           <!-- 表单 -->
           <el-table :data="joinTableData" style="width: 100%; font-size:13px;" v-loading="loading" element-loading-text="拼命加载中" :empty-text="emptyText">
-            <el-table-column prop="userId" label="用户名" min-width="15%"></el-table-column>
+            <el-table-column prop="userName" label="用户名" min-width="15%"></el-table-column>
             <el-table-column prop="phoneNo" label="手机号" min-width="15%"></el-table-column>
             <el-table-column prop="email" label="邮箱" min-width="20%"></el-table-column>
             <el-table-column prop="name" label="姓名" min-width="10%"></el-table-column>
             <el-table-column label="所属加盟商" prop="cityName" min-width="20%"></el-table-column>
             <el-table-column label="状态" min-width="10%" style="font-size:12px;">
               <template scope="scope">
-                <el-switch v-on:change="changeState(scope)" v-model="scope.row.state" on-text="开启" off-text="关闭" on-color="#13ce66" off-color="#ff4949">
+                <el-switch v-on:change="changeState(scope)" v-model="scope.row.status" on-text="开启" off-text="关闭" on-color="#13ce66" off-color="#ff4949">
                 </el-switch>
               </template>
             </el-table-column>
@@ -118,7 +118,7 @@
                 <el-dialog title="加盟商账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
                   <el-form :model="editAccount">
                     <el-form-item label="用户名" :label-width="formLabelWidth">
-                      <el-input v-model="editAccount.userId" auto-complete="off"></el-input>
+                      <el-input v-model="editAccount.userName" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.phoneNo"></el-input>
@@ -403,6 +403,45 @@ export default {
             that.initData = that.platTableData
           }
         })
+      }else{
+         request
+          .post(host + 'beepartner/admin/User/findFranchiseeUser')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            cityId: $('.citys span.active').attr('name')
+          })
+          .end((error, res) => {
+            if (error) {
+              console.log(error)
+              setTimeout(function () {
+                that.loading = false
+                that.loadingText = '服务器链接超时'
+              }, 5000)
+              setTimeout(function () {
+                that.emptyText = '暂无数据'
+              }, 6000)
+            } else {
+              that.loading = false
+              that.totalPage = Number(JSON.parse(res.text).totalPage)
+              var arr = JSON.parse(res.text).data
+              that.totalItems = Number(JSON.parse(res.text).totalItems)
+              if (that.totalPage > 1) {
+                that.emptyText = ' '
+                that.pageShow = true
+              } else {
+                that.emptyText = '暂无数据'
+                that.pageShow = false
+              }
+              alert('222')
+              that.$store.state.joinTableData = that.handleData(arr)
+              that.joinTableData = that.$store.state.joinTableData
+              that.initData = that.joinTableData
+              //that.setPage(arr,that.totalPage)
+            }
+          })
       }
     },
    initQuery() {
@@ -651,12 +690,13 @@ export default {
           if (error) {
             console.log(error)
           } else {
-            var code = JSON.parse(res.text).code
-            if (code === 0) {
+            var code = JSON.parse(res.text).resultCode
+            if (code === 1) {
               that.$message({
                 type: 'success',
                 message: '恭喜您，修改成功！'
               })
+              alert('22222')
               that.joinTableData.splice(index, 1, that.editAccount)
             } else {
               that.$message({
@@ -747,14 +787,14 @@ export default {
                   message: '对不起，删除失败!'
                 })
               } else {
-                var code = JSON.parse(res.text).code
-                if (code === 1) {
+                var code = JSON.parse(res.text).resultCode
+                if (code === -1) {
                   that.loading = false
                   that.$message({
                     type: 'error',
                     message: '对不起，您没有权限!'
                   })
-                } else if (code === 0) {
+                } else if (code === 1) {
                   that.loading = false
                   that.$message({
                     type: 'success',
@@ -815,17 +855,17 @@ export default {
         )
       } else {
         var that = this
+        this.accountOrUsername = ''
+        this.phoneNo = ''
         var initObj = Object.assign({}, scope.row, { status: scope.row.status })
         var obj = Object.assign({}, scope.row, { status: !scope.row.status })
         var obj2 = Object.assign({}, scope.row, { status: !scope.row.status ? 0 : 1 })
+        console.log(obj2)
         modifyAccountStateByAdmin(
-          {
-            adminUser: {
-              id: 0,
-              userId: 'root'
-            },
-            account: obj2
-          }, function (error, res) {
+         {
+           id: obj2.id,
+           status: obj2.status
+         }, function (error, res) {
             if (error) {
               console.log(error)
               that.$message({
@@ -834,8 +874,8 @@ export default {
               })
               that.joinTableData.splice(scope.$index, 1, initObj)
             } else {
-              var code = JSON.parse(res.text).code
-              if (code === 0) {
+              var code = JSON.parse(res.text).resultCode
+              if (code === 1) {
                 that.$message({
                   type: 'success',
                   message: '恭喜你，修改成功'
@@ -1069,7 +1109,7 @@ export default {
           }
         } else {
           if (this.name.trim().length === 0 && this.phone.trim().length === 0) {
-            getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId: this.cityId }, val, function (error, res) {
+            getAllAccount({ cityId: this.cityId,currentPage:val }, function (error, res) {
               if (error) {
                 console.log(error)
                 that.loading = false
@@ -1088,12 +1128,13 @@ export default {
               }
             })
           } else {
-            request.post(host + 'franchisee/account/getAllAccount?page=' + val).
+            request.post(host + 'beepartner/admin/User/findFranchiseeUser').
               send({
                 name: this.name.trim(),
                 phone: this.phone.trim(),
                 type: 1,
-                cityId: this.cityId
+                cityId: this.cityId,
+                currentPage:val
               })
               .withCredentials()
                .set({
@@ -1121,7 +1162,8 @@ export default {
       },
       deep: true
     },
-    '$route': 'loadData'
+    '$route': 'loadData',
+    'joinTableData':'loadData'
   }
 }
 </script>

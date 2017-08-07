@@ -11,19 +11,19 @@
             </h1>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="用户名" prop="userId">
-                    <el-input v-model="ruleForm.userId" placeholder='不超过100个字符'></el-input>
+                    <el-input v-model="ruleForm.userName" placeholder='不超过100个字符'></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input type="password" v-model="ruleForm.password" placeholder='请输入密码'></el-input>
+                <el-form-item label="密码" prop="passWord">
+                    <el-input type="passWord" v-model="ruleForm.passWord" placeholder='请输入密码'></el-input>
                     <span class="tips">6-20位字符，可包括字母数字，区分大小写</span>
                 </el-form-item>
                 <el-form-item label="所属加盟商">
-                    <el-radio-group v-model="ruleForm.radio2">
+                    <el-radio-group v-model="ruleForm.cityId">
                         <el-radio  :key="list.cityId" :name="list.cityId" :label="list.cityId" v-for="list of cityList">{{list.cityName}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="所属角色" prop="role">
-                    <el-select v-model="ruleForm.role" placeholder="选择角色类型" :remote-method="remoteMethod" remote :loading="loading" :disabled="isDisabled">
+                    <el-select v-model="ruleForm.roleName" placeholder="选择角色类型" :remote-method="remoteMethod" remote :loading="loading" :disabled="isDisabled">
                         <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                         <!--<el-option label="管理员" value="管理员"></el-option>-->
@@ -41,7 +41,7 @@
                     <el-input v-model="ruleForm.email" placeholder='请输入邮箱'></el-input>
                 </el-form-item>
                 <el-form-item label="备注">
-                    <el-input type="textarea" style="width:340px" v-model="ruleForm.textarea" placeholder="不超过200个字符"></el-input>
+                    <el-input type="textarea" style="width:340px" v-model="ruleForm.description" placeholder="不超过200个字符"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button class='addaccount_button' type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -195,28 +195,23 @@ export default {
             options4: [],
             loading: false,
             cityList:[],
-            ruleForm: {
-                radio2:'',
-                id: '',
-                emailBinding: '',
-                franchiseeId: '',
-                loginAuth: '',
-                phoneNoBinding: '',
-                role: '',
-                state: true,
-                userId: '',
-                password: '',
+           ruleForm: {
+                userName: '',
+                passWord: '',
+                roleName: '',
+                name: '',
                 phoneNo: '',
+                cityId: ' ',
                 email: '',
-                textarea: ''
+                description: ''
             },
             rules: {
-                userId: [{ validator: validateUserId, trigger: 'blur', required: true }],
-                password: [
+                userName: [{ validator: validateUserId, trigger: 'blur', required: true }],
+                passWord: [
                     { required: true, message: '请填写密码', trigger: 'blur' },
                     { min: 6, message: '密码应不少于6位', trigger: 'blur' }
                 ],
-                role: [{ validator: validateRole, trigger: 'change', required: true }],
+                roleName: [{ validator: validateRole, trigger: 'change', required: true }],
                 name: [
                     { message: '请输入姓名', trigger: 'blur' },
                 ]
@@ -227,13 +222,13 @@ export default {
     },
     methods: {
         loadCity () {
-            request.post(host + 'franchisee/franchiseeManager/getFranchiseeCity')
+            request.post(host + 'beepartner/city/findCity')
                 .end((error,res)=>{
                     if(error){
                     console.log(error)
                     this.cityList = []
                     }else {
-                    var result = JSON.parse(res.text)
+                    var result = JSON.parse(res.text).data
                     var map = result.map((item)=>{
                         var obj = {}
                         obj.cityId = item.cityId
@@ -249,23 +244,22 @@ export default {
             this.loading = true;
             setTimeout(() => {
                 this.loading = false
-                request.post(host + 'franchisee/account/getRole4Fran')
-                    .send(
-                    {
-                        franchiseeId: 123456,
-                        userId: 'jjjjj'
-                    }
-                    )
+                request.post(host + 'beepartner/admin/User/findRole')
+                 .withCredentials()
+                    .set({
+                        'content-type': 'application/x-www-form-urlencoded'
+                    })
                     .end((error, res) => {
                         if (error) {
                             console.log(error)
                             this.options4 = []
                         } else {
                             console.log(res)
-                            var roles = JSON.parse(res.text).map((item) => {
+                            var roles = JSON.parse(res.text).data.map((item) => {
                                 var obj = {}
                                 obj.value = item.roleName
                                 obj.label = item.roleName
+                                obj.id = item.id
                                 return obj
                             })
                             if (roles.length > 0) {
@@ -286,33 +280,26 @@ export default {
                         type: 'warning'
                     }
                     ).then(() => {
-                        request.post(host + 'franchisee/account/addAccountByAdmin')
+                        var obj = {}
+                        this.options4.map((item) => {
+                        console.log(item)
+                            if (item.value === this.ruleForm.roleName) {
+                                obj = Object.assign({}, this.ruleForm, { roleId: item.id })
+                            }
+                        })
+                        console.log(obj)
+                        request.post(host + 'beepartner/admin/User/addFranchiseeUser')
                             .withCredentials()
                             .set({
                                 'content-type': 'application/x-www-form-urlencoded'
                             })
-                            .send(
-                                {
-                                    emailBinding: 0,
-                                    franchiseeId: '123456',
-                                    loginAuth: 0,
-                                    phoneNoBinding: 0,
-                                    roleName: this.ruleForm.role,
-                                    state: 0,
-                                    name: this.ruleForm.name,
-                                    userId: this.ruleForm.userId,
-                                    email: this.ruleForm.email,
-                                    phoneNo: this.ruleForm.phoneNo,
-                                    password: this.ruleForm.password,
-                                    cityId: this.ruleForm.radio2
-                                }
-                            )
+                            .send(obj)
                             .end((err, res) => {
                                 if (err) {
                                     console.log(err)
                                 } else {
                                     var code = JSON.parse(res.text).code
-                                    if (code === 1) {
+                                    if (code === -1) {
                                         this.$router.push('/index/accountManager')
                                         this.$message({
                                             type: 'error',
@@ -325,7 +312,7 @@ export default {
                                             message: '添加成功'
                                         })
                                         var newAccount = Object.assign({},JSON.parse(JSON.parse(res.text).data),{state:true})
-                                        that.$store.state.joinTableData.unshift(newAccount)
+                                        //that.$store.state.joinTableData.unshift(newAccount)
                                         console.log(that.$store.state.joinTableData)
                                         // this.$store.commit({
                                         //     type: 'addJoinAcount',

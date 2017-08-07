@@ -260,7 +260,6 @@ export default {
               console.log(item)
               if (item.value === this.ruleForm.roleName) {
                 obj = Object.assign({}, this.ruleForm, { roleId: item.id })
-                alert(222)
               }
             })
             console.log(obj)

@@ -234,11 +234,15 @@ export default {
       } else {
         request
           // .post(host + 'franchisee/adminLogin')
-          .post(host + 'beepartner/system/login/loginSystem')
+          .post(host + 'beepartner/admin/test/test')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
+          // .send({
+          //   userName: 'test',
+          //   password: '23'
+          // })
           .send({
             'userName': this.formLabelAlign.username,
             'passWord': this.formLabelAlign.password

@@ -1,8 +1,8 @@
 import request from 'superagent'
 import { host } from '../config/index.js'
-export const getAllAccount = function(query, currentPage, cb) {
+export const getAllAccount = function(query, cb) {
     request
-        .post(host + 'franchisee/account/getAllAccount?page=' + currentPage + '&size=10')
+        .post(host + 'beepartner/admin/User/findFranchiseeUser')
         .withCredentials()
         .set({
             'content-type': 'application/x-www-form-urlencoded'
