@@ -11,15 +11,15 @@
       <div class="loginForm">
         <el-form label-width="80px" :model="formLabelAlign" :rules="rules" ref="formLabelAlign">
           <h3 class="title">登录</h3>
-          <el-form-item prop="username">
-            <el-input v-model="formLabelAlign.username" placeholder="请输入用户名" autofocus="autofocus" tabindex="1"></el-input>
+          <el-form-item prop="userName">
+            <el-input v-model="formLabelAlign.userName" placeholder="请输入用户名" autofocus="autofocus" tabindex="1"></el-input>
           </el-form-item>
-          <el-form-item prop="password">
-            <el-input v-model="formLabelAlign.password" @keyup.enter.native="handleEnter" type="password" placeholder="请输入密码" tabindex="2"></el-input>
+          <el-form-item prop="passWord">
+            <el-input v-model="formLabelAlign.passWord" @keyup.enter.native="handleEnter" type="passWord" placeholder="请输入密码" tabindex="2"></el-input>
           </el-form-item>
           <div class="button-group" style="padding-left:81px; margin-top: -5px;">
-            <el-button class="login" name="username" @click="handleSubmit">登录</el-button>
-            <el-button class="forget_psd" @click="handleFindPsd" name="password">忘记密码</el-button>
+            <el-button class="login" name="userName" @click="handleSubmit">登录</el-button>
+            <el-button class="forget_psd" @click="handleFindPsd" name="passWord">忘记密码</el-button>
           </div>
         </el-form>
       </div>
@@ -43,10 +43,10 @@
       <el-dialog title="重置密码" :visible.sync="resetFormVisible">
         <el-form :model="resetForm" :label-position="labelPosition" :rules="resetFormRule" ref="resetForm">
           <el-form-item label="密码" prop="pass" :label-width="formLabelWidth">
-            <el-input type="password" v-model="resetForm.pass" auto-complete="off"></el-input>
+            <el-input type="passWord" v-model="resetForm.pass" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label-width="formLabelWidth" label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="resetForm.checkPass" auto-complete="off"></el-input>
+            <el-input type="passWord" v-model="resetForm.checkPass" auto-complete="off"></el-input>
           </el-form-item>
   
         </el-form>
@@ -127,17 +127,17 @@ export default {
       },
       formLabelWidth: '100px',
       formLabelAlign: {
-        username: '',
-        password: ''
+        userName: '',
+        passWord: ''
       },
       dialogFormVisible: false,
       resetFormVisible: false,
       rules: {
-        username: [
+        userName: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 5, message: '用户名为英文数字下划线', trigger: 'blur' }
         ],
-        password: [
+        passWord: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 17 个字符', trigger: 'blur' }
         ]
@@ -226,25 +226,21 @@ export default {
       }
     },
     handleSubmit() {
-      if (this.formLabelAlign.username === '' && this.formLabelAlign.password === '') {
+      if (this.formLabelAlign.userName === '' && this.formLabelAlign.passWord === '') {
         this.$message({
           message: '请输入用户名和密码',
           type: 'warning'
         })
       } else {
         request
-          .post(host + 'franchisee/adminLogin')
+          .post(host + 'beepartner/system/login/adminLogin')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
-          // .send({
-          //   userName: 'test',
-          //   password: '23'
-          // })
           .send({
-            'userName': this.formLabelAlign.username,
-            'passWord': this.formLabelAlign.password
+            'userName': this.formLabelAlign.userName,
+            'passWord': this.formLabelAlign.passWord
           })
           .end((error, res) => {
             if (error) {
@@ -252,52 +248,20 @@ export default {
             } else {
               console.log(res)
               // localStorage.setItem('user_cookie')
-              console.log(document.cookie('user_cookie'))
-              // if (JSON.parse(res.text).code === 0) {
-              //   this.$message({
-              //     message: '登录成功！',
-              //     type: 'success'
-              //   })
-              //   this.$router.push('/index')
-              // } else {
-              //   this.$message.error('密码错误');
-              // }
+              if (JSON.parse(res.text).resultCode === 1) {
+                this.$message({
+                  message: '登录成功！',
+                  type: 'success'
+                })
+                this.$router.push('/index')
+              } else {
+                this.$message({
+                  message: '用户名或者密码错误',
+                  type: 'error'
+                })
+              }
             }
           })
-
-        // instance.post(host + 'franchisee/franchiseeLogin',{
-        //   params: { 
-        //     'name': this.formLabelAlign.username,
-        //     'password': this.formLabelAlign.password }
-        //   })
-        //   .then(function (response) {
-        //     console.log('dadadd')
-        //     console.log(response);
-        //   })
-        //   .catch(function (error) {
-        //     console.log('aaaaaa')
-        //     console.log(error);
-        //   });
-
-        // request
-        //   .post(host + 'franchisee/franchiseeLogin')
-        //   .set({
-        //     withCredentials: true
-        //   })
-        //   .withCredentials()
-        //   .set({
-        //     'content-type': 'application/x-www-form-urlencoded'
-        //   })
-        //   .send({ 
-        //     'name': this.formLabelAlign.username,
-        //     'password': this.formLabelAlign.password })
-        //   .end((error, res) => {
-        //     if (error) {
-        //       console.log('error:', error)
-        //     } else {
-        //       console.log(res)
-        //     }
-        //   })
       }
     },
     handleEnter() {
@@ -329,7 +293,7 @@ export default {
                 console.log(error)
               } else {
                 console.log(res)
-                var code = JSON.parse(res.text).code
+                var code = JSON.parse(res.text).resuleCode
                 that.dialogFormVisible = false
                 that.resetFormVisible = true
                 return
@@ -358,7 +322,7 @@ export default {
               'content-type': 'application/x-www-form-urlencoded'
             })
             .send({
-              password: that.resetForm.pass
+              passWord: that.resetForm.pass
             })
             .end(function (err, res) {
               if (err) {
