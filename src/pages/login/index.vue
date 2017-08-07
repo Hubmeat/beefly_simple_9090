@@ -233,8 +233,7 @@ export default {
         })
       } else {
         request
-          // .post(host + 'franchisee/adminLogin')
-          .post(host + 'beepartner/admin/test/test')
+          .post(host + 'franchisee/adminLogin')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
