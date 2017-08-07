@@ -217,13 +217,11 @@ export default {
       pageShow: false,
       noDate: false,
       totalItems: 1,
-      loading2: false,
-      signForQuery: false
+      loading2: false
     }
   },
   mounted: function () {
-    // 更改搜索sign标识
-    this.signForQuery = false
+
     this.getCityList()
     this.getDateByTabName('0')
   },
@@ -234,6 +232,15 @@ export default {
     handleCurrentChange(val) {
       var radio = this.checkList.toString()
       this.loading2 = true
+
+      var startTime, endTime
+      if (this.form.data1 === '' || this.form.data2 === '') {
+        startTime = null
+        endTime = null
+      } else {
+        startTime = moment(this.form.data1).format('YYYY-MM-DD')
+        endTime = moment(this.form.data2).format('YYYY-MM-DD')
+      }
       request
         .post(host + 'beepartner/admin/Bike/findBike')
         .withCredentials()
@@ -244,7 +251,10 @@ export default {
           'type': this.activeName === '已分配'?0:1,
           'cityCode': this.activeName === '已分配'?$('.citys span.active').attr('myId'):'',
           'currentPage': val,
-          'bikeState': radio 
+          'bikeState': radio,
+          'startOnlineTime': startTime,
+          'endOnlineTime': endTime,
+          'keyName': this.terminalNumber
         })
         .end((error, res) => {
           if (error) {
@@ -252,9 +262,15 @@ export default {
             console.log('error:', error)
           } else {
             this.loading2 = false
-            var data = (JSON.parse(res.text)).data
-            this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+            var data = JSON.parse(res.text).data
             var newData = this.tableDataDel(data)
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
+            var totalPage = Number(JSON.parse(res.text).totalPage)
+            if (totalPage > 1) {
+              this.pageShow = true
+            } else {
+              this.pageShow = false
+            }
             this.tableData = newData
           }
         })
@@ -304,9 +320,15 @@ export default {
             } else {
               console.log(res)
               this.loading2 = false
-              var data = (JSON.parse(res.text)).data
+              var data = JSON.parse(res.text).data
               var newData = this.tableDataDel(data)
-              this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              if (totalPage > 1) {
+                this.pageShow = true
+              } else {
+                this.pageShow = false
+              }
               this.tableData = newData
             }
           })
@@ -350,11 +372,16 @@ export default {
             this.loading2 = false
             console.log('error:', error)
           } else {
-            console.log(res)
             this.loading2 = false
             var data = (JSON.parse(res.text)).data
             var newData = this.tableDataDel(data)
-            this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
+            var totalPage = Number(JSON.parse(res.text).totalPage)
+            if (totalPage > 1) {
+              this.pageShow = true
+            } else {
+              this.pageShow = false
+            }
             this.tableData = newData
           }
         })
@@ -386,9 +413,14 @@ export default {
             console.log('error:', error)
           } else {
             this.loading2 = false
-            console.log((JSON.parse(res.text)).totalPage)
+            var totalPage = Number(JSON.parse(res.text).totalPage)
             var data = (JSON.parse(res.text)).data
-            this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+            if (totalPage > 1) {
+              this.pageShow = true
+            } else {
+              this.pageShow = false
+            }     
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
             var newData = this.tableDataDel(data)
             this.tableData = newData
           }
@@ -421,13 +453,15 @@ export default {
             this.loading2 = false
             console.log((JSON.parse(res.text)))
             var data = (JSON.parse(res.text)).data
-            this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+            var totalPage = Number(JSON.parse(res.text).totalPage)
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
             var newData = this.tableDataDel(data)
+            if (totalPage > 1) {
+              this.pageShow = true
+            } else {
+              this.pageShow = false
+            }            
             this.tableData = newData
-            /**
-             * 显示分页
-             */
-            this.pageShow = true
           }
         })
     },
@@ -479,7 +513,7 @@ export default {
             type = 1
           } else {
             type = 0
-          } 
+          }
 
           var radio = this.checkList.toString()
           request
@@ -503,13 +537,15 @@ export default {
                   this.loading2 = false
                   console.log((JSON.parse(res.text)))
                   var data = (JSON.parse(res.text)).data
-                  this.totalItems = JSON.parse((JSON.parse(res.text)).totalItems)
+                  var totalPage = Number(JSON.parse(res.text).totalPage)
+                  this.totalItems = Number(JSON.parse(res.text).totalItems)
                   var newData = this.tableDataDel(data)
                   this.tableData = newData
-                  /**
-                   * 显示分页
-                   */
-                  this.pageShow = true
+                  if (totalPage > 1) {
+                    this.pageShow = true
+                  } else {
+                    this.pageShow = false
+                  }
                 }
               })
       } else {

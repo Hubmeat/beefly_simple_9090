@@ -3,7 +3,10 @@
     <div class="incomming module">
       <el-row>
         <el-col class="incomeTitle">
-          <span class="title">今日营收<small>每10分钟自动刷新数据</small></span><span class="detail_right">&gt;&gt;</span>
+          <span class="title">今日营收
+            <small>每10分钟自动刷新数据</small>
+          </span>
+          <span class="detail_right">&gt;&gt;</span>
         </el-col>
         <el-col>
           <incomingVueChart></incomingVueChart>
@@ -19,44 +22,44 @@
             </span>
             <span class="arrow">&gt;&gt;</span>
           </div>
-          <div class="citySelect">
-            <span @click="handleClick" class="all">全部</span>
-            <span @click="handleClick" class="city">芜湖</span>
-            <span @click="handleClick" class="city">郑州</span>
-            <span @click="handleClick" class="city">南京</span>
-            <span @click="handleClick" class="city active">上海</span>
+          <div class="selectPlace">
+            <address class="joinArea">加盟区域</address>
+            <div class="citys">
+              <span @click="handleClick" myId='0' class="active">全部地区</span>
+              <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
+            </div>
           </div>
           <div class="Histogram">
             <myCanvas></myCanvas>
           </div>
         </el-col>
       </el-row>
-    </div>  
+    </div>
     <!-- <div class="hotmap">
-      <div class="mapHeader">
-        <div class="mapHeader_content">
-          <div class="mapTitle">
-            <el-row>
-              <el-col :span="10">
-                <span class="motionMap">运营热力图
-                  <small>每十分钟自动刷新</small>
-                </span>
-              </el-col>
-              <span class="arrow" style="float:right;margin-right:20px;">&gt;&gt;</span>
-            </el-row>
-            <div class="citySelect" style="padding-left:0;margin-top:10px;margin-bottom:0;">
-              <span @click="handleClick" class="city">芜湖</span>
-              <span @click="handleClick" class="city">郑州</span>
-              <span @click="handleClick" class="city">南京</span>
-              <span @click="handleClick" class="city active">上海</span>
+        <div class="mapHeader">
+          <div class="mapHeader_content">
+            <div class="mapTitle">
+              <el-row>
+                <el-col :span="10">
+                  <span class="motionMap">运营热力图
+                    <small>每十分钟自动刷新</small>
+                  </span>
+                </el-col>
+                <span class="arrow" style="float:right;margin-right:20px;">&gt;&gt;</span>
+              </el-row>
+              <div class="citySelect" style="padding-left:0;margin-top:10px;margin-bottom:0;">
+                <span @click="handleClick" class="city">芜湖</span>
+                <span @click="handleClick" class="city">郑州</span>
+                <span @click="handleClick" class="city">南京</span>
+                <span @click="handleClick" class="city active">上海</span>
+              </div>
             </div>
           </div>
+          <div class="mapWrap">
+            <Gamp></Gamp>
+          </div>
         </div>
-        <div class="mapWrap">
-          <Gamp></Gamp>
-        </div>
-      </div>
-    </div> -->
+      </div> -->
   </div>
 </template>
 <style scoped>
@@ -64,16 +67,34 @@ div.module {
   padding: 20px 15px 20px 15px;
   margin-right: 20px;
   background: #fff;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 }
-div.incomming{
+
+div.incomming {
   background: #fff;
   margin-right: 20px;
 }
-div.incomming div.incomeTitle{margin-bottom: 20px}
-div.incomming span.title{font-weight: bold}
-div.incomming span.title small{font-weight:normal;margin-left:20px;color:#9e9696;font-size:12px;}
-div.incomming span.detail_right{float:right;cursor:pointer;}
+
+div.incomming div.incomeTitle {
+  margin-bottom: 20px
+}
+
+div.incomming span.title {
+  font-weight: bold
+}
+
+div.incomming span.title small {
+  font-weight: normal;
+  margin-left: 20px;
+  color: #9e9696;
+  font-size: 12px;
+}
+
+div.incomming span.detail_right {
+  float: right;
+  cursor: pointer;
+}
+
 div.mounthIncoming {
   background: #ff4949;
   color: #fff;
@@ -89,7 +110,7 @@ div.statuAndData {
   background: #fff;
   margin-right: 20px;
   border-bottom: none;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 }
 
 span.income_time {
@@ -117,14 +138,16 @@ div.status_title span,
 div.datas_title span {
   margin-left: 10px;
 }
-div.datas_title span.data_display{
-  font-weight:bold;
-  margin-left:0;
+
+div.datas_title span.data_display {
+  font-weight: bold;
+  margin-left: 0;
 }
+
 div.datas_title span.data_display small {
   margin-left: 5px;
   color: #9e9696;
-  font-weight:normal;
+  font-weight: normal;
 }
 
 div.status_title span.arrow,
@@ -191,21 +214,56 @@ div.mapHeader_content {
 }
 
 div.mapTitle {
-  
+
   background: #fff;
   color: #444;
 }
-div.mapTitle span.motionMap{font-weight:bold}
-div.mapTitle span.motionMap small{font-weight:normal;}
-div.citySelect{margin-bottom: 20px;margin-left:-2px;}
-div.citySelect span{cursor:pointer;border:1px solid transparent;display:inline-block;padding:4px 8px;font-size:14px;}
-div.citySelect span.active{border:1px solid #ff4949;}
+
+div.mapTitle span.motionMap {
+  font-weight: bold
+}
+
+div.mapTitle span.motionMap small {
+  font-weight: normal;
+}
+
+div.selectPlace {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+div.selectPlace address {
+  font-style: normal;
+  display: inline;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+div.selectPlace div.citys {
+  display: inline-block;
+}
+
+div.selectPlace span {
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-block;
+  padding: 5px;
+  border: 1px solid transparent;
+}
+
+div.selectPlace span.active {
+  border: 1px solid orange;
+  border-radius: 4px;
+}
 </style>
 <script>
+import { host } from '../../../config/index.js'
+import request from 'superagent'
+import moment from 'moment'
 import incomingVueChart from '../../../components/highchartsIncoming.vue'
 import myCanvas from '../../../components/highChartAllData.vue'
 import Gamp from '../../../components/map.vue'
-import {siblings} from '../../../../utils/index.js'
+import { siblings } from '../../../../utils/index.js'
 export default {
   data: function () {
     return {
@@ -246,7 +304,8 @@ export default {
           time: '2017-04-04 10:01:01'
 
         }
-      ]
+      ],
+      cityList: []
     }
   },
   components: {
@@ -254,14 +313,34 @@ export default {
     Gamp,
     incomingVueChart
   },
+  mounted() {
+    this.getCityList()
+  },
   methods: {
-    handleClick (e) {
+    handleClick(e) {
       var elems = siblings(e.target)
       for (var i = 0; i < elems.length; i++) {
         elems[i].setAttribute('class', 'city')
       }
       e.target.setAttribute('class', 'city active')
-    }
+      this.$router.push({ query: {'cityId': $('.citys span.active').attr('myId')}})
+    },
+    getCityList() {
+      request
+        .post(host + 'beepartner/city/findCity')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .send()
+        .end((error, res) => {
+          if (error) {
+            console.log('error:', error)
+          } else {
+            this.cityList = JSON.parse(res.text).data
+          }
+        })
+    },
   }
 }
 </script>

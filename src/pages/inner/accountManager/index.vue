@@ -344,7 +344,7 @@ export default {
       if (this.activeName === '平台') {
         var that = this
         this.loading = true
-        getAllAdminUser({'type': 0}, function (err, res) {
+        getAllAdminUser({}, function (err, res) {
           if (err) {
             console.log(err)
             setTimeout(function () {
@@ -903,9 +903,9 @@ export default {
       this.pageShow = false
       if (this.activeName === '平台') {
         this.currentPage = 1
+         var that = this
         this.loading = true
-        this.loadingText = '拼命加载中'
-        getAllAdminUser({ franchiseeId: '123456', userId: 'admin' }, 1, function (err, res) {
+        getAllAdminUser({}, function (err, res) {
           if (err) {
             console.log(err)
             setTimeout(function () {
@@ -917,8 +917,9 @@ export default {
             }, 6000)
           } else {
             that.loading = false
+            that.emptyText = ' '
             that.totalPage = JSON.parse(res.text).totalPage
-            var arr = JSON.parse(res.text).list
+            var arr = JSON.parse(res.text).data
             if (that.totalPage > 1) {
               that.emptyText = ' '
               that.pageShow = true
@@ -926,7 +927,7 @@ export default {
               that.emptyText = '暂无数据'
               that.pageShow = false
             }
-            that.totalItems = JSON.parse(res.text).totalItems
+            that.totalItems = Number(JSON.parse(res.text).totalItems)
             that.$store.state.platTableData = that.handleData(arr)
             that.platTableData = that.$store.state.platTableData
             that.initData = that.platTableData
@@ -1457,6 +1458,10 @@ div.selectPlace address {
 
 div.selectPlace div.citys {
   display: inline-block;
+}
+
+div.selectPlace div.citys span.active {
+  border-radius: 4px;
 }
 
 div.selectPlace span {

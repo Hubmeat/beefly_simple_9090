@@ -356,13 +356,15 @@ export default {
 <style scope>
 
 
-#bgImage {
-  position: absolute;
-  left: 0;
-  top: 5%;
-}
 
 @media screen and (min-width:1367px) {
+
+  #bgImage {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  
   div#login {
     width: 100%;
     background: #fff;
@@ -378,7 +380,7 @@ export default {
     width: 100%;
     position: fixed;
     left: 0px;
-    top: 8%;
+    top: 6%;
     background: #fff;
     padding-left: 30px;
     /* margin: 0 auto; */
@@ -392,9 +394,10 @@ export default {
   #footer {
     position: fixed;
     left: 0;
-    bottom: 13%;
+    bottom: 0;
     width: 100%;
     font-size: 12px;
+    margin-bottom: 14px;
     height: 46px;
     line-height: 56px;
     text-align: center;
@@ -403,6 +406,13 @@ export default {
 }
 
 @media screen and (max-width:1367px) {
+
+  #bgImage {
+    position: absolute;
+    left: 0;
+    top: 5%;
+  }
+
   div#login {
     width: 100%;
     background: #fff;
@@ -436,6 +446,7 @@ export default {
     width: 100%;
     font-size: 12px;
     height: 46px;
+    margin-bottom: 14px;
     line-height: 56px;
     text-align: center;
     color: #555;

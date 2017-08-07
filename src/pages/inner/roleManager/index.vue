@@ -2,7 +2,7 @@
   <div style="margin-right:20px;">
     <div id="am_search">
       <label>
-        <el-form :inline="true"  class="demo-form-inline">
+        <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="角色名称">
             <el-input v-model="roleName" v-on:blur="initRole" placeholder="请输入角色名称"></el-input>
           </el-form-item>
@@ -15,52 +15,37 @@
     <div class="account">
       <h1>
         <button type="button" @click="openAddRole">添加角色</button>
-         <el-dialog
-          class="addRole"
-          title="添加角色"
-          :visible.sync="dialogFormVisible"
-          :modal-append-to-body="false"
-          :modal="true"
-        >
+        <el-dialog class="addRole" title="添加角色" :visible.sync="dialogFormVisible" :modal-append-to-body="false" :modal="true">
           <el-form :model="form" :rules="rules" ref="ruleForm">
             <el-form-item label="角色名称" prop="roleName" class="rolename" :label-width="formLabelWidth">
               <el-input v-model="form.roleName" placeholder="请输入角色名称"></el-input>
             </el-form-item>
-            <el-form-item label="备注" class="rolename"  :label-width="formLabelWidth">
-              <el-input type="textarea" v-model="form.des"></el-input>
+            <el-form-item label="备注" class="rolename" :label-width="formLabelWidth">
+              <el-input type="textarea" v-model="form.description"></el-input>
             </el-form-item>
-            <el-form-item label="权限列表" class="rolename"  :label-width="formLabelWidth">
-              <el-tree
-                :data="rolePowerList"
-                show-checkbox
-                ref="tree"
-                node-key="id"
-                :props="defaultProps">
+            <el-form-item label="权限列表" class="rolename" :label-width="formLabelWidth">
+              <el-tree :data="rolePowerList" show-checkbox ref="tree" node-key="id" :props="defaultProps">
               </el-tree>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer addfooter">
             <el-button class="addRoleBtn" type="primary" @click="handleAddRole">立即创建</el-button>
-             <el-button class="addRoleBtn" @click="dialogFormVisible = false">取消</el-button>
+            <el-button class="addRoleBtn" @click="dialogFormVisible = false">取消</el-button>
           </div>
-        </el-dialog> 
+        </el-dialog>
       </h1>
   
       <!-- 表单 -->
       <el-table :data="tableData" style="width: 100%; font-size:13px;" element-loading-text="拼命加载中" v-loading="loading">
-        <el-table-column prop="roleName" label="角色名称"  min-width="160"></el-table-column>
-        <el-table-column prop="des" label="备注" min-width="160"></el-table-column>
+        <el-table-column prop="roleName" label="角色名称" min-width="160"></el-table-column>
+        <el-table-column prop="description" label="备注" min-width="160"></el-table-column>
         <el-table-column label="包含用户" min-width="170">
           <template scope="scope">
             <ul class="roleList">
-              <el-tag
-                v-for="name in scope.row.names"
-                :key="name"
-                type="gray"
-              >
+              <el-tag v-for="name in scope.row.adminUserList" :key="name" type="gray">
                 {{name}}
               </el-tag>
-              <!-- <li :key="name" v-for="name of scope.row.names">{{name}}</li> -->
+              <!-- <li :key="name" v-for="name of scope.row.adminUserList">{{name}}</li> -->
             </ul>
           </template>
         </el-table-column>
@@ -71,52 +56,32 @@
           </template>
         </el-table-column>
       </el-table>
-        <el-dialog v-loading="loading2"
-                title="修改角色"
-                :visible.sync="dialogEditVisible"
-                :modal-append-to-body="false"
-                :modal="true"
-              >
-                <el-form v-model="editForm">
-                  <el-form-item label="角色名称" class="rolename" :label-width="formLabelWidth">
-                    <el-input v-model="editForm.roleName" placeholder="请输入角色名称"></el-input>
-                  </el-form-item>
-                  <el-form-item label="备注" :label-width="formLabelWidth">
-                    <el-input type="textarea" v-model="editForm.des"></el-input>
-                  </el-form-item>
-                  <el-form-item label="权限列表" :label-width="formLabelWidth">
-                    <el-tree
-                      :data="editForm.rolePowerList"
-                      show-checkbox
-                      ref="tree"
-                      node-key="id"
-                      :props="defaultProps2"
-                      :default-checked-keys="fathCode"
-                      >
-                    </el-tree>
-                  </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer editfooter">
-                  
-                  <el-button class="eidtRoleBtn"  @click="handleEditRole">确定</el-button>
-                  <el-button class="eidtRoleBtn" @click="dialogEditVisible = false">取消</el-button>
-                </div>
-            </el-dialog>  
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page.sync="currentPage3"
-              :page-size="10"
-              layout="prev, pager, next, jumper"
-              v-show="pageShow"
-              :total="totalItems">
-            </el-pagination>
+      <el-dialog v-loading="loading2" title="修改角色" :visible.sync="dialogEditVisible" :modal-append-to-body="false" :modal="true">
+        <el-form v-model="editForm">
+          <el-form-item label="角色名称" class="rolename" :label-width="formLabelWidth">
+            <el-input v-model="editForm.roleName" placeholder="请输入角色名称"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" :label-width="formLabelWidth">
+            <el-input type="textarea" v-model="editForm.description"></el-input>
+          </el-form-item>
+          <el-form-item label="权限列表" :label-width="formLabelWidth">
+            <el-tree :data="editForm.rolePowerList" show-checkbox ref="tree" node-key="id" :props="defaultProps2" :default-checked-keys="fathCode">
+            </el-tree>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer editfooter">
+  
+          <el-button class="eidtRoleBtn" @click="handleEditRole">确定</el-button>
+          <el-button class="eidtRoleBtn" @click="dialogEditVisible = false">取消</el-button>
+        </div>
+      </el-dialog>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage3" :page-size="10" layout="prev, pager, next, jumper" v-show="pageShow" :total="totalItems">
+      </el-pagination>
     </div>
   
-
-      <!--<div v-show='router_show' >-->
-        <router-view id="account_router"></router-view>
-      <!--</div>-->
+    <!--<div v-show='router_show' >-->
+    <router-view id="account_router"></router-view>
+    <!--</div>-->
   </div>
 </template>
 
@@ -125,20 +90,20 @@ import $ from 'jquery'
 require('../../../assets/lib/js/jquery.pagination.js')
 import '../../../assets/css/pagination.css'
 import request from 'superagent'
-import {host} from '../../../config/index'
+import { host } from '../../../config/index'
 export default {
-  data () {
+  data() {
     var validateRoleName = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入角色名'));
-        }else{
-          callback();
-        }
+      if (value === '') {
+        callback(new Error('请输入角色名'));
+      } else {
+        callback();
       }
+    }
     return {
-      isQuery:false,
-      currentPage3:1,
-      totalItems:1,
+      isQuery: false,
+      currentPage3: 1,
+      totalItems: 1,
       pageShow: false,
       roleName: '',
       loading: false,
@@ -147,7 +112,7 @@ export default {
       dialogFormVisible: false,
       dialogEditVisible: false,
       currentPage: 1,
-      totalPage:1,
+      totalPage: 1,
       tableData: [],
       initData: [],
       fathCode: [],
@@ -162,291 +127,302 @@ export default {
         label: 'label'
       },
       rolePowerList: [
-              {
-                id: 1100,
-                label: '首页'
-              },
-              {
-                id: 1200,
-                label: '车辆管理'
-              },
-              {
-                id: 1300,
-                label: '报表管理',
-                children: [
-                  {
-                    id: 1301,
-                    label: '消费数据'
-                  },
-                  {
-                    id: 1302,
-                    label: '24小时数据走势'
-                  },
-                  {
-                    id: 1303,
-                    label: '热力图'
-                  },
-                  {
-                    id: 1304,
-                    label: '异常数据'
-                  }
-                ]
-              },
-              {
-                id: 2000,
-                label: '合伙人管理'
-              },
-              {
-                id: 1400,
-                label: '营收管理',
-                children: [
-                  {
-                    id: 1401,
-                    label: '收益明细'
-                  },
-                  {
-                    id: 1402,
-                    label: '结算记录'
-                  },
-                ]
-              },
-              {
-                id: 1500,
-                label: '账号管理'
-              },
-              {
-                id: 1600,
-                label: '个人中心'
-              },
-              {
-                id: 1700,
-                label: '角色管理'
-              },
-              {
-                id: 1800,
-                label: '信息中心'
-              },
-              {
-                id: 1900,
-                label: '日志管理',
-                children: [
-                  {
-                    id: 1901,
-                    label: '登录日志'
-                  },
-                  {
-                    id: 1902,
-                    label: '操作日志'
-                  },
-                ]
-              }
-            ],
+        {
+          id: 10,
+          label: '首页'
+        },
+        {
+          id: 20,
+          label: '合伙人管理'
+        },
+        {
+          id: 30,
+          label: '车辆管理'
+        },
+        {
+          id: 40,
+          label: '订单管理'
+        },
+        {
+          id: 50,
+          label: '报表管理',
+          children: [
+            {
+              id: 51,
+              label: '收益排行'
+            }
+            // {
+            //   id: 1302,
+            //   label: '24小时数据走势'
+            // },
+            // {
+            //   id: 1303,
+            //   label: '热力图'
+            // },
+            // {
+            //   id: 1304,
+            //   label: '异常数据'
+            // }
+          ]
+        },
+        {
+          id: 60,
+          label: '结算管理'
+        },
+        {
+          id: 70,
+          label: '个人中心'
+        },
+        {
+          id: 80,
+          label: '账号管理'
+        },
+        {
+          id: 90,
+          label: '角色管理'
+        },
+        // {
+        //   id: 1800,
+        //   label: '信息中心'
+        // },
+        // {
+        //   id: 1900,
+        //   label: '日志管理',
+        //   children: [
+        //     {
+        //       id: 1901,
+        //       label: '登录日志'
+        //     },
+        //     {
+        //       id: 1902,
+        //       label: '操作日志'
+        //     },
+        //   ]
+        // }
+      ],
       form: {
         roleName: '',
-        des: ''
+        description: ''
       },
       formLabelWidth: '120px',
       editForm: {
         roleName: '',
-        des: '',
+        description: '',
         id: '',
         index: '',
         roleType: '',
         rolePowerList: [
+          {
+            id: 10,
+            label: '首页'
+          },
+          {
+            id: 20,
+            label: '合伙人管理'
+          },
+          {
+            id: 30,
+            label: '车辆管理'
+          },
+          {
+            id: 40,
+            label: '订单管理'
+          },
+          {
+            id: 50,
+            label: '报表管理',
+            children: [
               {
-                id: 1100,
-                label: '首页'
-              },
-              {
-                id: 1200,
-                label: '车辆管理'
-              },
-              {
-                id: 1300,
-                label: '报表管理',
-                children: [
-                  {
-                    id: 1301,
-                    label: '消费数据'
-                  },
-                  {
-                    id: 1302,
-                    label: '24小时数据走势'
-                  },
-                  {
-                    id: 1303,
-                    label: '热力图'
-                  },
-                  {
-                    id: 1304,
-                    label: '异常数据'
-                  }
-                ]
-              },
-              {
-                id: 2000,
-                label: '合伙人管理'
-              },
-              {
-                id: 1400,
-                label: '营收管理',
-                children: [
-                  {
-                    id: 1401,
-                    label: '收益明细'
-                  },
-                  {
-                    id: 1402,
-                    label: '结算记录'
-                  },
-                ]
-              },
-              {
-                id: 1500,
-                label: '账号管理'
-              },
-              {
-                id: 1600,
-                label: '个人中心'
-              },
-              {
-                id: 1700,
-                label: '角色管理'
-              },
-              {
-                id: 1800,
-                label: '信息中心'
-              },
-              {
-                id: 1900,
-                label: '日志管理',
-                children: [
-                  {
-                    id: 1901,
-                    label: '登录日志'
-                  },
-                  {
-                    id: 1902,
-                    label: '操作日志'
-                  },
-                ]
+                id: 51,
+                label: '收益排行'
               }
+              // {
+              //   id: 1302,
+              //   label: '24小时数据走势'
+              // },
+              // {
+              //   id: 1303,
+              //   label: '热力图'
+              // },
+              // {
+              //   id: 1304,
+              //   label: '异常数据'
+              // }
             ]
+          },
+          {
+            id: 60,
+            label: '结算管理'
+          },
+          {
+            id: 70,
+            label: '个人中心'
+          },
+          {
+            id: 80,
+            label: '账号管理'
+          },
+          {
+            id: 90,
+            label: '角色管理'
+          },
+          // {
+          //   id: 1800,
+          //   label: '信息中心'
+          // },
+          // {
+          //   id: 1900,
+          //   label: '日志管理',
+          //   children: [
+          //     {
+          //       id: 1901,
+          //       label: '登录日志'
+          //     },
+          //     {
+          //       id: 1902,
+          //       label: '操作日志'
+          //     },
+          //   ]
+          // }
+        ]
       },
       rules: {
-          roleName: [
-            { validator: validateRoleName, trigger: 'blur', required: true }
-          ]
-        }
+        roleName: [
+          { validator: validateRoleName, trigger: 'blur', required: true }
+        ]
+      },
+      flag: false
     }
   },
   methods: {
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-    initRole(){
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      // 初始化查询
+      this.loading = true
+      request
+      .post(host + 'beepartner/admin/Role/findAdminRole')
+      .withCredentials()
+      .set({
+        'content-type': 'application/x-www-form-urlencoded'
+      })
+      .send({
+        'currentPage': val,
+        'roleName': this.roleName
+      })
+      .end((err, res) => {
+        if (err) {
+          console.log(err)
+          this.loading = false
+        } else {
+          this.loading = false
+          var result = JSON.parse(res.text).data
+          console.log(result)
+          var totalPage = Number(JSON.parse(res.text).totalPage)
+          var newArr = result.map((item)=>{
+            var arr = item.adminUserList.map((item)=>{
+              return item.userName
+            })
+           return Object.assign({},item,{adminUserList: arr})
+         })
+          if (totalPage > 1) {
+            this.pageShow = true
+          } else {
+            this.pageShow = false
+          }
+          this.totalItems = Number(JSON.parse(res.text).totalItems)
+          this.tableData = newArr
+          this.initData = this.tableData
+        }
+      })
+    },
+    initRole() {
       this.isQuery = false
       this.currentPage3 = 1
-      if(this.roleName.trim().length===0&&this.isQuery===false){
+      if (this.roleName.trim().length === 0 && this.isQuery === false) {
         var that = this
         request
-        .post(host + 'franchisee/account/getRole')
-        .end((err, res) => {
-          if (err) {
-            console.log(err)
-          } else {
-            var result = JSON.parse(res.text).list
-            var totalPage = JSON.parse(res.text).totalPage
-            if(totalPage>1){
-              this.pageShow = true
-            }else {
-              this.pageShow = false
-            }
-            this.totalItems = JSON.parse(res.text).totalItems
-            var newArr = result.map(function(item, index) {
-                console.log(item)
-                var res = item.auth.split('-')
-                var fathCode = []
-                var childrenCode = []
-                for(var i=0; i < res.length; i++){
-                  if(res[i] % 100 == 0) {
-                    fathCode.push(Number(res[i]))
-                  } else {
-                    childrenCode.push(Number(res[i]))
-                  }
-                }
-                var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                return obj
+          .post(host + 'beepartner/admin/Role/findAdminRole')
+          .end((err, res) => {
+            if (err) {
+              console.log(err)
+            } else {
+              this.loading = false
+              var result = JSON.parse(res.text).data
+              console.log(result)
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              var newArr = result.map((item)=>{
+                var arr = item.adminUserList.map((item)=>{
+                  return item.userName
+                })
+              return Object.assign({},item,{adminUserList: arr})
               })
-            that.tableData  = newArr
-            that.initData = that.tableData
-          }
-        })
+              if (totalPage > 1) {
+                this.pageShow = true
+              } else {
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+              this.tableData = newArr
+              this.initData = this.tableData
+            }
+          })
       }
     },
-    queryRole () {
+    queryRole() {
       var that = this
-      if(this.roleName.trim().length!==0){
+      if (this.roleName.trim().length !== 0) {
         this.isQuery = true
         that.loading = true
-        request.post(host + 'franchisee/account/queryRole')
+        request
+          .post(host + 'beepartner/admin/Role/findAdminRole')
           .withCredentials()
           .set({
-              'content-type': 'application/x-www-form-urlencoded'
+            'content-type': 'application/x-www-form-urlencoded'
           })
           .send({
             roleName: this.roleName.trim()
           })
-          .end(function(error,res){
-            if(error){
+          .end(function (error, res) {
+            if (error) {
               console.log(error)
               that.loading = false
-            }else {
+            } else {
               that.loading = false
-               var result = JSON.parse(res.text).list
-                var totalPage = JSON.parse(res.text).totalPage
-                if(totalPage>1){
-                  that.pageShow = true
-                }else {
-                  that.pageShow = false
-                }
-                that.totalItems = JSON.parse(res.text).totalItems
-                var newArr = result.map(function(item, index) {
-                    console.log(item)
-                    var res = item.auth.split('-')
-                    var fathCode = []
-                    var childrenCode = []
-                    for(var i=0; i < res.length; i++){
-                      if(res[i] % 100 == 0) {
-                        fathCode.push(Number(res[i]))
-                      } else {
-                        childrenCode.push(Number(res[i]))
-                      }
-                    }
-                    var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                    return obj
-                  })
-                that.tableData  = newArr
+              var result = JSON.parse(res.text).data
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              var newArr = result.map((item) => {
+                var arr = item.adminUserList.map((item)=>{
+                  return item.userName
+                })
+              return Object.assign({},item,{adminUserList: arr})
+              })
+              if (totalPage > 1) {
+                that.pageShow = true
+              } else {
+                that.pageShow = false
+              }
+              that.totalItems = Number(JSON.parse(res.text).totalItems)
+              that.tableData = newArr
             }
           })
-      }else{
+      } else {
         this.$message({
-          type:'error',
-          message:'查询条件不能为空'
+          type: 'warning',
+          message: '查询条件不能为空'
         })
         return false
       }
     },
-    openAddRole () {
+    openAddRole() {
       this.dialogFormVisible = true
+      this.flag = false
     },
-    openEditRole (scope) {
+    openEditRole(scope) {
       this.dialogEditVisible = true
       this.editForm.roleName = scope.row.roleName
-      this.editForm.des = scope.row.des
+      this.editForm.description = scope.row.description
       this.editForm.id = scope.row.id
       this.editForm.index = scope.$index
       this.editForm.roleType = scope.row.roleType
@@ -455,303 +431,209 @@ export default {
       // this.fathCode  = scope.row.fathCode
       // this.childrenCode  = scope.row.childrenCode
     },
-    handleEditRole () {
+    handleEditRole() {
       var that = this
       var authList = this.getCheckedKeys().join('-')
       request
-        .post(host + 'franchisee/account/updateRole')
-        // .send({
-        //   oldRole: {
-        //     id: that.editForm.id
-        //   },
-        //   newRole: {
-        //     id: that.editForm.id,
-        //     roleType:  that.editForm.roleType,
-        //     roleName: that.editForm.roleName,
-        //     des: that.editForm.des,
-        //     auths: authList
-        //   }
-        // })
-          .withCredentials()
-          .set({
-              'content-type': 'application/x-www-form-urlencoded'
-          })
-         .send({
-            id: that.editForm.id,
-            roleType:  that.editForm.roleType,
-            roleName: that.editForm.roleName,
-            des: that.editForm.des,
-            auth: authList
+        .post(host + 'beepartner/admin/Role/updateRole')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
         })
-        .end(function(err,res){
-          if(err){
+        .send({
+          'id': that.editForm.id,
+          'roleName': that.editForm.roleName,
+          'description': that.editForm.description,
+          'menuStr': authList
+        })
+        .end(function (err, res) {
+          if (err) {
             console.log(err)
             that.$message({
-                type: 'error',
-                message: '修改失败!'
+              type: 'error',
+              message: '修改失败!'
             })
           } else {
             that.loading2 = false
-            var code = JSON.parse(res.text).code
-            if(code === 0) {
-                that.$message({
-                  type: 'success',
-                  message: '修改成功!'
-                })
-                that.tableData.splice(that.editForm.index,1,JSON.parse(JSON.parse(res.text).data))
-                //that.tableData.splice(that.editForm.index,1,{roleName: that.editForm.roleName,des: that.editForm.des, id: that.editForm.id})
-                that.dialogEditVisible = false
+            var code = JSON.parse(res.text).resultCode
+            if (code === 1) {
+              that.$message({
+                type: 'success',
+                message: '修改成功!'
+              })
+              // that.tableData.splice(that.editForm.index, 1, JSON.parse(JSON.parse(res.text).data))
+              // //that.tableData.splice(that.editForm.index,1,{roleName: that.editForm.roleName,description: that.editForm.description, id: that.editForm.id})
+              that.flag = true
+              that.dialogEditVisible = false
             } else {
               that.$message({
-                  type: 'error',
-                  message: '修改失败!'
+                type: 'error',
+                message: '修改失败!'
               })
             }
           }
         })
     },
-    handleDeleteRole (scope) {
+    handleDeleteRole(scope) {
       var that = this
       this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.loading = true
-          request
-            .post(host + 'franchisee/account/delRole')
-            .withCredentials()
-            .set({
-                'content-type': 'application/x-www-form-urlencoded'
-            })
-            .send({
-              id: scope.row.id,
-              roleType: scope.row.roleType,
-              roleName: scope.row.roleName,
-              auth: scope.row.auth
-            })
-            .end((err, res) => {
-              if(err) {
-                console.log(err)
-                this.loading = flase
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true
+        request
+          .post(host + 'beepartner/admin/Role/deleteAdminRole')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            id: scope.row.id
+          })
+          .end((err, res) => {
+            if (err) {
+              console.log(err)
+              this.loading = flase
+              this.$message({
+                type: 'error',
+                message: '删除失败!'
+              })
+            } else {
+              that.loading = false
+              var code = JSON.parse(res.text).resultCode
+              if (code === 1) {
                 this.$message({
-                    type: 'error',
-                    message: '删除失败!'
+                  type: 'success',
+                  message: '删除成功!'
                 })
+                that.tableData.splice(scope.$index, 1)
               } else {
-                that.loading = false
-                var code = JSON.parse(res.text).code
-                if(code === 0) {
-                   this.$message({
-                      type: 'success',
-                      message: '删除成功!'
-                    })
-                    that.tableData.splice(scope.$index,1)
-                    if(that.tableData.length===0) {
-                      $('.M-box').html('')
-                    }
-                } else {
-                  this.$message({
-                      type: 'error',
-                      message: '删除失败!'
-                  })
-                }
-              }
-            })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })   
-        })
-    },
-    handleAddRole () {
-       var authList = this.getCheckedKeys().join('-')
-        var that = this
-
-        this.$refs.ruleForm.validate((valid) => {
-          if(valid){
-              this.dialogFormVisible = false
-              request
-                .post(host + 'franchisee/account/addRole4Admin')
-                .withCredentials()
-                .set({
-                    'content-type': 'application/x-www-form-urlencoded'
+                this.$message({
+                  type: 'error',
+                  message: '删除失败!'
                 })
-                .send({
-                  des: that.form.des,
-                  roleName: that.form.roleName,
-                  auth: authList,
-                  roleType: that.form.roleName === '管理员'?'0':'1',
-                  belong: 1
-                })
-                .end((err, res) => {
-                  if (err) {
-                    console.log(err)
-                  } else {
-                    var code = JSON.parse(res.text).code
-                    if(code === 0) {
-                      that.$message({
-                        type: 'success',
-                        message: '恭喜您！添加角色成功'
-                      })
-                     var newRole =  JSON.parse(JSON.parse(res.text).data)
-                     console.log(newRole)
-                     that.tableData.unshift(newRole)
-                     //that.tableData.unshift({des: that.form.des,names:[],roleName:that.form.roleName})
-                    } else {
-                      that.$message({
-                        type: 'error',
-                        message: 'sorry！角色已存在，请重新添加'
-                      })
-                    }
-                  }
-                })
-          }else {
-            console.log('error submit!!');
-            return false;
-          }
-        })
-    },
-    getCheckedKeys () {
-        return this.$refs.tree.getCheckedKeys()
-    }
-  },
-  mounted () {
-    var that = this
-    that.loading = true
-    that.pageShow = false
-    request
-     .post(host + 'franchisee/account/getRole')
-     .end((err, res) => {
-       if (err) {
-         console.log(err)
-          that.loading = false
-       } else {
-          that.loading = false
-         var result = JSON.parse(res.text).list
-         var totalPage = JSON.parse(res.text).totalPage
-         if(totalPage>1){
-           this.pageShow = true
-         }else {
-           this.pageShow = false
-         }
-         this.totalItems = JSON.parse(res.text).totalItems
-        var newArr = result.map(function(item, index) {
-            var res = item.auth.split('-')
-            var fathCode = []
-            var childrenCode = []
-            for(var i=0; i < res.length; i++){
-              if(res[i] % 100 == 0) {
-                fathCode.push(Number(res[i]))
-              } else {
-                childrenCode.push(Number(res[i]))
               }
             }
-            var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-            return obj
           })
-          console.log(newArr)
-         that.tableData  = newArr
-         that.initData = that.tableData
-       }
-     })
-  },
-  watch:{
-    currentPage3:{
-      handler: function(val,oldVal){
-        var that = this
-        that.loading = true
-        if(this.isQuery===false){
-          // 初始化查询
-           request
-            .post(host + 'franchisee/account/getRole?page=' + val)
+      }).catch(() => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消删除'
+        // })
+      })
+    },
+    handleAddRole() {
+      var authList = this.getCheckedKeys().join('-')
+      var that = this
+      console.log(authList)
+
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false
+          request
+            .post(host + 'beepartner/admin/Role/addAdminRole')
             .withCredentials()
             .set({
-                'content-type': 'application/x-www-form-urlencoded'
+              'content-type': 'application/x-www-form-urlencoded'
+            })
+            .send({
+              description: that.form.description,
+              roleName: that.form.roleName,
+              menuStr: authList
             })
             .end((err, res) => {
               if (err) {
                 console.log(err)
-                that.loading = false
               } else {
-                that.loading = false
-                var result = JSON.parse(res.text).list
-                var totalPage = JSON.parse(res.text).totalPage
-                if(totalPage>1){
-                  this.pageShow = true
-                }else {
-                  this.pageShow = false
-                }
-                this.totalItems = JSON.parse(res.text).totalItems
-                var newArr = result.map(function(item, index) {
-                    console.log(item)
-                    var res = item.auth.split('-')
-                    var fathCode = []
-                    var childrenCode = []
-                    for(var i=0; i < res.length; i++){
-                      if(res[i] % 100 == 0) {
-                        fathCode.push(Number(res[i]))
-                      } else {
-                        childrenCode.push(Number(res[i]))
-                      }
-                    }
-                    var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                    return obj
+                var code = JSON.parse(res.text).resultCode
+                if (code === 1) {
+                  that.$message({
+                    type: 'success',
+                    message: '恭喜您！添加角色成功'
                   })
-                that.tableData  = newArr
+                  // var newRole = JSON.parse(JSON.parse(res.text).data)
+                  // console.log(newRole)
+                  // that.tableData.unshift(newRole)
+                  that.flag = true
+                } else {
+                  that.$message({
+                    type: 'error',
+                    message: 'sorry！角色已存在，请重新添加'
+                  })
+                }
               }
             })
-        }else {
-          // 筛选查询
-          request.post(host + 'franchisee/account/queryRole?page=' + val)
-          .withCredentials()
-          .set({
-              'content-type': 'application/x-www-form-urlencoded'
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      })
+    },
+    getCheckedKeys() {
+      return this.$refs.tree.getCheckedKeys()
+    },
+    loadRole () {
+      var that = this
+      that.loading = true
+      that.pageShow = false
+      request
+        .post(host + 'beepartner/admin/Role/findAdminRole')
+        .end((err, res) => {
+          if (err) {
+            console.log(err)
+            that.loading = false
+          } else {
+            that.loading = false
+            var result = JSON.parse(res.text).data
+            console.log(result)
+            var totalPage = Number(JSON.parse(res.text).totalPage)
+            var newArr = result.map((item)=>{
+              var arr = item.adminUserList.map((item)=>{
+                return item.userName
+              })
+            return Object.assign({},item,{adminUserList: arr})
           })
-          .send({
-            roleName: this.roleName.trim()
-          })
-          .end(function(error,res){
-            if(error){
-              console.log(error)
-            }else {
-                var result = JSON.parse(res.text).list
-                var totalPage = JSON.parse(res.text).totalPage
-                if(totalPage>1){
-                  that.pageShow = true
-                }else {
-                  that.pageShow = false
-                }
-                that.totalItems = JSON.parse(res.text).totalItems
-                console.log(result)
-                var newArr = result.map(function(item, index) {
-                    var res = item.auth.split('-')
-                    var fathCode = []
-                    var childrenCode = []
-                    for(var i=0; i < res.length; i++){
-                      if(res[i] % 100 == 0) {
-                        fathCode.push(Number(res[i]))
-                      } else {
-                        childrenCode.push(Number(res[i]))
-                      }
-                    }
-                    var obj = Object.assign({},item, {fathCode: fathCode},{childrenCode: childrenCode})
-                    return obj
-                  })
-                that.tableData  = newArr
+            console.log(newArr)
+            if (totalPage > 1) {
+              this.pageShow = true
+            } else {
+              this.pageShow = false
             }
-          })
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
+            that.tableData = newArr
+            that.initData = that.tableData
+          }
+        })
+    }
+  },
+  mounted() {
+    this.loadRole()
+  },
+  watch: {
+    'flag':{
+      handler:function(){
+        if(this.flag){
+          this.loadRole()
+        }else{
+          this.loading2 = false
+          return
         }
       },
-      deep: true
+      deep:true
     }
   }
 }
 </script>
 
 <style scoped>
-.el-pagination{padding-left:0;border-left:0;margin-top: 20px;margin-bottom: 10px;}
+.el-pagination {
+  padding-left: 0;
+  border-left: 0;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 html,
 body,
 h1,
@@ -783,6 +665,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
+
 /*#account_router_cover {
   width: 100%;
   height: 100%;
@@ -792,16 +675,16 @@ body {
   top: 0;
 }*/
 
-
 #account_router {
   width: 100%;
   height: 100%;
-  background: rgba(68,68,68,0.6);
+  background: rgba(68, 68, 68, 0.6);
   position: fixed;
   z-index: 100;
   left: 0;
-  top: 0;  
+  top: 0;
 }
+
 
 /*#account_router {
   position: fixed;
@@ -843,12 +726,12 @@ div.account>h1 button {
   font-size: 12px;
   color: #fff;
   border-radius: 4px;
-  background: rgba(66,66,66, 0.8);
+  background: rgba(66, 66, 66, 0.8);
   transition: all .2s linear 0s;
 }
 
 div.account>h1 button:hover {
-  background: rgb(66,66,66);
+  background: rgb(66, 66, 66);
   cursor: pointer;
 }
 
@@ -872,7 +755,7 @@ div.account>h1 button:hover {
 #am_search label {
   /* width: 190px; */
   margin-top: 15px;
-    margin-left: 31px;
+  margin-left: 31px;
   float: left;
 }
 
@@ -919,50 +802,112 @@ div.account>h1 button:hover {
   min-height: 230px;
 }
 
-.el-switch__label, .el-switch__label *{font-size:12px;}
-ul.roleList li {list-style-type: none;float:left;}
-span.el-tag{margin-left:10px;padding:0 10px;}
-i.el-icon-edit, i.el-icon-close{cursor:pointer}
- .eidtRoleBtn {
-    width: 120px;
-    height: 50px;}
- .eidtRoleBtn:nth-of-type(1):hover{background: rgba(248, 126, 43, 0.9);}
+.el-switch__label,
+.el-switch__label * {
+  font-size: 12px;
+}
+
+ul.roleList li {
+  list-style-type: none;
+  float: left;
+}
+
+span.el-tag {
+  margin-left: 10px;
+  padding: 0 10px;
+}
+
+i.el-icon-edit,
+i.el-icon-close {
+  cursor: pointer
+}
+
+.eidtRoleBtn {
+  width: 120px;
+  height: 50px;
+}
+
+.eidtRoleBtn:nth-of-type(1):hover {
+  background: rgba(248, 126, 43, 0.9);
+}
+
 .eidtRoleBtn:nth-of-type(1) {
-    background: #f87e2b;
-    border: none;
-    color: #fff;}
-.eidtRoleBtn:nth-of-type(2){background: #fff;color: #444;border: 1px solid rgba(196,196,196,1)}   
-.eidtRoleBtn:nth-of-type(2):hover {border: 1px solid rgb(248, 126, 43);color: rgb(248, 126, 43);} 
+  background: #f87e2b;
+  border: none;
+  color: #fff;
+}
+
+.eidtRoleBtn:nth-of-type(2) {
+  background: #fff;
+  color: #444;
+  border: 1px solid rgba(196, 196, 196, 1)
+}
+
+.eidtRoleBtn:nth-of-type(2):hover {
+  border: 1px solid rgb(248, 126, 43);
+  color: rgb(248, 126, 43);
+}
+
 div.account>h1 .addRoleBtn {
-    width: 120px;
-    height: 50px;
-    font-size:14px;}
- div.account>h1 .addRoleBtn:nth-of-type(1):hover{background: rgba(248, 126, 43, 0.9);}
+  width: 120px;
+  height: 50px;
+  font-size: 14px;
+}
+
+div.account>h1 .addRoleBtn:nth-of-type(1):hover {
+  background: rgba(248, 126, 43, 0.9);
+}
+
 div.account>h1 .addRoleBtn:nth-of-type(1) {
-    background: #f87e2b;
-    border: none;
-    color: #fff;
-    margin-left:100px;}
-div.account>h1 .addRoleBtn:nth-of-type(2){background: #fff;color: #444;border: 1px solid rgba(196,196,196,1)}   
-div.account>h1 .addRoleBtn:nth-of-type(2):hover {border: 1px solid rgb(248, 126, 43);color: rgb(248, 126, 43);} 
- button#roleSearchBtn{width: 80px;
-    /* float: right; */
-    height: 36px;
-    line-height: 11px;
-    margin-right: 30px;
-    color: #fff;
-    margin-top: 18px;
-    outline: none;
-    border: none;
-    /* border-radius: 4px; */
-    background: rgba(52,52,67, 0.8);}
-    button#roleSearchBtn:hover{color:#fff}
-    div.editfooter{text-align: left;
-    padding-left: 120px;
-    margin-top: -43px;}
-    div.addfooter{text-align: left;
-    padding-left: 120px;
-    margin-top: -51px;}
-div.rolename{font-weight:normal;}
+  background: #f87e2b;
+  border: none;
+  color: #fff;
+  margin-left: 100px;
+}
+
+div.account>h1 .addRoleBtn:nth-of-type(2) {
+  background: #fff;
+  color: #444;
+  border: 1px solid rgba(196, 196, 196, 1)
+}
+
+div.account>h1 .addRoleBtn:nth-of-type(2):hover {
+  border: 1px solid rgb(248, 126, 43);
+  color: rgb(248, 126, 43);
+}
+
+button#roleSearchBtn {
+  width: 80px;
+  /* float: right; */
+  height: 36px;
+  line-height: 11px;
+  margin-right: 30px;
+  color: #fff;
+  margin-top: 18px;
+  outline: none;
+  border: none;
+  /* border-radius: 4px; */
+  background: rgba(52, 52, 67, 0.8);
+}
+
+button#roleSearchBtn:hover {
+  color: #fff
+}
+
+div.editfooter {
+  text-align: left;
+  padding-left: 120px;
+  margin-top: -43px;
+}
+
+div.addfooter {
+  text-align: left;
+  padding-left: 120px;
+  margin-top: -51px;
+}
+
+div.rolename {
+  font-weight: normal;
+}
 </style>
 
