@@ -5,35 +5,42 @@
           <h3>车辆详情</h3>
         </div>
         <el-row>
-          <el-col :span="16">
-            <table>
+          <el-col :span="24">
+            <table class='info'>
               <tbody>
                 <tr>
                   <td class="lang">
-                    <span class="prex">车辆号:</span>100001</td>
+                    <span class="prex">车辆号:</span>{{bikeInfo.code}}</td>
                   <td>
-                    <span class="prex">终端编号:</span>100001</td>
+                    <span class="prex">终端编号:</span>{{bikeInfo.boxCode}}</td>
                 </tr>
                 <tr>
                   <td class="lang">
-                    <span class="prex">车辆型号:</span>小蜜蜂1代</td>
+                    <span class="prex">车辆型号:</span>{{bikeInfo.generationsName}}</td>
                   <td>
-                    <span class="prex">车型:</span>车型1</td>
+                    <span class="prex">车型:</span>{{bikeInfo.model}}</td>
                 </tr>
                 <tr>
                   <td class="lang">
-                    <span class="prex">上线日期:</span>2015-01-01</td>
+                    <span class="prex">上线日期:</span>{{bikeInfo.onlineTime}}</td>
                   <td>
                     <span class="prex">报废日期:</span>2020-01-01</td>
                 </tr>
                 <tr>
                   <td class="lang">
-                    <span class="prex">所属区域:</span>无为县</td>
+                    <span class="prex">所属区域:</span>{{bikeInfo.cityName}}</td>
                   <td>
-                    <span class="prex">车辆位置:</span>无为县****区****路****号</td>
+                    <span class="prex">车辆位置:</span>{{bikeInfo.location}}</td>
+                </tr>
+                <tr>
+                  <td class="lang">
+                    <span class="prex">所属加盟商:</span>{{bikeInfo.alliance}}</td>
                 </tr>
               </tbody>
             </table>
+          </el-col>
+          <el-col>
+            
           </el-col>
           <!-- <el-col :span="6" class="battery">
             <ul>
@@ -50,9 +57,37 @@
           </el-col> -->
         </el-row>
         <el-row class="record">
+          
           <el-tabs v-model="activeName">
             <el-tab-pane class="incomeRecord recodeTable" label="收益记录" name="first">
-              <table>
+              <el-table
+              :data="tableData"
+              style="width:100%"
+              v-loading="loading2"
+              element-loading-text="拼命加载中"
+            >
+              <el-table-column 
+              prop="placeOrderTimeStr"
+              label="下单时间"
+              min-width='120'>
+              </el-table-column>
+              <el-table-column label="骑行时间（分钟）" prop="rideTime">
+
+              </el-table-column>
+              <el-table-column label="里程（公里）" prop="rideMileage">
+
+              </el-table-column>
+              <el-table-column label="订单费用" prop="actualAmount">
+
+              </el-table-column>
+              <el-table-column label="优惠券支付" prop="couponAmount">
+
+              </el-table-column>
+              <el-table-column label="实际收益" prop="userPayAmount">
+
+              </el-table-column>
+            </el-table>
+              <!--<table>
                 <thead>
                   <tr>
                     <th>下单时间</th>
@@ -78,7 +113,17 @@
                     <td>{{item.couponAmount}}</td>
                   </tr>
                 </tbody>
-              </table>
+              </table>-->
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage3"
+                :page-size="10"
+                layout="prev, pager, next, jumper"
+                :total="totalItems"
+                v-show="pageShow"
+                >
+              </el-pagination>
             </el-tab-pane>
             <!-- <el-tab-pane label="换电记录" name="second" class="recodeTable">
               <table>
@@ -138,16 +183,60 @@ import {host} from '../../../config/index'
 export default {
   data: function () {
     return {
+      loading2: false,
+      currentPage3:1,
+      pageShow:false,
+      totalItems:1,
+      tableData:[],
       router: this.$route.query.carNum,
       activeName: 'first',
       incomeTableData: [],
       repairTableData: [],
       batteryTableData: [],
-      pageTotal: ''
+      pageTotal: '',
+      bikeInfo:{
+         code: '',
+         boxCode:'',
+         onlineTime:'',
+         endTime:'2020-2-2',
+         cityName: '',
+         generationsName:'',
+         model: '',
+         location:'',
+         alliance: ''
+      }
     }
   },
   mounted: function () {
-    this.getBikeEarnings(1)
+    this.loading2 = true
+    this.bikeInfo.code = this.$route.query.code
+    request.post(host + 'beepartner/admin/Bike/getBikeDetail')
+     .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+      .send({
+        code:this.bikeInfo.code,
+      })
+      .end((error,res)=>{
+        if(error){
+          console.log(error)
+           this.loading2 = false
+        }else {
+           this.loading2 = false
+          this.bikeInfo = Object.assign({},JSON.parse(res.text).bike,{onlineTime:moment(JSON.parse(res.text).bike.onlineTime).format('YYYY-MM-DD')})
+
+          this.tableData = JSON.parse(res.text).data
+          this.totalPage = JSON.parse(res.text).totalPage
+          this.totalItems = Number(JSON.parse(res.text).totalItems)
+            if(this.totalPage>1){
+              this.pageShow  = true
+            }else {
+              this.pageShow = false
+            }
+          }
+      })
+    // this.getBikeEarnings(1)
     // this.getReplaceBatteryRecord(1)
     // this.getRepareRecord(1)
   },
@@ -159,6 +248,12 @@ export default {
     })
   }, 
   methods: {
+    handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
     getBikeEarnings (page) {
       request
         .post(host + 'franchisee/bikeManager/bikeRevenueRecord?page=' + page)
@@ -326,6 +421,40 @@ export default {
         }
       }, 200)
     }
+  },
+  watch:{
+    currentPage3:{
+      handler: function(val,oldVal){
+      this.loading2 = true
+       request.post(host + 'beepartner/admin/Bike/getBikeDetail')
+        .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+      .send({
+        code:this.bikeInfo.code,
+        currentPage:val,
+      })
+        .end((error,res)=>{
+          if(error){
+            console.log(error)
+            this.loading2 = false
+          }else {
+            this.loading2 = false
+            this.bikeInfo = Object.assign({},JSON.parse(res.text).bike,{onlineTime:moment(JSON.parse(res.text).bike.onlineTime).format('YYYY-MM-DD')})
+            this.tableData = JSON.parse(res.text).data
+            this.totalPage = JSON.parse(res.text).totalPage
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
+              if(this.totalPage>1){
+                this.pageShow  = true
+              }else {
+                this.pageShow = false
+              }
+            }
+        })
+      },
+      deep: true
+    }
   }
 }
 </script>
@@ -337,18 +466,18 @@ div.carUseDetail {
     width: 1000px;
 }
 
-div.carUseDetail table {
+div.carUseDetail table.info {
   border-collapse: collapse;
   width: 100%;
   padding: 0 30px 0 30px;
 }
 
-div.carUseDetail table tr td {
+div.carUseDetail table.info tr td {
   /* border: 1px solid #f3f3f5; */
   padding: 5px 10px;
 }
 
-div.carUseDetail table tr td span.prex {
+div.carUseDetail table.info tr td span.prex {
   display: inline-block;
   width: 80px;
   text-align: right;
@@ -410,7 +539,7 @@ div.carUseDetail div.record {
   padding: 10px;
 }
 
-div.carUseDetail div.recodeTable table {
+/* div.carUseDetail div.recodeTable table {
   border-collapse: collapse;
   width: 100%;
 }
@@ -427,7 +556,7 @@ div.carUseDetail div.recodeTable table tbody tr td {
   border-bottom: 1px dotted #afa7a7;
   padding: 10px;
   color: #555;
-}
+} */
 
 div#carUseDetail_page {
   margin-top: 50px;
@@ -470,5 +599,5 @@ div#carUseDetail_page {
   margin-left: 5px;
   border: 1px solid #666;
 }
-
+div.el-pagination {margin-left:0;padding-left:0;margin-top:20px;margin-bottom:10px;}
 </style>

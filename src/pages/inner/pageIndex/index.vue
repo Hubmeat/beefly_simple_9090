@@ -63,198 +63,200 @@
   </div>
 </template>
 <style scoped>
-div.module {
-  padding: 20px 15px 20px 15px;
-  margin-right: 20px;
-  background: #fff;
-  margin-bottom: 20px;
-}
+  div.module {
+    padding: 20px 15px 20px 15px;
+    margin-right: 20px;
+    background: #fff;
+    margin-bottom: 20px;
+  }
 
-div.incomming {
-  background: #fff;
-  margin-right: 20px;
-}
+  div.incomming {
+    background: #fff;
+    margin-right: 20px;
+  }
 
-div.incomming div.incomeTitle {
-  margin-bottom: 20px
-}
+  div.incomming div.incomeTitle {
+    margin-bottom: 20px
+  }
 
-div.incomming span.title {
-  font-weight: bold
-}
+  div.incomming span.title {
+    font-weight: bold
+  }
 
-div.incomming span.title small {
-  font-weight: normal;
-  margin-left: 20px;
-  color: #9e9696;
-  font-size: 12px;
-}
+  div.incomming span.title small {
+    font-weight: normal;
+    margin-left: 20px;
+    color: #9e9696;
+    font-size: 12px;
+  }
 
-div.incomming span.detail_right {
-  float: right;
-  cursor: pointer;
-}
+  div.incomming span.detail_right {
+    float: right;
+    cursor: pointer;
+  }
 
-div.mounthIncoming {
-  background: #ff4949;
-  color: #fff;
-}
+  div.mounthIncoming {
+    background: #fff;
+    color: #fff;
+  }
 
-div.dayIncoming {
-  background: rgb(167, 234, 94);
-  color: #fff;
-}
+  div.dayIncoming {
+    background: rgb(167, 234, 94);
+    color: #fff;
+  }
 
-div.statuAndData {
-  padding: 20px 15px 20px 15px;
-  background: #fff;
-  margin-right: 20px;
-  border-bottom: none;
-  margin-bottom: 20px;
-}
+  div.statuAndData {
+    padding: 20px 15px 20px 15px;
+    background: #fff;
+    margin-right: 20px;
+    border-bottom: none;
+    margin-bottom: 20px;
+  }
 
-span.income_time {
-  font-weight: bold;
-}
+  span.income_time {
+    font-weight: bold;
+  }
 
-span.income_detail {
-  cursor: pointer;
-}
+  span.income_detail {
+    cursor: pointer;
+  }
 
-div.status {
-  background: #ffc0cb;
-  padding: 0;
-}
+  div.status {
+    background: #ffc0cb;
+    padding: 0;
+  }
 
-div.status_title,
-div.datas_title {
-  background: #fff;
-  line-height: 40px;
-  font-weight: normal;
-  color: #000
-}
+  div.status_title,
+  div.datas_title {
+    background: #fff;
+    line-height: 40px;
+    font-weight: normal;
+    color: #000
+  }
 
-div.status_title span,
-div.datas_title span {
-  margin-left: 10px;
-}
+  div.status_title span,
+  div.datas_title span {
+    margin-left: 10px;
+  }
 
-div.datas_title span.data_display {
-  font-weight: bold;
-  margin-left: 0;
-}
+  div.datas_title span.data_display {
+    font-weight: bold;
+    margin-left: 0;
+  }
 
-div.datas_title span.data_display small {
-  margin-left: 5px;
-  color: #9e9696;
-  font-weight: normal;
-}
+  div.datas_title span.data_display small {
+    margin-left: 5px;
+    color: #9e9696;
+    font-weight: normal;
+  }
 
-div.status_title span.arrow,
-div.datas_title span.arrow {
-  margin: 0 10px 0 0;
-  float: right;
-  cursor: pointer
-}
+  div.status_title span.arrow,
+  div.datas_title span.arrow {
+    margin: 0 10px 0 0;
+    float: right;
+    cursor: pointer
+  }
 
-div.status div.list ul li {
-  list-style-type: none;
-  background: #a7ea5e;
-  color: #fff;
-  line-height: 30px;
-  height: 30px;
-  padding: 5px 0;
-  border-bottom: 1px dashed #fff;
-}
+  div.status div.list ul li {
+    list-style-type: none;
+    background: #a7ea5e;
+    color: #fff;
+    line-height: 30px;
+    height: 30px;
+    padding: 5px 0;
+    border-bottom: 1px dashed #fff;
+  }
 
-div.status div.list ul li:nth-last-child(1) {
-  border-bottom: none
-}
+  div.status div.list ul li:nth-last-child(1) {
+    border-bottom: none
+  }
 
-div.status div.list ul li div.el-col-12 {
-  padding: 0 10px 0 0;
-  text-align: right;
-}
+  div.status div.list ul li div.el-col-12 {
+    padding: 0 10px 0 0;
+    text-align: right;
+  }
 
-div.status div.list ul li div.el-col-6:nth-child(1) {
-  padding-left: 10px;
-}
+  div.status div.list ul li div.el-col-6:nth-child(1) {
+    padding-left: 10px;
+  }
 
-div.datas {
-  padding: 0
-}
+  div.datas {
+    padding: 0
+  }
 
-div.Histogram {
-  width: 100%;
-  background: #ff4949;
-}
+  div.Histogram {
+    width: 100%;
+    background: #fff;
+  }
 
-div.settlementInfo {
-  background: #ff4949;
-  line-height: 40px;
-  height: 40px;
-  padding: 5px 10px;
-  color: #fff;
-}
+  div.settlementInfo {
+    background: #fff;
+    line-height: 40px;
+    height: 40px;
+    padding: 5px 10px;
+    color: #fff;
+  }
 
-div.settlementInfo button.withdrawal {
-  float: right;
-  margin-right: 20px;
-}
+  div.settlementInfo button.withdrawal {
+    float: right;
+    margin-right: 20px;
+  }
 
-div.mapWrap {
-  width: 100%;
-  height: 500px;
-}
+  div.mapWrap {
+    width: 100%;
+    height: 500px;
+  }
 
-div.mapHeader_content {
-  padding: 20px 20px 0 20px;
-  background: #fff;
-  margin-right: 20px;
-}
+  div.mapHeader_content {
+    padding: 20px 20px 0 20px;
+    background: #fff;
+    margin-right: 20px;
+  }
 
-div.mapTitle {
+  div.mapTitle {
+    background: #fff;
+    color: #444;
+  }
 
-  background: #fff;
-  color: #444;
-}
+  div.mapTitle span.motionMap {
+    font-weight: bold;
+  }
 
-div.mapTitle span.motionMap {
-  font-weight: bold
-}
+  div.mapTitle span.motionMap small {
+    font-weight: normal;
+  }
 
-div.mapTitle span.motionMap small {
-  font-weight: normal;
-}
+  div.selectPlace {
+    margin-bottom: 10px;
+    padding-left: 10px;
+  }
 
-div.selectPlace {
-  margin-bottom: 10px;
-  padding-left: 10px;
-}
+  div.selectPlace address {
+    font-style: normal;
+    display: inline;
+    font-size: 14px;
+    margin-right: 8px;
+  }
 
-div.selectPlace address {
-  font-style: normal;
-  display: inline;
-  font-size: 14px;
-  margin-right: 8px;
-}
+  div.selectPlace div.citys {
+    display: inline-block;
+    width: 1000px;
+    vertical-align: top;
+    margin-top: -7px;
+  }
 
-div.selectPlace div.citys {
-  display: inline-block;
-}
+  div.selectPlace span {
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+    padding: 5px;
+    border: 1px solid transparent;
+  }
 
-div.selectPlace span {
-  cursor: pointer;
-  font-size: 14px;
-  display: inline-block;
-  padding: 5px;
-  border: 1px solid transparent;
-}
-
-div.selectPlace span.active {
-  border: 1px solid orange;
-  border-radius: 4px;
-}
+  div.selectPlace span.active {
+    border: 1px solid orange;
+    border-radius: 4px;
+  }
 </style>
 <script>
 import { host } from '../../../config/index.js'
@@ -340,7 +342,7 @@ export default {
             this.cityList = JSON.parse(res.text).data
           }
         })
-    },
+    }
   }
 }
 </script>

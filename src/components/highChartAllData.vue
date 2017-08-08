@@ -24,7 +24,7 @@
         },
         chart: {
           type: 'column', // 指定图表的类型，默认是折线图（line
-          backgroundColor: '#f7f7f7'
+          backgroundColor: '#fff'
         },
         title: {
           text: ' '                 // 指定图表标题

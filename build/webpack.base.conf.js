@@ -9,7 +9,8 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    app: './src/main.js'
+      'babel-polyfill': 'babel-polyfill',
+      app: './src/main.js'
   },
   externals : {
     "BMap": "BMap",

@@ -21,8 +21,8 @@
                   获取验证码
                 </el-button>
 							</el-form-item>
-							<el-form-item label="验证码" prop="verificationCode" style="width: 500px;">
-								<el-input v-model="ruleForm.verificationCode" placeholder='请输入手机收到的验证码'></el-input>
+							<el-form-item label="验证码" prop="verCode" style="width: 500px;">
+								<el-input v-model="ruleForm.verCode" placeholder='请输入手机收到的验证码'></el-input>
 							</el-form-item>
 							<el-form-item label="账户密码" prop="account_password" style="width: 500px;">
 								<el-input type='password' v-model="ruleForm.account_password" placeholder='为保障账号安全，您需要填写当前登录账号和密码'></el-input>
@@ -214,15 +214,19 @@ export default {
             })
           },1000)
          
-          request.post(host + 'franchisee/userCenter/getVerCode')
+          request.post(host + 'beepartner/admin/Own/getPhoneCode')
+            .withCredentials()
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
             .send({
-              mobileNo: this.ruleForm.tel
+              phoneNo: this.ruleForm.tel
             })
             .end(function(err,res){
               if(err) {
                 console.log(err)
               } else {
-                that.ruleForm.verCode = JSON.parse(res.text)
+                that.ruleForm.verificationCode = JSON.parse(res.text).data
               }
           })
       }
@@ -231,18 +235,16 @@ export default {
       var that = this
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          this.$confirm('确认绑定吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '信息有误',
-            type: 'warning'
-          })
-        .then(() => {
           that.loading = true
-          request.post(host + 'franchisee/userCenter/bindingPhone')
+          request.post(host + 'beepartner/admin/Own/updateAdminUser')
+              .withCredentials()
+              .set({
+                'content-type': 'application/x-www-form-urlencoded'
+              })
               .send({
-                phoneNo: that.ruleForm.tel,
-                verCode: that.ruleForm.verCode,
-                pwd: that.ruleForm.account_password
+                'phoneNo': that.ruleForm.tel,
+                'phoneCode': that.ruleForm.verCode,
+                'passWord': that.ruleForm.account_password
               })
               .end((err, res) => {
                 if (err) {
@@ -254,8 +256,8 @@ export default {
                     type: 'error'
                   })
                 } else {
-                  var status = JSON.parse(res.text).code
-                  if (status === 0) {
+                  var status = JSON.parse(res.text).resultCode
+                  if (status === 1) {
                     that.loading = false
                     that.$router.push('/index/memberCenter')
                     that.$message({
@@ -271,12 +273,6 @@ export default {
                   }
                 }
               })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消绑定操作'
-          })
-        })
         } else {
           console.log('error submit!!')
           return false
