@@ -107,23 +107,23 @@ export default [
         name: '24小时数据走势',
         component: allDaysData
       },
-      {
-        path: '/index/hotMap',
-        name: '热力图',
-        component: hotMap
-      },
-      {
-        path: '/index/abnormalData',
-        name: '异常数据',
-        component: abnormalData
-      },
+      // {
+      //   path: '/index/hotMap',
+      //   name: '热力图',
+      //   component: hotMap
+      // },
+      // {
+      //   path: '/index/abnormalData',
+      //   name: '异常数据',
+      //   component: abnormalData
+      // },
       {
         path: '/index/partnerManager',
-        name: '加盟商管理',
+        name: '合伙人管理',
         component: partnerManager,
         children: [{
           path: '/index/partnerManager/addpartner',
-          name: '添加加盟商',
+          name: '添加合伙人',
           component: addpartner
         }]
       },
@@ -221,23 +221,23 @@ export default [
         name: '信息中心',
         component: messageCenter
       },
-      {
-        path: '/index/logManager',
-        name: '',
-        component: logManager,
-        children: [
-          {
-            path: '',
-            name: '登录日志',
-            component: loginlog
-          },
-          {
-            path: '/index/logManager/operationLog',
-            name: '操作日志',
-            component: operationLog
-          }
-        ]
-      }
+      // {
+      //   path: '/index/logManager',
+      //   name: '',
+      //   component: logManager,
+      //   children: [
+      //     {
+      //       path: '',
+      //       name: '登录日志',
+      //       component: loginlog
+      //     },
+      //     {
+      //       path: '/index/logManager/operationLog',
+      //       name: '操作日志',
+      //       component: operationLog
+      //     }
+      //   ]
+      // }
     ]
   },
   {

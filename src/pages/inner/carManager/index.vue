@@ -319,6 +319,13 @@ export default {
               console.log('error:', error)
             } else {
               console.log(res)
+
+              // if (JSON.parse(res.text).message === '用户登录超时') {
+              //   this.$store.dispatch('loginSian_action')
+              // } else {
+              //   return
+              // }
+              
               this.loading2 = false
               var data = JSON.parse(res.text).data
               var newData = this.tableDataDel(data)
@@ -484,7 +491,7 @@ export default {
     },
     getCityList () {
       request
-        .post(host + 'beepartner/city/findCity')
+        .post(host + 'beepartner/admin/city/findCity')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -495,6 +502,11 @@ export default {
             console.log('error:', error)
           } else {
             this.cityList = JSON.parse(res.text).data
+            if (JSON.parse(res.text).message === '用户登录超时') {
+              this.$store.dispatch('loginSian_action')
+            } else {
+              return
+            }
           }
         })
     },

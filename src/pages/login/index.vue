@@ -255,9 +255,6 @@ export default {
                                     message: '登录成功！',
                                     type: 'success'
                                 })
-                                // var data = JSON.parse(JSON.parse(res.text).data)
-                                // localStorage.setItem('userinfo',JSON.parse(res.text).data)
-                                // this.$store.commit('getUserInfo',data)
                                 this.$router.push('/index')
                             } else {
                                 this.$message.error(JSON.parse(res.text).message);

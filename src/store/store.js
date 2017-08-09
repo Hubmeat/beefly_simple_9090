@@ -12,7 +12,8 @@ const state = {
     partnerList: [],
     platTableData: [],
     joinTableData: [],
-    keepParnterAccount:[]
+    keepParnterAccount:[],
+    loginSign: false
 }
 
 const mutations = {
@@ -63,6 +64,10 @@ const mutations = {
     },
     keepParnterAccount(state,obj){
         state.keepParnterAccount.unshift(obj)
+    },
+    loginSign (state) {
+        console.log('loginsian change')
+        state.loginSign = !state.loginSign
     }
 }
 
@@ -81,9 +86,11 @@ const actions = {
     alldata_action: ({ commit }, obj) => commit('setAllData', { obj }),
     // <===== end 
     // 合伙人管理模块 start ====>
-    partner_action: ({ commit }, arr) => commit('setPartnerList', { arr })
+    partner_action: ({ commit }, arr) => commit('setPartnerList', { arr }),
     // <=====
-
+    // 登录超时的sign ====>
+    loginSian_action: ({ commit }) => commit('loginSign')
+    // <=====
 }
 
 const getters = {

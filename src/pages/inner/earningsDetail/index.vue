@@ -353,10 +353,51 @@ export default {
     this.getDate()
   },
   methods: {
-    getDate () {    
+    getDate () {
+      if (this.$route.query.type === '0') {
+        this.isDay = true
+        this.isWeek = false
+        this.isMonth = false
+        this.AllTime = false
+        this.spceTime = false
+        this.show = false
+        this.show2 = false
+      } else if (this.$route.query.type === '1'){
+        this.show = false
+        this.show2 = false
+        this.isWeek = true
+        this.isDay = false
+        this.isMonth = false
+        this.AllTime = false
+        this.spceTime = false
+      } else if (this.$route.query.type === '2'){
+        this.show = false
+        this.show2 = false
+        this.isMonth = true
+        this.isWeek = false
+        this.isDay = false
+        this.AllTime = false
+        this.spceTime = false
+      } else if (this.$route.query.type === '3'){
+        this.show = false
+        this.show2 = false
+        this.isMonth = false
+        this.isWeek = false
+        this.isDay = false
+        this.AllTime = true
+        this.spceTime = false
+      } else {
+        this.isMonth = false
+        this.isWeek = false
+        this.isDay = false
+        this.AllTime = false
+        this.spceTime = true
+        this.show = true
+        this.show2 = true
+      }
       this.loading2 = true
       request
-        .post(host + 'beepartner/admin1/order/findOrder4Admin')
+        .post(host + 'beepartner/admin/order/findOrder4Admin')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -400,7 +441,7 @@ export default {
       }
       this.loading2 = true
       request
-        .post(host + 'beepartner/admin1/order/findOrder4Admin')
+        .post(host + 'beepartner/admin/order/findOrder4Admin')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
@@ -475,7 +516,7 @@ export default {
               endTime = moment(that.timeLine[1]).format('YYYY-MM-DD HH:mm:ss')       
             }
             request
-              .post(host + 'beepartner/admin1/order/exportOrders')
+              .post(host + 'beepartner/admin/order/exportOrders')
               .withCredentials()
               .set({
                 'content-type': 'application/x-www-form-urlencoded'
@@ -563,7 +604,7 @@ export default {
         console.log(startTime, endTime)
         this.loading2 = true
         request
-          .post(host + 'beepartner/admin1/order/findOrder4Admin')
+          .post(host + 'beepartner/admin/order/findOrder4Admin')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
@@ -604,15 +645,12 @@ export default {
     },
     getCityList () {
       request
-        .post(host + 'beepartner/city/findCity')
+        .post(host + 'beepartner/admin/city/findCity')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'
         })
-        .send({
-          'franchiseeId': '123456',
-          'userId': 'admin'
-        })
+        .send()
         .end((error, res) => {
           if (error) {
             console.log('error:', error)

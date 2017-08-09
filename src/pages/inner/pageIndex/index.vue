@@ -329,7 +329,7 @@ export default {
     },
     getCityList() {
       request
-        .post(host + 'beepartner/city/findCity')
+        .post(host + 'beepartner/admin/city/findCity')
         .withCredentials()
         .set({
           'content-type': 'application/x-www-form-urlencoded'

@@ -8,6 +8,8 @@ import router from './router/index.js'
 import store from './store/store'
 import Vuex from 'vuex'
 import axios from 'axios'
+import { host } from './config/index.js'
+import request from 'superagent'
 
 
 Vue.prototype.$axios = axios
@@ -28,6 +30,8 @@ Vue.directive('title', {
     }
 })
 
+
+
 /* eslint-disable no-new */
 new Vue({
     store,
@@ -35,19 +39,53 @@ new Vue({
     router,
     render: h => h(App),
     methods: {
-        checkLogin() {
-            // if(3>2) {
-            //   this.$router.push('/index')
-            // }else{
-            //  this.$router.push('/')
-            // }
-            console.log('checkLogin')
-        }
+        loginSignChange() {
+            console.log(this.$store.state.loginSign)
+            if (this.$store.state.loginSign === false) {
+                this.$router.push('/')
+            } else {
+                console.log('当前还在登录状态')
+                return
+            }
+        },
+        getCityList() {
+            request
+                .post(host + 'beepartner/admin/city/findCity')
+                .withCredentials()
+                .set({
+                'content-type': 'application/x-www-form-urlencoded'
+                })
+                .send()
+                .end((error, res) => {
+                if (error) {
+                    console.log('error:', error)
+                } else {
+                    if (JSON.parse(res.text).message === '用户登录超时') {
+                        this.$router.push('/login')
+                    } else {
+                        return
+                    }
+                }
+                })
+        },
+        // routerWay ()  {
+        //     router.beforeEach((to, from, next) => {
+        //     if (to.path == '/login') {
+        //         sessionStorage.removeItem('user');
+        //     }
+        //     let user = JSON.parse(sessionStorage.getItem('user'));
+        //     if (!user && to.path != '/login') {
+        //         next({ path: '/login' })
+        //     } else {
+        //         next()
+        //     }
+        //     })
+        // }
     },
-    created() {
-        this.checkLogin()
+    beforeUpdate () {
+        this.getCityList()
     },
-    // watch: {
-    //   '$route': 'checkLogin'
-    // }
+    watch: {
+        '$route': 'getCityList'
+    }
 })

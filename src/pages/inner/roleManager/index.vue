@@ -344,6 +344,10 @@ export default {
         var that = this
         request
           .post(host + 'beepartner/admin/Role/findAdminRole')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
           .end((err, res) => {
             if (err) {
               console.log(err)
@@ -579,6 +583,10 @@ export default {
       that.pageShow = false
       request
         .post(host + 'beepartner/admin/Role/findAdminRole')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
         .end((err, res) => {
           if (err) {
             console.log(err)

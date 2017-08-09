@@ -521,9 +521,9 @@ export default {
         if (name.length > 0 || phone.length > 0) {
           request.post(host + 'franchisee/account/getAllAccount')
             .withCredentials()
-            // .set({
-            //   'content-type': 'application/x-www-form-urlencoded'
-            // })
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
             .send({
               name: this.name.trim(),
               phone: this.phone.trim(),
@@ -877,7 +877,11 @@ export default {
       return res
     },
     loadCity () {
-      request.post(host + 'beepartner/city/findCity')
+    request.post(host + 'beepartner/admin/city/findCity')
+      .withCredentials()
+      .set({
+        'content-type': 'application/x-www-form-urlencoded'
+      })
       .end((error,res)=>{
         if(error){
           console.log(error)
@@ -1054,8 +1058,8 @@ export default {
               }
             })
           } else {
-            request.post(host + 'beepartner/admin/User/findAdminUser').
-              send({
+            request.post(host + 'beepartner/admin/User/findAdminUser')
+              .send({
                 name: this.name.trim(),
                 phone: this.phone.trim(),
                 currentPage: val

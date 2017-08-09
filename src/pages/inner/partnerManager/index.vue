@@ -89,7 +89,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="操作"
+          label=""
           prop="del">
           <template scope="scope">
             <a style="color:#444; margin-right:10px; cursor: pointer;" @click="goDetail(scope)" title="查看">
