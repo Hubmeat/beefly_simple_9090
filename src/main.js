@@ -42,7 +42,7 @@ new Vue({
         loginSignChange() {
             console.log(this.$store.state.loginSign)
             if (this.$store.state.loginSign === false) {
-                this.$router.push('/')
+                this.$router.push('/login')
             } else {
                 console.log('当前还在登录状态')
                 return

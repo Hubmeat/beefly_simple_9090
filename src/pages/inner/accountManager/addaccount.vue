@@ -229,6 +229,7 @@ export default {
               console.log(error)
               this.options4 = []
             } else {
+              this.checkLogin(res)
               console.log(JSON.parse(res.text))
               var roles = JSON.parse(res.text).data.map((item) => {
                 var obj = {}
@@ -273,6 +274,7 @@ export default {
                 if (err) {
                   console.log(err)
                 } else {
+                  this.checkLogin(res)
                   var code = JSON.parse(res.text).code
                   if (code === 1) {
                     this.$router.push('/index/accountManager')
@@ -306,6 +308,11 @@ export default {
           return false
         }
       })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   },
   mounted: function () {

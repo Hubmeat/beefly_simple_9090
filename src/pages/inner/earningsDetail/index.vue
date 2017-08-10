@@ -101,7 +101,7 @@
 	</div>
 </template>
 
-<style scoped>
+<style scope>
   #earD_header address {
     font-style: normal;
     display: inline;
@@ -148,10 +148,6 @@
       line-height: 52px;
       background: #fff;
       border: 1px solid #e7ecf1;
-    }
-
-    .el-table td:nth-of-type(1) .cell {
-      color: #f60;
     }
 
     #earD_header div.time_earning {
@@ -237,10 +233,6 @@
       border: 1px solid #e7ecf1;
       border-bottom: none;
       border-top: none;
-    }
-
-    #earD_body tr.el-table__row div.cell {
-      color: #f60;
     }
 
     #earD_page {
@@ -410,6 +402,7 @@ export default {
           if (err) {
             console.log('err:' + err)
           } else {
+            this.checkLogin(res)
             console.log(JSON.parse(res.text).data)
             // 表单Loading
             this.loading2 = false
@@ -458,6 +451,7 @@ export default {
             this.loading2 = false
             console.log('error:', error)
           } else {
+            this.checkLogin(res)
             this.loading2 = false
             var totalPage = Number(JSON.parse(res.text).totalPage)
             var newArr = JSON.parse(res.text).data
@@ -531,7 +525,7 @@ export default {
                 if (err) {
                   console.log('err:' + err)
                 } else {
-                  console.log(JSON.parse(res.text))
+                  this.checkLogin(res)
                   // 数据处理
                   var list = JSON.parse(res.text).data
                   var newList = that.tableDataDel(list)
@@ -619,6 +613,7 @@ export default {
             if (error) {
               console.log('error:', error)
             } else {
+              this.checkLogin(res)
               this.loading2 = false
               var totalPage = Number(JSON.parse(res.text).totalPage)
               var newArr = JSON.parse(res.text).data
@@ -658,6 +653,11 @@ export default {
             this.cityList = JSON.parse(res.text).data
           }
         })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   }
 }

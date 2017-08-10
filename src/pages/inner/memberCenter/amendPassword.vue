@@ -192,6 +192,7 @@ export default {
                   that.$message.error('sorry,服务器请求超时，请稍候再试！')
                   that.$router.push('./')
                 } else {
+                  this.checkLogin(res)
                   var status = Number(JSON.parse(res.text).resultCode)
                   var cbText = JSON.parse(res.text).data
                   if (status === 1) {
@@ -219,6 +220,11 @@ export default {
           return false
         }
       })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   }
 }

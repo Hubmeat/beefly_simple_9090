@@ -180,10 +180,6 @@
               :total="totalItems">
             </el-pagination>
         </div>
-          
-            <!-- <div id="carManager_page">
-              <div class="M-box"></div>
-            </div> -->
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -261,6 +257,7 @@ export default {
             this.loading2 = false
             console.log('error:', error)
           } else {
+            this.checkLogin(res)
             this.loading2 = false
             var data = JSON.parse(res.text).data
             var newData = this.tableDataDel(data)
@@ -318,14 +315,7 @@ export default {
               this.loading2 = false
               console.log('error:', error)
             } else {
-              console.log(res)
-
-              // if (JSON.parse(res.text).message === '用户登录超时') {
-              //   this.$store.dispatch('loginSian_action')
-              // } else {
-              //   return
-              // }
-              
+              this.checkLogin(res)            
               this.loading2 = false
               var data = JSON.parse(res.text).data
               var newData = this.tableDataDel(data)
@@ -379,6 +369,7 @@ export default {
             this.loading2 = false
             console.log('error:', error)
           } else {
+            this.checkLogin(res)
             this.loading2 = false
             var data = (JSON.parse(res.text)).data
             var newData = this.tableDataDel(data)
@@ -419,6 +410,7 @@ export default {
             this.loading2 = false
             console.log('error:', error)
           } else {
+            this.checkLogin(res)
             this.loading2 = false
             var totalPage = Number(JSON.parse(res.text).totalPage)
             var data = (JSON.parse(res.text)).data
@@ -458,7 +450,7 @@ export default {
             console.log('error:', error)
           } else {
             this.loading2 = false
-            console.log((JSON.parse(res.text)))
+            this.checkLogin(res)
             var data = (JSON.parse(res.text)).data
             var totalPage = Number(JSON.parse(res.text).totalPage)
             this.totalItems = Number(JSON.parse(res.text).totalItems)
@@ -502,11 +494,7 @@ export default {
             console.log('error:', error)
           } else {
             this.cityList = JSON.parse(res.text).data
-            if (JSON.parse(res.text).message === '用户登录超时') {
-              this.$store.dispatch('loginSian_action')
-            } else {
-              return
-            }
+            this.checkLogin(res)
           }
         })
     },
@@ -562,6 +550,11 @@ export default {
               })
       } else {
         return
+      }
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
       }
     }
   },

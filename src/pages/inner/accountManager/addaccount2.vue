@@ -160,7 +160,7 @@ export default {
             if (value === '') {
                 callback(new Error('请输入用户名'))
             } else if (!checkUserName(value)) {
-                callback('用户名格式：必须英文字母开头 不可以为汉字')
+                callback('用户名格式：必须英文字母开头')
             } else {
                 callback()
             }
@@ -228,6 +228,7 @@ export default {
                     console.log(error)
                     this.cityList = []
                     }else {
+                    this.checkLogin(res)
                     var result = JSON.parse(res.text).data
                     var map = result.map((item)=>{
                         var obj = {}
@@ -254,6 +255,7 @@ export default {
                             console.log(error)
                             this.options4 = []
                         } else {
+                            this.checkLogin(res)
                             console.log(res)
                             var roles = JSON.parse(res.text).data.map((item) => {
                                 var obj = {}
@@ -298,6 +300,7 @@ export default {
                                 if (err) {
                                     console.log(err)
                                 } else {
+                                    this.checkLogin(res)
                                     var code = JSON.parse(res.text).code
                                     if (code === -1) {
                                         this.$router.push('/index/accountManager')
@@ -332,6 +335,11 @@ export default {
                     return false
                 }
             })
+        },
+        checkLogin (res) {
+            if (JSON.parse(res.text).message === '用户登录超时') {
+                this.$router.push('/login')
+            }
         }
     },
     mounted: function () {

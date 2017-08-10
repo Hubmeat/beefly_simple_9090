@@ -256,6 +256,7 @@ export default {
                     type: 'error'
                   })
                 } else {
+                  this.checkLogin(res)
                   var status = JSON.parse(res.text).resultCode
                   if (status === 1) {
                     that.loading = false
@@ -278,6 +279,11 @@ export default {
           return false
         }
       })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   }
 }

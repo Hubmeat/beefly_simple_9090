@@ -3,11 +3,11 @@
     <div id="partner_header">
       <label>
         <span>关键字</span>
-          <input type="text" placeholder="姓名\证件号码" v-model="name" class="partner_my_input1">
+          <input type="text" v-on:input='inputChange' ref="val1" placeholder="姓名\证件号码" v-model="name" class="partner_my_input1">
       </label>
       <label>
         <span>联系方式</span>
-          <input type="text" placeholder="手机号\邮箱" v-model="phone" class="partner_my_input2">
+          <input type="text" v-on:input='inputChange' ref="val2"  placeholder="手机号\邮箱" v-model="phone" class="partner_my_input2">
       </label>
     </div>
 
@@ -47,7 +47,7 @@
         :empty-text="emptyText"
         >
         <el-table-column
-          prop="franchiseeId"
+          prop="cityPartnerId"
           label="合伙人编号"
           min-width="70">
         </el-table-column>
@@ -77,19 +77,11 @@
           <template scope="scope">
               <span>{{scope.row.subscriptionNum}}</span>
              <!-- @click='handleRowHandle(scope.row.subscription_id)'  -->
-            <span><a  class="alliance_table_allocation">分配车辆</a></span>
+            <span><a @click="$router.push('/index/vehicleDistribution/' + scope.row.id + '&' + scope.row.cityPartnerId)" class="alliance_table_allocation">分配车辆</a></span>
           </template>
-        </el-table-column>
+        </el-table-column>    
         <el-table-column
           label="操作"
-          min-width="75">
-          <template scope="scope">
-             <!-- @click='handleRowHandle(scope.row.subscription_id)'  -->
-            <span><a  class="alliance_table_allocation">分配车辆</a></span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label=""
           prop="del">
           <template scope="scope">
             <a style="color:#444; margin-right:10px; cursor: pointer;" @click="goDetail(scope)" title="查看">
@@ -98,7 +90,7 @@
             <a href="javascript:;" @click="openEdit(scope.row, scope.$index)" style="color:#444; margin-right:10px;" title="编辑">
               <i class="el-icon-edit"></i>
             </a>
-            <a href="javascript:;" @click='delPartner(scope.row.id,scope.row.franchiseeId, scope.$index)' style="color:#444; margin-right:10px;" title="删除">
+            <a href="javascript:;" @click='delPartner(scope.row.id,scope.row.cityPartnerId, scope.$index)' style="color:#444; margin-right:10px;" title="删除">
               <i class="el-icon-close"></i>
             </a>
             <!--dialog 弹窗开始-->
@@ -140,7 +132,7 @@
                         :value="(item.name)">
                       </el-option>
                     </el-select>
-                    <el-select @change="handleEditCity"
+                    <el-select style='display: block;' @change="handleEditCity"
                       v-model="editAccount.cityName"
                       placeholder="请选择城市"
                       :loading="proloading">
@@ -212,27 +204,32 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage3"
+        :page-size="10"
+        layout="prev, pager, next, jumper"
+        :total="totalItems"
+        v-show="pageShow"
+        >
+      </el-pagination>
     </div>
-  
-    <!-- <div id="partner_page">
-      <div class="M-box"></div>
-    </div> -->
-     <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page.sync="currentPage3"
-      :page-size="10"
-      layout="prev, pager, next, jumper"
-      :total="totalItems"
-      v-show="pageShow"
-      >
-    </el-pagination>
+
   
     <router-view id="partnerManager_router"></router-view>
   </div>
 </template>
 
 <style>
+.alliance_table_allocation {
+  color: #f60;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 6px;
+}
+
 #partnerManager_router {
   width: 100%;
   height: 100%;
@@ -365,11 +362,22 @@
 /*  #partner_table  */
 
 #partner_table {
-  padding: 0 30px 10px 30px;
+  padding: 0 30px 100px 30px;
   background: #fff;
   border: 1px solid #e7ecf1;
-  border-bottom: none;
+  /* border-bottom: none; */
   margin-top: 20px;
+}
+
+#partner_table .el-pagination{
+  white-space: nowrap;
+  padding: 2px 5px;
+  color: #48576a;
+  margin-top: 30px;
+  margin-left: -5px;
+  border: none;
+  background: #fff;
+  /* border-left: 1px solid #f3f3f5; */
 }
 
 #partner_add {
@@ -467,24 +475,6 @@
   border: 1px solid #bbb;
 }
 
-.my_btn {
-    width: 80px;
-    float: right;
-    height: 36px;
-    line-height: 11px;
-    color: #fff;
-    /*margin-top: 10px;*/
-    outline: none;
-    border: none;
-    border-radius: 4px; 
-    cursor: pointer;
-    background: rgba(52,52,67, 0.8);
-}
-
-.my_btn:hover {
-    background: rgba(52,52,67, 0.9);
-    color: #fff !important;
-}
 /**华丽的分割线**/
 .demo-ruleForm{position:relative}
 .avatar-uploader{
@@ -519,6 +509,25 @@ border-radius: 6px;
     margin-bottom: 20px;
 }
 div#editpartner_form{position:relative}
+
+.my_btn {
+    width: 80px;
+    float: right;
+    height: 36px;
+    line-height: 11px;
+    color: #fff;
+    /*margin-top: 10px;*/
+    outline: none;
+    border: none;
+    border-radius: 4px; 
+    cursor: pointer;
+    background: rgba(52,52,67, 0.8);
+}
+
+.my_btn:hover {
+    background: rgba(52,52,67, 0.9);
+    color: #fff !important;
+}
 
 </style>
 
@@ -606,55 +615,48 @@ export default {
     }
   },
   mounted() {
-    this.loading = true
-    var that = this
-    request
-      .post(host + 'franchisee/franchiseeManager/queryFranchisee')
-      .withCredentials()
-      .set({
-        'content-type': 'application/x-www-form-urlencoded'
-      })
-      .send({
-        'franchiseeId': '123456',
-        'userId': 'admin'
-      })
-      .end((err, res) => {
-        if (err) {
-          this.loading = false
-          this.emptyText = '暂无数据'
-          console.log('err:' + err)
-        } else {
-          // console.log(JSON.parse(res.text))
-          this.loading = false
-          var newArr = JSON.parse(res.text).list
-          var result = newArr.map((item)=>{
-            return Object.assign({},item,{joinTime:moment(item.joinTime).format('YYYY/MM/DD')})
-          })
-         // this.$store.dispatch('partner_action', { newArr })
-          var pageNumber = JSON.parse(res.text).totalPage
-          this.totalItems = JSON.parse(res.text).totalItems
-          that.$store.state.keepParnterAccount = []
-          result.map((item)=>{
-            that.$store.commit('keepParnterAccount',item)
-          })
-          this.tableData = that.$store.state.keepParnterAccount
-          if(pageNumber>1){
-            this.pageShow = true
-          }else{
-            this.pageShow = false
-          }
-
-        }
-      })
-  },
-  beforeUpdate() {
-    var that = this
-    // $('.M-box').click('a', function (e) {
-    //   // console.log(e)
-    //   that.pageUpdate(e)
-    // })
+    this.loadData()
   },
   methods: {
+      loadData () {
+        this.loading = true
+        var that = this
+        request
+          .post(host + 'beepartner/admin/cityPartner/findCityPartner')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send()
+          .end((err, res) => {
+            if (err) {
+              this.loading = false
+              this.emptyText = '暂无数据'
+              console.log('err:' + err)
+            } else {
+              this.checkLogin(res)
+              console.log(JSON.parse(res.text).data)
+              this.loading = false
+              var newArr = JSON.parse(res.text).data
+              var result = newArr.map((item)=>{
+                return Object.assign({},item,{joinTime:item.joinTime === null?'':moment(item.joinTime).format('YYYY-MM-DD')})
+              })
+              var pageNumber = Number(JSON.parse(res.text).totalPage)
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+              that.$store.state.keepParnterAccount = []
+              result.map((item)=>{
+                that.$store.commit('keepParnterAccount',item)
+              })
+              this.tableData = that.$store.state.keepParnterAccount
+              if(pageNumber>1){
+                that.pageShow = true
+              }else{
+                that.pageShow = false
+              }
+
+            }
+          })
+      },
      handleEditProvince(val){
       console.log(val)
        if(this.provinceList.length>0){
@@ -679,7 +681,7 @@ export default {
         this.filterAreaMethod()
       }
     },
-     handleEditArea(val){
+    handleEditArea(val){
         console.log(val)
        if(this.areaList.length>0){
         this.areaList.map((item)=>{
@@ -692,12 +694,17 @@ export default {
       }
     },
     filterProvinceMethod() {
-      request.post(host + 'franchisee/franchiseeManager/getProvince').
-        end((error,res)=>{
+      request.post(host + 'beepartner/admin/cityPartner/getProvince')
+      .withCredentials()
+      .set({
+          'content-type': 'application/x-www-form-urlencoded'
+      })
+      .end((error,res)=>{
           if(error){
             console.log(error)
           }else{
-            var result = JSON.parse(res.text)
+            this.checkLogin(res)
+            var result = JSON.parse(res.text).data
             var provinceList = result.map((item)=>{
               var obj = {}
               obj.id = item.id
@@ -707,19 +714,11 @@ export default {
             this.provinceList = provinceList
           }
         })
-      // if(this.provinceList.length>0){
-      //   this.provinceList.map((item)=>{
-      //     if(value === item.name){
-      //       this.provinceId = item.id
-      //     }
-      //   })
-      //   this.filterCityMethod()
-      // }
     },
     filterCityMethod() {
       if(this.editAccount.provinceId){
         request
-          .post(host + 'franchisee/franchiseeManager/getCity')
+          .post(host + 'beepartner/admin/cityPartner/getChildrenArea')
           .withCredentials()
           .set({
               'content-type': 'application/x-www-form-urlencoded'
@@ -731,7 +730,8 @@ export default {
             if(error){
               console.log(error)
             }else{
-              var result = JSON.parse(res.text)
+              this.checkLogin(res)
+              var result = JSON.parse(res.text).data
               var cityList = result.map((item)=>{
                 var obj = {}
                 obj.id = item.id
@@ -741,19 +741,12 @@ export default {
               this.cityList = cityList
             }
           })
-        // if(this.cityList.length>0){
-        //   this.cityList.map((item)=>{
-        //     if(value === item.name){
-        //       this.cityId = item.id
-        //     }
-        //   })
-        // }
       }
     },
     filterAreaMethod() {
       if(this.editAccount.provinceId){
         request
-          .post(host + 'franchisee/franchiseeManager/getArea')
+          .post(host + 'beepartner/admin/cityPartner/getChildrenArea')
           .withCredentials()
           .set({
               'content-type': 'application/x-www-form-urlencoded'
@@ -765,7 +758,8 @@ export default {
             if(error){
               console.log(error)
             }else{
-              var result = JSON.parse(res.text)
+              this.checkLogin(res)
+              var result = JSON.parse(res.text).data
               if(result.length===0){
                 this.areaShow = false
               }else{
@@ -780,13 +774,6 @@ export default {
               this.areaList = areaList
             }
           })
-        // if(this.cityList.length>0){
-        //   this.cityList.map((item)=>{
-        //     if(value === item.name){
-        //       this.cityId = item.id
-        //     }
-        //   })
-        // }
       }
     },
     beforeAvatarUpload (file) {
@@ -811,39 +798,38 @@ export default {
       var endTime = this.endTime
       if(name.length===0&&phone.length===0&&startTime.toString().length===0&&endTime.toString().length===0){
         this.$message({
-          type: 'error',
+          type: 'warning',
           message: '查询条件不能为空！'
         })
       }else{
         request
-          .post(host + 'franchisee/franchiseeManager/queryFranchisee')
+          .post(host + 'beepartner/admin/cityPartner/findCityPartner')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
           .send({
-            'franchiseeId': '123456',
-            'userId': 'admin',
-            name: this.name.trim(),
-            phone: this.phone.trim(),
-            startTime: moment(this.startTime.toString()).format('YYYY-MM-DD'),
-            endTime: moment(this.endTime.toString()).format('YYYY-MM-DD')
+            'name': this.name.trim(),
+            'phone': this.phone.trim(),
+            'startTime': this.startTime === ''?'':moment(this.startTime).format('YYYY-MM-DD'),
+            'endTime': this.endTime === ''?'':moment(this.endTime).format('YYYY-MM-DD')
           })
           .end((err, res) => {
             if (err) {
               this.loading = false
               console.log('err:' + err)
             } else {
-              // console.log(JSON.parse(res.text))
+              this.checkLogin(res)
               this.loading = false
-              var newArr = JSON.parse(res.text).list
+              var newArr = JSON.parse(res.text).data || []
               var result = newArr.map((item)=>{
-                return Object.assign({},item,{joinTime:moment(item.joinTime).format('YYYY/MM/DD')})
+                return Object.assign({},item,{joinTime:moment(item.joinTime).format('YYYY-MM-DD')})
               })
-            // this.$store.dispatch('partner_action', { newArr })
-              var pageNumber = JSON.parse(res.text).totalPage
-              this.totalItems = JSON.parse(res.text).totalItems
-              console.log(newArr)
+              if (JSON.parse(res.text).data === '') {
+                this.emptyText = '暂无数据'
+              }
+              var pageNumber = Number(JSON.parse(res.text).totalPage)
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
               this.tableData = result
               if(pageNumber>1){
                 this.pageShow = true
@@ -855,82 +841,71 @@ export default {
           })
       }
     },
-     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      },
-    pageUpdate(e) {
-      var that = this
-      console.log(this.pagetotal)
-      clearTimeout(this.timer)
-      if (e.target.tagName === 'A' || e.target.tagName === 'SPAN') {
-        if (e.target.innerHTML === '首页') {
-          e.target.innerHTML = 1
-        } else if (e.target.innerHTML === '尾页') {
-          e.target.innerHTML = this.pagetotal
-        } else if (e.target.innerHTML === '«') {
-          e.target.innerHTML = Number($('.M-box span.active')[0].innerHTML) - 1
-        } else if (e.target.innerHTML === '»') {
-          console.log($('.M-box span.active')[0].innerHTML)
-          e.target.innerHTML = Number($('.M-box span.active')[0].innerHTML) + 1
-        } else if (e.target.innerHTML === '...') {
-          return
-        }
-      } else {
-        return
-      }
-      this.timer = setTimeout(function () {
-        request
-          .post(host + 'franchisee/franchiseeManager/getPartners?page=' + e.target.innerHTML)
-          .withCredentials()
-          .set({
-            'content-type': 'application/x-www-form-urlencoded'
-          })
-          .send({
-            'franchiseeId': '123456',
-            'userId': 'admin'
-          })
-          .end((error, res) => {
-            if (error) {
-              console.log('error:', error)
-            } else {
-              // console.log(JSON.parse(res.text))
-              var newArr = JSON.parse(res.text).list
-              that.$store.dispatch('partner_action', { newArr })
-              var pageNumber = JSON.parse(res.text).totalPage
-              that.tableData = that.$store.state.partnerList
-              that.totalPage = pageNumber
-            }
-          })
-      }, 200)
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
     },
-    delPartner(id,franchiseeId, index) {
-      alert(id)
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    handleCurrentChange(val) {
+      this.loading = true
+      request
+        .post(host + 'beepartner/admin/cityPartner/findCityPartner')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .send({
+          'currentPage': val,
+          'name': this.name.trim(),
+          'phone': this.phone.trim(),
+          'startTime': this.startTime === ''?'':moment(this.startTime).format('YYYY-MM-DD'),
+          'endTime': this.endTime === ''?'':moment(this.endTime).format('YYYY-MM-DD')
+        })
+        .end((err, res) => {
+          if (err) {
+            this.loading = false
+            this.emptyText = '暂无数据'
+            console.log('err:' + err)
+          } else {
+            this.checkLogin(res)
+            console.log(JSON.parse(res.text).data)
+            this.loading = false
+            var newArr = JSON.parse(res.text).data
+            var result = newArr.map( (item) => {
+              return Object.assign({},item,{joinTime:item.joinTime === null?'':moment(item.joinTime).format('YYYY-MM-DD')})
+            })
+            var pageNumber = Number(JSON.parse(res.text).totalPage)
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
+            this.tableData = result
+            if(pageNumber>1){
+              this.pageShow = true
+            }else{
+              this.pageShow = false
+            }
+          }
+        })
+    },
+    delPartner(id,cityPartnerId, index) {
+      this.$confirm('此操作将永久删除该合伙人信息, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        request
-          .post(host + 'franchisee/franchiseeManager/delFranchisee')
+        request 
+          .post(host + 'beepartner/admin/cityPartner/delCityPartner')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
           .send({
             'id': id,
-            franchiseeId:franchiseeId
+            'cityPartnerId':cityPartnerId
           })
           .end((err, res) => {
             if (err) {
               console.log('err:' + err)
             } else {
-              console.log(JSON.parse(res.text).code)
-              console.log(JSON.parse(res.text).code === 0)
-              var data = JSON.parse(res.text).data
-              if (JSON.parse(res.text).code === 0) {
+              this.checkLogin(res)
+              var message = JSON.parse(res.text).message
+              if (JSON.parse(res.text).resultCode === 0) {
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -939,27 +914,26 @@ export default {
               } else {
                 this.$message({
                   type: 'error',
-                  message: '删除失败:' + data
+                  message: '删除失败:' + message
                 })
               }
-
             }
           })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消删除'
+        // })
       })
     },
     goDetail(scope) {
-      console.log(scope)
-      this.$router.push('/index/partnerDetail/' + scope.row.franchiseeId)
+      console.log(scope.row)
+      this.$router.push('/index/partnerDetail/' + scope.row.id + '&' + scope.row.cityPartnerId)
     },
     openEdit(row,index) {
       console.log(row)
       this.dialogVisible = true
-      this.editAccount = Object.assign({},row,{editIndex:index},{provinceName:''},{areaName:''},{cardType:row.cardType===0?'居民身份证':'护照'})
+      this.editAccount = Object.assign({},row,{editIndex:index},{outTime: null},{registerTime: null},{provinceName:''},{areaName:''},{cardType:row.cardType===0?'居民身份证':'护照'})
       //this.editAccount = Object.assign({},row,{provinceName:''},{areaName:''})
       //this.editAccount.cityName = ' '
       this.filterProvinceMethod()
@@ -969,8 +943,8 @@ export default {
       var that = this
       //this.fullscreenLoading = true
       var obj  = Object.assign({},this.editAccount,{cardType:this.editAccount.cardType==='居民身份证'?0:1})
-      request.post(host + '/franchisee/franchiseeManager/updateFranchisee')
-       .withCredentials()
+      request.post(host + 'beepartner/admin/cityPartner/updateCityPartner')
+        .withCredentials()
         .set({
             'content-type': 'application/x-www-form-urlencoded'
         })
@@ -979,117 +953,27 @@ export default {
         if(error){
           console.log(error)
         }else{
-          console.log(res)
+          this.checkLogin(res)
         }
       })
       that.$store.state.keepParnterAccount.splice(this.editAccount.editIndex, 1, this.editAccount)
       that.dialogVisible = false
     },
-    searchByInput () {
-      if (this.searchDate1 === '' && this.searchDate2 === '' && this.search_Number === '') {
-        this.$message({
-          message: '请输入查询信息',
-          type: 'warning'
-        })
-      } else {
-        console.log(this.searchDate1)
-        console.log(this.searchDate2)
-        console.log(this.search_Number)
-        console.log(this.value)
-          request
-            .post(host + 'franchisee/partner/queryPartner？type=' + this.value)
-            .withCredentials()
-            .set({
-              'content-type': 'application/x-www-form-urlencoded'
-            })
-            .send({
-              'franchiseeId': '123456',
-              'userId': 'admin',
-              'idCard': this.searchDate1,
-              'name': this.searchDate1,
-              'phoneNo': this.searchDate2,
-              'email': this.searchDate2
-            })
-            .end((err, res) => {
-              if (err) {
-                console.log('err:' + err)
-              } else {
-                console.log(JSON.parse(res.text))
-                this.$store.dispatch('partner_action', { newArr })
-                this.tableData = this.$store.state.partnerList
-                var pageNumber = JSON.parse(res.text).totalPage
-                if (pageNumber < 10) {
-                  return
-                } else {
-                  this.pagetotal = pageNumber
-                  $('.M-box').pagination({
-                    pageCount: pageNumber,
-                    jump: true,
-                    coping: true,
-                    homePage: '首页',
-                    endPage: '尾页',
-                    prevContent: '«',
-                    nextContent: '»'
-                  })
-                }
-              }
-            })
-      }
-    },
     show_detail (row, column) {
       console.log(row)
       if (column.label === '合伙人编号') {
-        this.$router.push('/index/vehicleDistribution/' + row.franchiseeId)
-      } else {
-        console.log('sss')
+        this.$router.push('/index/partnerDetail/' + row.id)
+      } 
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
       }
-    }
-  },
-  watch:{
-    currentPage3:{
-      handler:function(val,oldVal){
-         this.loading = true
-          var that = this
-          request
-            .post(host + 'franchisee/franchiseeManager/queryFranchisee?page=' + val)
-            .withCredentials()
-            .set({
-              'content-type': 'application/x-www-form-urlencoded'
-            })
-            .send({
-              'franchiseeId': '123456',
-              'userId': 'admin'
-            })
-            .end((err, res) => {
-              if (err) {
-                this.loading = false
-                this.emptyText = '暂无数据'
-                console.log('err:' + err)
-              } else {
-                // console.log(JSON.parse(res.text))
-                this.loading = false
-                var newArr = JSON.parse(res.text).list
-                var result = newArr.map((item)=>{
-                  return Object.assign({},item,{joinTime:moment(item.joinTime).format('YYYY/MM/DD')})
-                })
-              // this.$store.dispatch('partner_action', { newArr })
-                var pageNumber = JSON.parse(res.text).totalPage
-                this.totalItems = JSON.parse(res.text).totalItems
-                that.$store.state.keepParnterAccount = []
-                result.map((item)=>{
-                  that.$store.commit('keepParnterAccount',item)
-                })
-                this.tableData = that.$store.state.keepParnterAccount
-                if(pageNumber>1){
-                  this.pageShow = true
-                }else{
-                  this.pageShow = false
-                }
-
-              }
-            })
-      },
-      deep:true
+    },
+    inputChange () {
+      if (this.$refs.val1.value === '' && this.$refs.val2.value === '') {
+        this.loadData()
+      } 
     }
   }
 }

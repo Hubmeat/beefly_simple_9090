@@ -173,7 +173,7 @@
 <script>
 import $ from 'jquery'
 import request from 'superagent'
-import { siblings, checkPositiveNumber, setPage } from '../../../../utils/index.js'
+import { siblings, checkPositiveNumber } from '../../../../utils/index.js'
 require('../../../assets/lib/js/jquery.pagination.js')
 import '../../../assets/css/pagination.css'
 import { getAllAdminUser } from '../../../api/getAdminUser.api.js'
@@ -267,6 +267,7 @@ export default {
                 console.log(error)
                 that.loading = false
               } else {
+                that.checkLogin(res)
                 that.loading = false
                 var newArr = JSON.parse(res.text).data
                 that.totalPage = Number(JSON.parse(res.text).totalPage)
@@ -293,6 +294,7 @@ export default {
                 console.log(error)
                 that.loading = false
               } else {
+                that.checkLogin(res)
                 that.loading = false
                 var newArr = JSON.parse(res.text).list
                 that.totalPage = JSON.parse(res.text).totalPage
@@ -321,6 +323,7 @@ export default {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
+              that.checkLogin(res)
               that.loading = false
               that.totalPage = Number(JSON.parse(res.text).totalPage)
               var arr = JSON.parse(res.text).data
@@ -335,7 +338,6 @@ export default {
               }
               that.$store.state.joinTableData = that.handleData(arr)
               that.joinTableData = that.$store.state.joinTableData
-              //that.setPage(arr,that.totalPage)
             }
           })
       }
@@ -355,6 +357,7 @@ export default {
               that.emptyText = '暂无数据'
             }, 6000)
           } else {
+            that.checkLogin(res)
             that.loading = false
             that.emptyText = ' '
             that.totalPage = JSON.parse(res.text).totalPage
@@ -408,7 +411,6 @@ export default {
               that.$store.state.joinTableData = that.handleData(arr)
               that.joinTableData = that.$store.state.joinTableData
               that.initData = that.joinTableData
-              //that.setPage(arr,that.totalPage)
             }
           })
       }
@@ -430,6 +432,7 @@ export default {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
+              that.checkLogin(res)
               that.loading = false
               that.totalPage = JSON.parse(res.text).totalPage || 20
               var arr = JSON.parse(res.text).list
@@ -444,7 +447,6 @@ export default {
               that.$store.state.accountMangerData = that.handleData(arr)
               that.initData = that.$store.state.accountMangerData
               that.platTableData = that.$store.state.accountMangerData
-              //that.setPage(arr,that.totalPage)
             }
           })
         }
@@ -461,6 +463,7 @@ export default {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
+              that.checkLogin(res)
               that.loading = false
               that.totalPage = Number(JSON.parse(res.text).totalPage)
               var arr = JSON.parse(res.text).data
@@ -475,7 +478,6 @@ export default {
               that.$store.state.accountMangerData = that.handleData(arr)
               that.initData = that.$store.state.accountMangerData
               that.joinTableData = that.$store.state.accountMangerData
-              //that.setPage(arr,that.totalPage)
             }
           })
         }
@@ -503,6 +505,7 @@ export default {
               if (error) {
                 console.log(error)
               } else {
+                that.checkLogin(res)
                 var arr = JSON.parse(res.text).list
                 that.platTableData = that.handleData(arr)
                 that.totalItems = JSON.parse(res.text).totalItems
@@ -532,6 +535,7 @@ export default {
               if (error) {
                 console.log(error)
               } else {
+                that.checkLogin(res)
                 var arr = JSON.parse(res.text).list
                 that.joinTableData = that.handleData(arr)
                 that.totalItems = JSON.parse(res.text).totalItems
@@ -580,6 +584,7 @@ export default {
             this.loading = false
             this.pageShow = false
           } else {
+            that.checkLogin(res)
             that.loading = false
             that.totalPage = Number(JSON.parse(res.text).totalPage)
             var arr = JSON.parse(res.text).data
@@ -594,7 +599,6 @@ export default {
             that.$store.state.joinTableData = that.handleData(arr)
             that.joinTableData = that.$store.state.joinTableData
             that.initData = that.joinTableData
-            //that.setPage(arr,that.totalPage)
           }
         })
     },
@@ -639,6 +643,7 @@ export default {
           if (error) {
             console.log(error)
           } else {
+            that.checkLogin(res)
             var code = JSON.parse(res.text).resultCode
             if (code === 1) {
               that.$message({
@@ -659,6 +664,7 @@ export default {
           if (error) {
             console.log(error)
           } else {
+            that.checkLogin(res)
             var code = JSON.parse(res.text).resultCode
             if (code === 1) {
               that.$message({
@@ -699,6 +705,7 @@ export default {
                 })
                 console.log(error)
               } else {
+                that.checkLogin(res)
                 var code = JSON.parse(res.text).resultCode
                 if (code === 0) {
                   that.loading = false
@@ -756,6 +763,7 @@ export default {
                   message: '对不起，删除失败!'
                 })
               } else {
+                that.checkLogin(res)
                 var code = JSON.parse(res.text).resultCode
                 if (code === -1) {
                   that.loading = false
@@ -805,6 +813,7 @@ export default {
               })
               that.platTableData.splice(scope.$index, 1, initObj)
             } else {
+              that.checkLogin(res)
               var code = JSON.parse(res.text).resultCode
               if (code === 1) {
                 that.$message({
@@ -843,6 +852,7 @@ export default {
               })
               that.joinTableData.splice(scope.$index, 1, initObj)
             } else {
+              that.checkLogin(res)
               var code = JSON.parse(res.text).resultCode
               if (code === 1) {
                 that.$message({
@@ -887,6 +897,7 @@ export default {
           console.log(error)
           this.cityList = []
         }else {
+          this.checkLogin(res)
           var result = JSON.parse(res.text).data
           var map = result.map((item)=>{
             var obj = {}
@@ -920,6 +931,7 @@ export default {
               that.emptyText = '暂无数据'
             }, 6000)
           } else {
+            that.checkLogin(res)
             that.loading = false
             that.emptyText = ' '
             that.totalPage = JSON.parse(res.text).totalPage
@@ -960,6 +972,7 @@ export default {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
+              that.checkLogin(res)
               that.loading = false
               that.totalPage = Number(JSON.parse(res.text).totalPage)
               var arr = JSON.parse(res.text).data
@@ -974,56 +987,13 @@ export default {
               that.$store.state.joinTableData = that.handleData(arr)
               that.joinTableData = that.$store.state.joinTableData
               that.initData = that.joinTableData
-              //that.setPage(arr,that.totalPage)
             }
           })
       }
     },
-    setPage(arr, totalPage) {
-      var that = this
-      if (arr.length > 0) {
-        $('.M-box').html('')
-        $('.M-box').pagination({
-          pageCount: totalPage,
-          jump: true,
-          coping: true,
-          homePage: '首页',
-          endPage: '尾页',
-          prevContent: '«',
-          nextContent: '»'
-        })
-        $('.M-box').click(function (e) {
-          if (e.target.getAttribute('class') === 'active') {
-            return false
-          }
-          if (e.target.tagName === 'A') {
-            if (e.target.innerText === '首页') {
-              that.currentPage = 1
-            }
-            if (e.target.innerText === '尾页') {
-              that.currentPage = totalPage
-            }
-            if (e.target.innerText === '»') {
-              that.currentPage++
-            }
-            if (e.target.innerText === '«') {
-              that.currentPage--
-            }
-            if (checkPositiveNumber(e.target.innerText)) {
-              that.currentPage = e.target.innerText
-            }
-            if (e.target.innerText === '跳转') {
-              e.preventDefault()
-              var jumpPageNum = $('.M-box .active').text()
-              that.currentPage = jumpPageNum
-            }
-          }
-        })
-        $(document).keydown(function (e) {
-          if (e.keyCode === 13) {
-            that.currentPage = e.target.value
-          }
-        })
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
       }
     }
   },

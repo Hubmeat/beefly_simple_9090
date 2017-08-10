@@ -5,7 +5,7 @@
       <table class="franchiseeDetail">
         <tbody>
           <tr>
-            <td><span>加盟商编号：</span>{{franchiseeDetail.franchiseeId}}</td>
+            <td><span>加盟商编号：</span>{{franchiseeDetail.cityPartnerId}}</td>
              <td><span>企业名称：</span>{{franchiseeDetail.companyName}}</td>
           </tr>
           <tr>
@@ -20,8 +20,8 @@
     <div id='distribution_selectBase'>
       <div id='distribution_table'>
         <div class='distribution_table_search'>
-          <h5>【合肥地区】待分配的车辆</h5>
-          <input type="text" placeholder="车辆号\终端号">
+          <h5>【{{franchiseeDetail.cityName}}地区】待分配的车辆</h5>
+          <input type="text" v-on:blur='inputBlurFun' ref="val" placeholder="车辆号\终端号">
           <span>
             <i class='el-icon-search'></i>
           </span>
@@ -31,7 +31,6 @@
           <el-table
                @select="handleSelectChange"
                @select-all="handleSelectionAll"
-              :empty-text="emptyText"
               v-loading="loading2"
               element-loading-text="拼命加载中"
               ref="multipleTable"
@@ -55,12 +54,12 @@
                 min-width="80">
               </el-table-column>
               <el-table-column
-                prop="onlineTime"
+                prop="onlineTimeStr"
                 label="上线日期"
                 min-width="80">
               </el-table-column>
               <el-table-column
-                prop="state"
+                prop="stateName"
                 label="车辆状态"
                 min-width="80">
               </el-table-column>
@@ -86,8 +85,8 @@
             <li :key="item" v-for="(item,index) of countAllotCars">{{item}} <span><i class="iconfont" @click="removeCar(index)">&#xe60a;</i></span></li>
           </ul>
           <el-row class="allot">
-            <el-button>确定</el-button> 
-            <el-button>取消</el-button> 
+            <button class="btn_bike">确定</button> 
+            <button class="btn_bike">取消</button> 
           </el-row>
       </div>
 
@@ -96,6 +95,37 @@
 </template>
 
 <style scoped>
+.btn_bike:nth-of-type(1) {
+  width: 60px;
+  height: 30px;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  background: #f87e2b;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn_bike:nth-of-type(1):hover {
+  opacity: 0.9;
+}
+
+.btn_bike:nth-of-type(2) {
+  width: 60px;
+  cursor: pointer;
+  height: 30px;
+  outline: none;
+  color: #1f2d3d;
+  background: #fff;
+  border: 1px solid #c4c4c4;
+  border-radius: 4px;
+}
+
+.btn_bike:nth-of-type(2):hover {
+  color: #f87e2b;
+  border: 1px solid #f87e2b;
+}
+
 div.allot{text-align: center}
 #distribution_header {
   height: 110px;
@@ -163,8 +193,8 @@ div.allot{text-align: center}
 }
 
 .distribution_table_search>h5 {
-  padding: 14px 14px 14px 0;
-  width: 160px;
+  padding: 14px 0 14px 0;
+  width: 200px;
   height: 30px;
   line-height: 30px;
   float: left;
@@ -180,6 +210,7 @@ div.allot{text-align: center}
   border-right: none;
   float: left;
   margin-top: 14px;
+  margin-left: -20px;
   outline: none;
 }
 
@@ -299,7 +330,6 @@ export default {
       totalItems:1,
       pageShow:false,
       loading2:false,
-      emptyText: ' ',
       tableData_distribution: [],
       multipleSelection:[],
       countAllotCars:[],
@@ -336,126 +366,226 @@ export default {
     handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+    handleCurrentChange(val) {
+      this.loading2 = true
+      request
+        .post(host + 'beepartner/admin/Bike/findBike')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .send({
+          'type': 1,
+          'cityCode':this.cityCode,
+          'currentPage': val
+        })
+        .end((error,res)=>{
+          if(error){
+            this.loading2 = false
+            console.log(error)
+          }else{
+            this.checkLogin(res)
+            this.loading2 = false
+            var data = JSON.parse(res.text).data
+            this.tableData_distribution = data
+            var totalPage = Number(JSON.parse(res.text).totalPage)
+            if(totalPage>1){
+              this.pageShow = true
+            }else{
+              this.pageShow = false
+            }
+            this.totalItems = Number(JSON.parse(res.text).totalItems)
+          }
+        })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
       }
-  },
-  updated:function(){
-    console.log(this.selectCars)
-    var dom = $('.el-table__body-wrapper tbody td div.cell')
-    for(var i=0;i<dom.length;i++){
-      if(this.selectCars.indexOf(dom.eq(i).text())!== -1){
-        console.log(dom.eq(i).parent().prev())
-        //this.$refs.multipleTable.toggleRowSelection(this.tableData_distribution[i]);
-        //dom.eq(i).parent().prev().find('.el-checkbox__input').addClass('is-checked is-focus')
-      }
-    }
-  },
-  mounted () {
-        var franchiseeId = this.$route.params.id
-        this.loading2  = true
+    },
+    inputBlurFun () {
+      if (this.$refs.val.value !== '') {
+        this.loading2 = true
         request
-          .post(host + 'franchisee/franchiseeManager/getFranchiseeDetail')
+          .post(host + 'beepartner/admin/Bike/findBike')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
           .send({
-            'franchiseeId': franchiseeId,
+            'type': 1,
+            'cityCode':this.cityCode,
+            'keyName': this.$refs.val.value
           })
-          .end((err, res) => {
-            if (err) {
+          .end((error,res)=>{
+            if(error){
               this.loading2 = false
-              console.log('err:' + err)
-            } else {
+              console.log(error)
+            }else{
+              this.checkLogin(res)
               this.loading2 = false
-              // console.log(JSON.parse(res.text))
-              var res = JSON.parse(res.text)
-              this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
-              this.cityCode = res.cityId
-              if(this.cityCode.length>0){
-                request.post(host + 'franchisee/franchiseeManager/getNotAllotBikes')
-                  .withCredentials()
-                  .set({
-                    'content-type': 'application/x-www-form-urlencoded'
-                  })
-                  .send({
-                    cityCode:this.cityCode
-                  })
-                  .end((error,res)=>{
-                    if(error){
-                      console.log(error)
-                    }else{
-                      var data = JSON.parse(res.text).list
-                      var newData = data.map((item)=>{
-                        return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
-                      })
-                      this.tableData_distribution = newData
-                      var totalPage = JSON.parse(res.text).totalPage
-                      if(totalPage>1){
-                        this.pageShow = true
-                      }else{
-                        this.pageShow = false
-                      }
-                      this.totalItems = JSON.parse(res.text).totalItems
-                      //console.log(data)
-                    }
-                  })
+              var data = JSON.parse(res.text).data
+              this.tableData_distribution = data
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              if(totalPage>1){
+                this.pageShow = true
+              }else{
+                this.pageShow = false
               }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+            }
+          })  
+      } else {
+        this.loading2 = true
+        request
+          .post(host + 'beepartner/admin/Bike/findBike')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'type': 1,
+            'cityCode':this.cityCode
+          })
+          .end((error,res)=>{
+            if(error){
+              this.loading2 = false
+              console.log(error)
+            }else{
+              this.checkLogin(res)
+              this.loading2 = false
+              var data = JSON.parse(res.text).data
+              this.tableData_distribution = data
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              if(totalPage>1){
+                this.pageShow = true
+              }else{
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
             }
           })
+      }
+    }
+  },
+  // updated:function(){
+  //   console.log(this.selectCars)
+  //   var dom = $('.el-table__body-wrapper tbody td div.cell')
+  //   for(var i=0;i<dom.length;i++){
+  //     if(this.selectCars.indexOf(dom.eq(i).text())!== -1){
+  //       console.log(dom.eq(i).parent().prev())
+  //       //this.$refs.multipleTable.toggleRowSelection(this.tableData_distribution[i]);
+  //       //dom.eq(i).parent().prev().find('.el-checkbox__input').addClass('is-checked is-focus')
+  //     }
+  //   }
+  // },
+  mounted () {
+    var id = this.$route.params.id.split('&')[0]
+    var cityPartnerId = this.$route.params.id.split('&')[1]
+    this.loading2  = true
+    request
+      .post(host + 'beepartner/admin/cityPartner/getCityPartnerDetail')
+      .withCredentials()
+      .set({
+        'content-type': 'application/x-www-form-urlencoded'
+      })
+      .send({
+        'id':id,
+        'cityPartnerId': cityPartnerId
+      })
+      .end((err, res) => {
+        if (err) {
+          this.loading2 = false
+          console.log('err:' + err)
+        } else {
+          this.checkLogin(res)
+          this.loading2 = false
+          var res = JSON.parse(res.text).data
+          console.log(res)
+          // this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
+          this.franchiseeDetail = res
+          this.cityCode = res.cityId
+          if(this.cityCode.length>0){
+            this.loading2 = true
+            request.post(host + 'beepartner/admin/Bike/findBike')
+              .withCredentials()
+              .set({
+                'content-type': 'application/x-www-form-urlencoded'
+              })
+              .send({
+                'type': 1,
+                'cityCode':this.cityCode
+              })
+              .end((error,res)=>{
+                if(error){
+                  this.loading2 = false
+                  console.log(error)
+                }else{
+                  this.checkLogin(res)
+                  this.loading2 = false
+                  var data = JSON.parse(res.text).data
+                  // var newData = data.map((item)=>{
+                  //   return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
+                  // })
+                  this.tableData_distribution = data
+                  var totalPage = Number(JSON.parse(res.text).totalPage)
+                  if(totalPage>1){
+                    this.pageShow = true
+                  }else{
+                    this.pageShow = false
+                  }
+                  this.totalItems = Number(JSON.parse(res.text).totalItems)
+                }
+              })
+          }
+        }
+      })
   },
   watch:{
-    multipleSelection:{
-      handler: function(val){
-       
-      },
-      deep:true
-    },
-    currentPage3:{
-      handler:function(val,oldVal){
-        if(this.cityCode.length>0){
-          this.loading2 = true
-          request.post(host + 'franchisee/franchiseeManager/getNotAllotBikes?page=' + val)
-            .withCredentials()
-            .set({
-              'content-type': 'application/x-www-form-urlencoded'
-            })
-            .send({
-              cityCode:this.cityCode
-            })
-            .end((error,res)=>{
-              if(error){
-                console.log(error)
-                this.loading2 = false
-              }else{
-                this.loading2 = false
-                var data = JSON.parse(res.text).list
-                var newData = data.map((item)=>{
-                  return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
-                })
-                this.tableData_distribution = newData
-                this.countAllotCars.forEach((row)=>{
-                  this.tableData_distribution.map((item,index)=>{
-                    if(item.boxCode===row){
-                       this.selectCars.push(row)
-                    }
-                  })
-                })
-                var totalPage = JSON.parse(res.text).totalPage
-                if(totalPage>1){
-                  this.pageShow = true
-                }else{
-                  this.pageShow = false
-                }
-                this.totalItems = JSON.parse(res.text).totalItems
-                //console.log(data)
-              }
-            })
-        }
-      },
-      deep:true
-    }
+    // currentPage3:{
+    //   handler:function(val,oldVal){
+    //     if(this.cityCode.length>0){
+    //       this.loading2 = true
+    //       request.post(host + 'franchisee/franchiseeManager/getNotAllotBikes?page=' + val)
+    //         .withCredentials()
+    //         .set({
+    //           'content-type': 'application/x-www-form-urlencoded'
+    //         })
+    //         .send({
+    //           cityCode:this.cityCode
+    //         })
+    //         .end((error,res)=>{
+    //           if(error){
+    //             console.log(error)
+    //             this.loading2 = false
+    //           }else{
+    //             this.loading2 = false
+    //             var data = JSON.parse(res.text).list
+    //             var newData = data.map((item)=>{
+    //               return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
+    //             })
+    //             this.tableData_distribution = newData
+    //             this.countAllotCars.forEach((row)=>{
+    //               this.tableData_distribution.map((item,index)=>{
+    //                 if(item.boxCode===row){
+    //                    this.selectCars.push(row)
+    //                 }
+    //               })
+    //             })
+    //             var totalPage = JSON.parse(res.text).totalPage
+    //             if(totalPage>1){
+    //               this.pageShow = true
+    //             }else{
+    //               this.pageShow = false
+    //             }
+    //             this.totalItems = JSON.parse(res.text).totalItems
+    //             //console.log(data)
+    //           }
+    //         })
+    //     }
+    //   },
+    //   deep:true
+    // }
   }
 }
 </script>

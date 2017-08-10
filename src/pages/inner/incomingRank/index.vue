@@ -4,7 +4,7 @@
       <el-row class="countTitle">
         <span class="countDimension labelAlign" style="margin-right: 0px;">统计维度</span>
         <div class="timeSelectBtn">
-          <el-button class="active" @click="handleChangeType" type="primary">今日</el-button>
+          <el-button class="active" @click="handleChangeType">今日</el-button>
           <el-button @click="handleChangeType">本周</el-button>
           <el-button @click="handleChangeType">本月</el-button>
           <el-button @click="handleChangeType">所有日期</el-button>

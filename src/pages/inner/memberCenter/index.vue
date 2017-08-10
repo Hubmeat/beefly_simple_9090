@@ -348,6 +348,7 @@ export default {
           if (err) {
             console.log('err:' + err)
           } else {
+            this.checkLogin(res)
 						console.log(JSON.parse(res.text).data)
 						this.name = JSON.parse(res.text).data.name
 						this.userName = JSON.parse(res.text).data.userName
@@ -365,7 +366,12 @@ export default {
 						}
           }
         })
-		}
+		},
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
+    }
 	},
 	mounted () {
 		this.getInfo()

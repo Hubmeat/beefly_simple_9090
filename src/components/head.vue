@@ -17,10 +17,38 @@
     </header>
 </template>
 <script>
+import { host } from '../config/index'
+import request from 'superagent'
 export default {
   methods: {
     handleLoginOut () {
-      this.$router.push({ path: '/' })
+      var that = this
+      request.post(host + 'beepartner/system/login/removeAdminSession')
+        .withCredentials()
+        .set({
+            'content-type': 'application/x-www-form-urlencoded'
+        })
+        .end((err,res)=>{
+            if(err){
+                console.log(err)
+            }else{
+                var code = JSON.parse(res.text).resultCode
+                var message = JSON.parse(res.text).message
+                console.log(code)
+                if(code === 1){
+                    that.$message({
+                        type:'success',
+                        message:message
+                    })
+                }else{
+                    that.$message({
+                        type:'error',
+                        message:message
+                    })
+                }
+                
+            }
+        })
     }
   }
 }

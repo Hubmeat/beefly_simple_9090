@@ -316,6 +316,7 @@ export default {
           console.log(err)
           this.loading = false
         } else {
+          this.checkLogin(res)
           this.loading = false
           var result = JSON.parse(res.text).data
           console.log(result)
@@ -352,6 +353,7 @@ export default {
             if (err) {
               console.log(err)
             } else {
+              this.checkLogin(res)
               this.loading = false
               var result = JSON.parse(res.text).data
               console.log(result)
@@ -393,6 +395,7 @@ export default {
               console.log(error)
               that.loading = false
             } else {
+              that.checkLogin(res)
               that.loading = false
               var result = JSON.parse(res.text).data
               var totalPage = Number(JSON.parse(res.text).totalPage)
@@ -458,6 +461,7 @@ export default {
               message: '修改失败!'
             })
           } else {
+            that.checkLogin(res)
             that.loading2 = false
             var code = JSON.parse(res.text).resultCode
             if (code === 1) {
@@ -504,6 +508,7 @@ export default {
                 message: '删除失败!'
               })
             } else {
+              that.checkLogin(res)
               that.loading = false
               var code = JSON.parse(res.text).resultCode
               if (code === 1) {
@@ -530,7 +535,6 @@ export default {
     handleAddRole() {
       var authList = this.getCheckedKeys().join('-')
       var that = this
-      console.log(authList)
 
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -550,6 +554,7 @@ export default {
               if (err) {
                 console.log(err)
               } else {
+                that.checkLogin(res)
                 var code = JSON.parse(res.text).resultCode
                 if (code === 1) {
                   that.$message({
@@ -592,6 +597,7 @@ export default {
             console.log(err)
             that.loading = false
           } else {
+            that.checkLogin(res)
             that.loading = false
             var result = JSON.parse(res.text).data
             console.log(result)
@@ -604,15 +610,20 @@ export default {
           })
             console.log(newArr)
             if (totalPage > 1) {
-              this.pageShow = true
+              that.pageShow = true
             } else {
-              this.pageShow = false
+              that.pageShow = false
             }
-            this.totalItems = Number(JSON.parse(res.text).totalItems)
+            that.totalItems = Number(JSON.parse(res.text).totalItems)
             that.tableData = newArr
             that.initData = that.tableData
           }
         })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+          this.$router.push('/login')
+      }
     }
   },
   mounted() {

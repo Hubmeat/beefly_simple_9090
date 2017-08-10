@@ -218,9 +218,11 @@ export default {
               mobileNo: this.ruleForm.tel
             })
             .end(function(err,res){
+              that.checkLogin(res)
               if(err) {
                 console.log(err)
               } else {
+                that.checkLogin(res)
                 that.ruleForm.verCode = JSON.parse(res.text)
               }
           })
@@ -254,6 +256,7 @@ export default {
                     type: 'error'
                   })
                 } else {
+                  that.checkLogin(res)
                   var status = JSON.parse(res.text).code
                   if (status === 0) {
                     that.loading = false
@@ -282,6 +285,11 @@ export default {
           return false
         }
       })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   }
 }

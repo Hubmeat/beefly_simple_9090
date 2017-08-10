@@ -245,6 +245,11 @@ export default {
           return false
         }
       })
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   }
 }

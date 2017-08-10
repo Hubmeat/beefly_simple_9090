@@ -60,9 +60,10 @@ import settlementManager from '../pages/inner/settlementManage/index.vue'
 import NotFoundPage from '../pages/404/index.vue'
 
 export default [
+  { path: '*', redirect: '/login' },
   { path: '*', component: NotFoundPage },
   {
-    path: '/',
+    path: '/login',
     name: '登录',
     component: login
   },

@@ -356,7 +356,6 @@ export default {
   },
   mounted:function(){
     this.filterProvinceMethod()
-    //this.filterCityMethod()
   },
   methods: {
     handleCheckbox(e){
@@ -397,17 +396,21 @@ export default {
             this.ruleForm.areaId = item.id
           }
         })
-        //this.ruleForm.areaName = ''
-        //this.filterAreaMethod()
       }
     },
     filterProvinceMethod() {
-      request.post(host + 'franchisee/franchiseeManager/getProvince').
-        end((error,res)=>{
+      request
+        .post(host + 'beepartner/admin/cityPartner/getProvince')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .end((error,res)=>{
           if(error){
             console.log(error)
           }else{
-            var result = JSON.parse(res.text)
+            this.checkLogin(res)
+            var result = JSON.parse(res.text).data
             var provinceList = result.map((item)=>{
               var obj = {}
               obj.id = item.id
@@ -417,19 +420,11 @@ export default {
             this.provinceList = provinceList
           }
         })
-      // if(this.provinceList.length>0){
-      //   this.provinceList.map((item)=>{
-      //     if(value === item.name){
-      //       this.provinceId = item.id
-      //     }
-      //   })
-      //   this.filterCityMethod()
-      // }
     },
     filterCityMethod() {
       if(this.ruleForm.provinceId){
         request
-          .post(host + 'franchisee/franchiseeManager/getCity')
+          .post(host + 'beepartner/admin/cityPartner/getChildrenArea')
           .withCredentials()
           .set({
               'content-type': 'application/x-www-form-urlencoded'
@@ -441,7 +436,8 @@ export default {
             if(error){
               console.log(error)
             }else{
-              var result = JSON.parse(res.text)
+              this.checkLogin(res)
+              var result = JSON.parse(res.text).data
               var cityList = result.map((item)=>{
                 var obj = {}
                 obj.id = item.id
@@ -451,19 +447,12 @@ export default {
               this.cityList = cityList
             }
           })
-        // if(this.cityList.length>0){
-        //   this.cityList.map((item)=>{
-        //     if(value === item.name){
-        //       this.cityId = item.id
-        //     }
-        //   })
-        // }
       }
     },
     filterAreaMethod() {
       if(this.ruleForm.provinceId){
         request
-          .post(host + 'franchisee/franchiseeManager/getArea')
+          .post(host + 'beepartner/admin/cityPartner/getChildrenArea')
           .withCredentials()
           .set({
               'content-type': 'application/x-www-form-urlencoded'
@@ -475,7 +464,8 @@ export default {
             if(error){
               console.log(error)
             }else{
-              var result = JSON.parse(res.text)
+              this.checkLogin(res)
+              var result = JSON.parse(res.text).data
               if(result.length===0){
                 this.areaShow = false
               }else{
@@ -490,13 +480,6 @@ export default {
               this.areaList = areaList
             }
           })
-        // if(this.cityList.length>0){
-        //   this.cityList.map((item)=>{
-        //     if(value === item.name){
-        //       this.cityId = item.id
-        //     }
-        //   })
-        // }
       }
     },
     submitForm (formName) {
@@ -510,16 +493,20 @@ export default {
         .then(() => {
           var obj = {}
           obj = Object.assign({},this.ruleForm,{cardType:this.ruleForm.cardType==='身份证'?0:1},{percent:parseFloat(this.ruleForm.percent/100)})
-          request.post(host + '/franchisee/franchiseeManager/addFranchiseeAcc')
-           .withCredentials()
+          request
+            .post(host + 'beepartner/admin/cityPartner/addCityPartner')
+            .withCredentials()
             .set({
-                'content-type': 'application/x-www-form-urlencoded'
+              'content-type': 'application/x-www-form-urlencoded'
             })
             .send(obj)
             .end((error,res)=>{
               if(error){
                 console.log(error)
               }else{
+                this.checkLogin(res)
+                console.log(JSON.parse(res.text).data)
+                console.log(JSON.parse(JSON.parse(res.text).data))
                 var newAccount = JSON.parse(JSON.parse(res.text).data)
                  this.$router.push('/index/partnerManager')
                  this.$message({
@@ -555,6 +542,11 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    checkLogin (res) {
+      if (JSON.parse(res.text).message === '用户登录超时') {
+        this.$router.push('/login')
+      }
     }
   }
 }
