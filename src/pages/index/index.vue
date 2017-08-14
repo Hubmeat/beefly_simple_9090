@@ -14,7 +14,11 @@
                    <div class="scrollArea">
                      <div class="editcontainer">
                        <div class="documentedit">
-                         <router-view></router-view>
+                        <transition name="fade">
+                        <!-- <transition name="fade"
+                                    mode="out-in"> -->
+                          <router-view></router-view>
+                        </transition>
                        </div>
                      </div>
                    </div>
@@ -117,5 +121,18 @@
     border-radius: 2px;
     margin-top:0;
     cursor: text;position: relative;
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: all .5s linear 0s;
+    /* transform: translateY(-100%); */
+    opacity: 1
+  }
+
+  .fade-enter,
+  .fade-leave {
+    /* transform: translateY(0%); */
+    opacity: 0
   }
 </style>

@@ -23,7 +23,8 @@ export default {
   methods: {
     handleLoginOut () {
       var that = this
-      request.post(host + 'beepartner/system/login/removeAdminSession')
+      request
+        .post(host + 'beepartner/system/login/removeAdminSession')
         .withCredentials()
         .set({
             'content-type': 'application/x-www-form-urlencoded'
@@ -34,12 +35,13 @@ export default {
             }else{
                 var code = JSON.parse(res.text).resultCode
                 var message = JSON.parse(res.text).message
-                console.log(code)
                 if(code === 1){
+                    sessionStorage.removeItem('userinfo');
                     that.$message({
                         type:'success',
                         message:message
                     })
+                    this.$router.push('/login')
                 }else{
                     that.$message({
                         type:'error',

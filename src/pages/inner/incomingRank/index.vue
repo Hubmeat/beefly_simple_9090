@@ -76,27 +76,27 @@ export default {
         case '今日': {
           this.form.type = 'date'
           this.show = false
-          this.$router.push({ query: { type: 0 } })
+          this.$router.push({ query: { type: 'daily' } })
           this.form.formatType = 'yyyy-MM-dd'
           break
         }
         case '本周': {
           this.form.type = 'week'
           this.show = false
-          this.$router.push({ query: { type: 1 } })
+          this.$router.push({ query: { type: 'weekly' } })
           this.form.formatType = 'yyyy 第 WW 周'
           break
         }
         case '本月': {
           this.form.type = 'month'
           this.show = false
-          this.$router.push({ query: { type: 2 } })
+          this.$router.push({ query: { type: 'monthly'} })
           this.form.formatType = ''
           break
         }
         case '所有日期': {
           this.show = false
-          this.$router.push({ query: { type: 3 } })
+          this.$router.push({ query: { type: 'all' } })
           this.form.formatType = ''
           break
         }
@@ -119,11 +119,11 @@ export default {
           type: 'warning'
         })
       } else {
-        var start = moment(this.value4[0]).format('YYYY-MM-DD HH:mm:ss')
-        var end = moment(this.value4[1]).format('YYYY-MM-DD HH:mm:ss')
+        var startTime = moment(this.value4[0]).format('YYYY-MM-DD HH:mm:ss')
+        var endTime = moment(this.value4[1]).format('YYYY-MM-DD HH:mm:ss')
         var newObj = {}
-        newObj.time1 = start
-        newObj.time2 = end
+        newObj.time1 = startTime
+        newObj.time2 = endTime
         this.$store.dispatch('timeline_action', { newObj })
       }
     }

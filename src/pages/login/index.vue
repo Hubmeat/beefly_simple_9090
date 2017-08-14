@@ -22,7 +22,7 @@
                   </el-form-item>
                   <div class="button-group">
                     <el-row>
-                        <el-button class="login" name="userName" @click="handleSubmit">登录</el-button>
+                        <button type="button" class="login" name="userName" @click="handleSubmit">登录</button>
                     </el-row>
                    <el-row>
                       <el-button class="forget_psd" @click="handleFindPsd" name="passWord">忘记密码</el-button>
@@ -273,10 +273,17 @@ export default {
                   message: message,
                   type: 'success'
                 })
-                // var data = JSON.parse(JSON.parse(res.text).data)
-                // localStorage.setItem('userinfo',JSON.parse(res.text).data)
-                // this.$store.commit('getUserInfo',data)
-                 this.$router.push('/index')
+                var arr = JSON.parse(res.text).data
+                var newArr = []
+                var menuCode = []
+                for (var i = 0; i < arr.length; i++) {
+                  
+                  menuCode.push(arr[i].menuCode)
+                }
+                newArr.push(menuCode)
+                // newArr.roleId = arr[1].roleId
+                sessionStorage.setItem('userinfo',newArr.toString())
+                this.$router.push('/index?cityId=0')
               } else {
                 var message = JSON.parse(res.text).message
                 this.$message.error(message);

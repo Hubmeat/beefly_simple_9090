@@ -30,6 +30,17 @@ Vue.directive('title', {
     }
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.path == '/login') {
+    sessionStorage.removeItem('userinfo');
+  }
+  let user = sessionStorage.getItem('userinfo')
+  if (!user && to.path != '/login') {
+    next({ path: '/login' })
+  } else {
+    next()
+  }
+})
 
 
 /* eslint-disable no-new */
@@ -82,10 +93,10 @@ new Vue({
         //     })
         // }
     },
-    beforeUpdate () {
-        this.getCityList()
-    },
-    watch: {
-        '$route': 'getCityList'
-    }
+    // beforeUpdate () {
+    //     this.getCityList()
+    // },
+    // watch: {
+    //     '$route': 'getCityList'
+    // }
 })

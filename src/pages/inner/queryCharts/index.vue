@@ -5,12 +5,12 @@
     </el-row>
     <el-row class="watchButton">
       <el-col :span="2">
-        <span class="orderMoney"></span>
-        <i>金额</i>
+        <span class="orderNum"></span>
+        <i>实际收益</i>
       </el-col>
       <el-col :span="2">
-        <span class="orderNum"></span>
-        <i>单数</i>
+        <span class="orderMoney"></span>
+        <i>金额</i>
       </el-col>
     </el-row>
     <div class="chartsRect">
@@ -70,7 +70,7 @@ div.queryCharts div.watchButton {
 div.queryCharts div.watchButton div.el-col-2 {
   float: right;
   /* margin-left: 20px; */
-  width: 6.668%
+    width: 7.3%;
 }
 
 div.queryCharts div.watchButton span {
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     handleClick () {
-      this.$router.push('/index/incomingRank')
+      this.$router.push('/index/incomingRank?type=daily')
     }
   },
   components: {

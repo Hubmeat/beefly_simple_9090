@@ -74,17 +74,37 @@ export default [
       {
         path: '/',
         name: '首页',
-        component: pageIndex
+        component: pageIndex,
+        auth: 10
+      },
+      {
+        path: '/index/partnerManager',
+        name: '合伙人管理',
+        component: partnerManager,
+        auth: 20,
+        children: [{
+          path: '/index/partnerManager/addpartner',
+          name: '添加合伙人',
+          component: addpartner
+        }]
       },
       {
         path: '/index/carManager',
         name: '车辆管理',
-        component: carManager
+        component: carManager,
+        auth: 30
+      },
+      {
+        path: '/index/incomingDetail',
+        name: '收益明细',
+        component: incomingDetail,
+        auth: 40
       },
       {
         path: '/index/incomingRank',
-        name: '',
+        name: '报表管理',
         component: incomingRank,
+        auth: 50,
         children: [
           {
             path: '/',
@@ -94,20 +114,16 @@ export default [
           {
             path: '/index/incomingRank/queryCharts',
             name: '查看统计图',
+            auth: 51,
             component: queryCharts
           }
         ]
       },
-      {
-        path: '/index/incomingDetail',
-        name: '收益明细',
-        component: incomingDetail
-      },
-      {
-        path: '/index/allDaysData',
-        name: '24小时数据走势',
-        component: allDaysData
-      },
+      // {
+      //   path: '/index/allDaysData',
+      //   name: '24小时数据走势',
+      //   component: allDaysData
+      // },
       // {
       //   path: '/index/hotMap',
       //   name: '热力图',
@@ -119,13 +135,65 @@ export default [
       //   component: abnormalData
       // },
       {
-        path: '/index/partnerManager',
-        name: '合伙人管理',
-        component: partnerManager,
+        path: '/index/settlementManager',
+        name: '结算管理',
+        component: settlementManager,
+        auth: 60
+      },
+      {
+        path: '/index/memberCenter',
+        name: '个人中心',
+        auth: 70,
+        component: memberCenter,
         children: [{
-          path: '/index/partnerManager/addpartner',
-          name: '添加合伙人',
-          component: addpartner
+            path: '/index/memberCenter/bindEamil',
+            name: '绑定邮箱',
+            component: bindEamil
+        }, 
+        {
+            path: '/index/memberCenter/updateEmail',
+            name: '修改邮箱',
+            component: updateEmail
+        },
+        {
+            path: '/index/memberCenter/bindTel',
+            name: '绑定手机号',
+            component: bindTel
+        }, 
+        {
+            path: '/index/memberCenter/updateTel',
+            name: '修改手机号',
+            component: updateTel
+        }, 
+        {
+            path: '/index/memberCenter/amendPassword',
+            name: '修改密码',
+            component: amendPassword
+        }]
+      },
+      {
+        path: '/index/accountManager',
+        name: '账号管理',
+        auth: 80,
+        component: accountManager,
+        children: [{
+          path: '/index/accountManager/addaccount',
+          name: '添加平台账号',
+          component: addaccount
+        }, {
+          path: '/index/accountManager/addaccount2',
+          name: '添加加盟商账号',
+          component: addaccount2
+        }]
+      },
+      {
+        path: '/index/roleManager',
+        name: '角色管理',
+        component: roleManager,
+        children: [{
+          path: '/index/roleManager/addrole',
+          name: '添加角色',
+          component: addrole
         }]
       },
       {
@@ -157,65 +225,6 @@ export default [
         path: '/index/applysubmitted',
         name: '申请结算(结算状态)',
         component: applysubmitted
-      },
-      {
-        path: '/index/settlementManager',
-        name: '结算管理',
-        component: settlementManager
-      },
-      {
-        path: '/index/accountManager',
-        name: '账号管理',
-        component: accountManager,
-        children: [{
-          path: '/index/accountManager/addaccount',
-          name: '添加平台账号',
-          component: addaccount
-        }, {
-          path: '/index/accountManager/addaccount2',
-          name: '添加加盟商账号',
-          component: addaccount2
-        }]
-      },
-       {
-          path: '/index/memberCenter',
-          name: '个人中心',
-          component: memberCenter,
-          children: [{
-              path: '/index/memberCenter/bindEamil',
-              name: '绑定邮箱',
-              component: bindEamil
-          }, 
-          {
-              path: '/index/memberCenter/updateEmail',
-              name: '修改邮箱',
-              component: updateEmail
-          },
-          {
-              path: '/index/memberCenter/bindTel',
-              name: '绑定手机号',
-              component: bindTel
-          }, 
-          {
-              path: '/index/memberCenter/updateTel',
-              name: '修改手机号',
-              component: updateTel
-          }, 
-          {
-              path: '/index/memberCenter/amendPassword',
-              name: '修改密码',
-              component: amendPassword
-          }]
-      },
-      {
-        path: '/index/roleManager',
-        name: '角色管理',
-        component: roleManager,
-        children: [{
-          path: '/index/roleManager/addrole',
-          name: '添加角色',
-          component: addrole
-        }]
       },
       {
         path: '/index/messageCenter',

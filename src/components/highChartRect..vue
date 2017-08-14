@@ -25,34 +25,36 @@
         noData: false
       }
     },
-    mounted: function () {
+    mounted () {
       if (this.$store.state.consumeData.length === 0) {
         request
-          .post(host + 'franchisee/revenue/getRevenueSort')
+          .post(host + 'beepartner/admin/statistics/adminStatistics')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
           .send({
-            type: this.$route.query.type
+            'type': this.$route.query.type,
+            'showType': 'chart'
           })
           .end((error, res) => {
             if (error) {
               console.log('error:', error)
             } else {
-              console.log(JSON.parse(res.text).list)
-              var arr = JSON.parse(res.text).list
+              this.checkLogin(res)
+              var arr = JSON.parse(res.text).data
               var newArr = []
               for (var i = 0; i < arr.length; i++) {
                 var obj = {}
-                obj.allianceArea = arr[i].area
+                obj.allianceArea = arr[i].cityName
                 obj.orderNum = arr[i].totalBill
-                obj.totalBill = arr[i].money
-                obj.couponAmount = arr[i].couponAmount
-                obj.userPayAmount = arr[i].userPayAmount
+                obj.totalBill = arr[i].totalMoney
+                obj.couponAmount = arr[i].totalDiscount
+                obj.userPayAmount = arr[i].actualMoney
                 newArr.push(obj)
               }
               this.$store.dispatch('consumeData_action', {newArr})
+              alert(this.$store.state.consumeData)
               this.getChartDate()
               /**
                * 判断是否显示暂无数据
@@ -88,6 +90,9 @@
               downloadPDF: '下载PDF文件',
               downloadPNG: '下载PNG文件',
               downloadSVG: '下载SVG文件'
+            },
+            scrollbar: {
+              enabled: true
             },
             credits: {
               enabled: true,
@@ -164,7 +169,7 @@
         })
 
         var allMoney = this.$store.state.consumeData.map((item) => {
-          return item.totalBill
+          return item.userPayAmount
         })
         this.x_data = res
         this.orderNumber = order
@@ -180,7 +185,7 @@
         })
 
         var allMoney = arr.map((item) => {
-          return item.totalBill
+          return item.userPayAmount
         })
         
         this.$set(res, this.x_data)
@@ -196,35 +201,34 @@
       },
       dataUpdate () {
           request
-            .post(host + 'franchisee/revenue/getRevenueSort')
+            .post(host + 'beepartner/admin/statistics/adminStatistics')
             .withCredentials()
             .set({
               'content-type': 'application/x-www-form-urlencoded'
             })
             .send({
-              'franchiseeId': '123456',
-              'userId': 'admin',
-              'type': this.$route.query.type
+              'type': this.$route.query.type,
+              'showType': 'chart'
             })
             .end((error, res) => {
-              // console.log('this is entry')
               if (error) {
                 console.log('error:', error)
               } else {
-                if (JSON.parse(res.text).list.length === 0) {
+                if (JSON.parse(res.text).data.length === 0) {
                   $('#container').html('')
                   this.noData = true
                 } else {
+                  this.checkLogin(res)
                   this.noData = false
-                  var arr = JSON.parse(res.text).list
+                  var arr = JSON.parse(res.text).data
                   var newArr = []
                   for (var i = 0; i < arr.length; i++) {
                     var obj = {}
-                    obj.allianceArea = arr[i].area
+                    obj.allianceArea = arr[i].cityName
                     obj.orderNum = arr[i].totalBill
-                    obj.totalBill = arr[i].money
-                    obj.couponAmount = arr[i].couponAmount
-                    obj.userPayAmount = arr[i].userPayAmount
+                    obj.totalBill = arr[i].totalMoney
+                    obj.couponAmount = arr[i].totalDiscount
+                    obj.userPayAmount = arr[i].actualMoney
                     newArr.push(obj)
                   }
 
@@ -246,38 +250,43 @@
                 'content-type': 'application/x-www-form-urlencoded'
               })
               .send({
-                'franchiseeId': '123456',
-                'userId': 'admin',
-                'start': this.$store.state.timeline.newObj.time1,
-                'end': this.$store.state.timeline.newObj.time2,
-                'type': 4
+                'startTimeStr': this.$store.state.timeline.newObj.time1,
+                'endTimeStr': this.$store.state.timeline.newObj.time2,
+                'type': 'define',
+                'showType': 'chart'
               })
               .end((error, res) => {
                 if (error) {
                   console.log('error:', error)
                 } else {
-                  if (JSON.parse(res.text).list.length === 0) {
+                  if (JSON.parse(res.text).data.length === 0) {
                     $('#container').html('')
                     this.noData = true
                   } else {
+                    this.checkLogin(res)
                     this.noData = false
-                    var arr = JSON.parse(res.text).list
+                    var arr = JSON.parse(res.text).data
                     var newArr = []
                     for (var i = 0; i < arr.length; i++) {
                       var obj = {}
-                      obj.allianceArea = arr[i].area
+                      obj.allianceArea = arr[i].cityName
                       obj.orderNum = arr[i].totalBill
-                      obj.totalBill = arr[i].money
-                      obj.couponAmount = arr[i].couponAmount
-                      obj.userPayAmount = arr[i].userPayAmount
+                      obj.totalBill = arr[i].totalMoney
+                      obj.couponAmount = arr[i].totalDiscount
+                      obj.userPayAmount = arr[i].actualMoney
                       newArr.push(obj)
-                    }
-                    this.getChartByRoute(newArr)
-                    this.createChartsShap()                    
+                    }                   
                   }
+                  this.getChartByRoute(newArr)
+                  this.createChartsShap() 
                 }
               })
 
+        }
+      },
+      checkLogin (res) {
+        if (JSON.parse(res.text).message === '用户登录超时') {
+          this.$router.push('/login')
         }
       }
     },

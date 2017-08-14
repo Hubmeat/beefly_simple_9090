@@ -21,10 +21,17 @@
       <div id='distribution_table'>
         <div class='distribution_table_search'>
           <h5>【{{franchiseeDetail.cityName}}地区】待分配的车辆</h5>
-          <input type="text" v-on:blur='inputBlurFun' ref="val" placeholder="车辆号\终端号">
+          <input type="text" v-on:blur='inputBlurFun' ref="val" placeholder="车辆号\终端号" />
           <span>
             <i class='el-icon-search'></i>
           </span>
+
+          <input type="text" v-model="choseBikes" style="margin-left: 20px;" placeholder="需要分配的车辆数量" />
+          <span>
+            <i></i>
+          </span>
+
+          <button @click="findBikeByInfo" class="distribution_btn">查询</button>
         </div>
 
         <div class='table'>
@@ -42,6 +49,11 @@
                 type="selection"
                 min-width="55"
                 >
+              </el-table-column>
+              <el-table-column
+                prop="code"
+                label="车牌号"
+                min-width="80">
               </el-table-column>
               <el-table-column
                 prop="boxCode"
@@ -85,7 +97,7 @@
             <li :key="item" v-for="(item,index) of countAllotCars">{{item}} <span><i class="iconfont" @click="removeCar(index)">&#xe60a;</i></span></li>
           </ul>
           <el-row class="allot">
-            <button class="btn_bike">确定</button> 
+            <button @click="confimBikes" class="btn_bike">确定</button> 
             <button class="btn_bike">取消</button> 
           </el-row>
       </div>
@@ -94,7 +106,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .btn_bike:nth-of-type(1) {
   width: 60px;
   height: 30px;
@@ -131,6 +143,7 @@ div.allot{text-align: center}
   height: 110px;
   display: block;
   background: #fff;
+  border: 1px solid #e7ecf1;
   padding: 10px 20px 20px 20px;
   margin-bottom: 20px;
 }
@@ -189,7 +202,7 @@ div.allot{text-align: center}
   border: 1px solid #e7ecf1;
   margin-right: 20px;
   background: #fff;
-  height:100%;
+  height:98%;
 }
 
 .distribution_table_search>h5 {
@@ -201,11 +214,11 @@ div.allot{text-align: center}
 }
 
 .distribution_table_search input {
-  width: 180px;
+  width: 120px;
   height: 28px;
   display: block;
   border-radius: 5px 0 0 5px;
-  border: 1px solid #bfcbd9;
+  border: 1px solid #ddd;
   text-indent: 10px;
   border-right: none;
   float: left;
@@ -233,11 +246,16 @@ color: #bfcbd9;
   line-height: 28px;
   display: block;
   border-radius: 0 5px 5px 0;
-  border: 1px solid #bfcbd9;
+  border: 1px solid #ddd;
   border-left: none;
   float: left;
   margin-top: 14px;
   outline: none;color: #bfcbd9; 
+}
+
+.distribution_table_search .el-icon-search:before {
+    content: "\E61D";
+    color: #ddd;
 }
 
 #right_hasbeen_distribution {
@@ -245,14 +263,14 @@ color: #bfcbd9;
   border: 1px solid #e7ecf1;
   float: left;
   padding: 29px 0 10px 0;
-  width: 23.88%;
+  width: 24.88%;
   height:100%;
   box-sizing: border-box
 }
 
 #right_hasbeen_distribution h6 {
-  padding: 0px 14px 8px 20px;
-  width: 220px;
+  padding: 0px 0px 8px 20px;
+  width: 266px;
   height: 30px;
   line-height: 30px;
 }
@@ -311,6 +329,26 @@ table.franchiseeDetail tr td span{text-align: right;width:100px;display:inline-b
   min-height: 230px;
 }
 .el-pagination{margin-left:0;margin-top:20px;margin-bottom:10px;padding-left:0;border-left:0;}
+
+.distribution_btn {
+  width: 80px;
+  float: left;
+  height: 30px;
+  line-height: 11px;
+  color: #fff;
+  /* margin-top: 10px; */
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  margin-top: 14px;
+  margin-left: 20px;
+  cursor: pointer;
+  background: rgba(52,52,67, 0.8);
+}
+
+.distribution_btn:hover {
+  opacity: 0.8;
+}
 </style>
 
 <script>
@@ -333,11 +371,78 @@ export default {
       tableData_distribution: [],
       multipleSelection:[],
       countAllotCars:[],
+      choseBikes: '',
+      signForQuery: false
     }
   },
   methods:{
     cleanCar(){
+      this.loadDate()
       this.countAllotCars = []
+    },
+    loadDate () {
+      this.signForQuery = false
+      var id = this.$route.params.id.split('&')[0]
+      var cityPartnerId = this.$route.params.id.split('&')[1]
+      this.loading2  = true
+      request
+        .post(host + 'beepartner/admin/cityPartner/getCityPartnerDetail')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .send({
+          'id':id,
+          'cityPartnerId': cityPartnerId
+        })
+        .end((err, res) => {
+          if (err) {
+            this.loading2 = false
+            console.log('err:' + err)
+          } else {
+            this.checkLogin(res)
+            this.loading2 = false
+            var res = JSON.parse(res.text).data
+            console.log(res)
+            // this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
+            this.franchiseeDetail = res
+            this.cityCode = res.cityId
+            if(this.cityCode.length>0){
+              this.loading2 = true
+              request.post(host + 'beepartner/admin/Bike/findBike')
+                .withCredentials()
+                .set({
+                  'content-type': 'application/x-www-form-urlencoded'
+                })
+                .send({
+                  'type': 1,
+                  'cityCode':this.cityCode,
+                  'choseBikes': this.choseBikes === ''?0:this.choseBikes
+                })
+                .end((error,res)=>{
+                  if(error){
+                    this.loading2 = false
+                    console.log(error)
+                  }else{
+                    this.checkLogin(res)
+                    this.loading2 = false
+                    var data = JSON.parse(res.text).data
+                    // var newData = data.map((item)=>{
+                    //   return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
+                    // })
+                    this.tableData_distribution = data
+                    var totalPage = Number(JSON.parse(res.text).totalPage)
+                    if(totalPage>1){
+                      this.pageShow = true
+                    }else{
+                      this.pageShow = false
+                    }
+                    this.totalItems = Number(JSON.parse(res.text).totalItems)
+                  }
+                })
+            }
+          }
+        })
     },
     removeCar(index){
       this.countAllotCars.splice(index,1)
@@ -367,36 +472,72 @@ export default {
         console.log(`每页 ${val} 条`);
       },
     handleCurrentChange(val) {
-      this.loading2 = true
-      request
-        .post(host + 'beepartner/admin/Bike/findBike')
-        .withCredentials()
-        .set({
-          'content-type': 'application/x-www-form-urlencoded'
-        })
-        .send({
-          'type': 1,
-          'cityCode':this.cityCode,
-          'currentPage': val
-        })
-        .end((error,res)=>{
-          if(error){
-            this.loading2 = false
-            console.log(error)
-          }else{
-            this.checkLogin(res)
-            this.loading2 = false
-            var data = JSON.parse(res.text).data
-            this.tableData_distribution = data
-            var totalPage = Number(JSON.parse(res.text).totalPage)
-            if(totalPage>1){
-              this.pageShow = true
+      if (this.signForQuery = false) {
+        this.loading2 = true
+        request
+          .post(host + 'beepartner/admin/Bike/findBike')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'type': 1,
+            'cityCode':this.cityCode,
+            'currentPage': val
+          })
+          .end((error,res)=>{
+            if(error){
+              this.loading2 = false
+              console.log(error)
             }else{
-              this.pageShow = false
+              this.checkLogin(res)
+              this.loading2 = false
+              var data = JSON.parse(res.text).data
+              this.tableData_distribution = data
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              if(totalPage>1){
+                this.pageShow = true
+              }else{
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
             }
-            this.totalItems = Number(JSON.parse(res.text).totalItems)
-          }
-        })
+          })
+      } else {
+        this.loading2 = true
+        request
+          .post(host + 'beepartner/admin/cityPartner/getNotAllotBikes')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'currentPage': val,
+            'cityCode':this.cityCode,
+            'limitNum': this.choseBikes === ''?0:this.choseBikes
+          })
+          .end((error,res)=>{
+            if(error){
+              this.loading2 = false
+              console.log(error)
+            }else{
+              this.checkLogin(res)
+              this.loading2 = false
+              var data = JSON.parse(res.text).data
+              // var newData = data.map((item)=>{
+              //   return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
+              // })
+              this.tableData_distribution = data
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              if(totalPage>1){
+                this.pageShow = true
+              }else{
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+            }
+          })
+      }
     },
     checkLogin (res) {
       if (JSON.parse(res.text).message === '用户登录超时') {
@@ -405,6 +546,10 @@ export default {
     },
     inputBlurFun () {
       if (this.$refs.val.value !== '') {
+        /**
+         * 关闭查询标识
+         */
+        this.signForQuery = false
         this.loading2 = true
         request
           .post(host + 'beepartner/admin/Bike/findBike')
@@ -424,6 +569,10 @@ export default {
             }else{
               this.checkLogin(res)
               this.loading2 = false
+              /**
+               * 关闭查询标识
+               */
+              this.signForQuery = false
               var data = JSON.parse(res.text).data
               this.tableData_distribution = data
               var totalPage = Number(JSON.parse(res.text).totalPage)
@@ -466,6 +615,88 @@ export default {
             }
           })
       }
+    },
+    findBikeByInfo () {
+      if (this.choseBikes === '') {
+        this.$message({
+          message: '请输入要分配的车辆总数',
+          type: 'warning'
+        })  
+      } else {
+        this.signForQuery = true
+        this.loading2 = true
+        request
+          .post(host + 'beepartner/admin/cityPartner/getNotAllotBikes')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'cityCode':this.cityCode,
+            'limitNum': this.choseBikes === ''?0:this.choseBikes
+          })
+          .end((error,res)=>{
+            if(error){
+              this.loading2 = false
+              console.log(error)
+            }else{
+              this.checkLogin(res)
+              this.loading2 = false
+              var data = JSON.parse(res.text).data
+              // var newData = data.map((item)=>{
+              //   return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
+              // })
+              this.tableData_distribution = data
+              var totalPage = Number(JSON.parse(res.text).totalPage)
+              if(totalPage>1){
+                this.pageShow = true
+              }else{
+                this.pageShow = false
+              }
+              this.totalItems = Number(JSON.parse(res.text).totalItems)
+            }
+          })
+        }
+    },
+    confimBikes () {
+      if (this.countAllotCars.length === 0) {
+         this.$message({
+          message: '当前没有已选的车辆',
+          type: 'warning'
+        })       
+      } else {
+        console.log(this.$route.params.id.split('&')[0])
+        console.log(this.$route.params.id.split('&')[1])
+        request
+          .post(host + 'beepartner/admin/cityPartner/allotBikes')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'id': this.$route.params.id.split('&')[0],
+            'cityPartnerId': this.$route.params.id.split('&')[1],
+            'bikes': this.countAllotCars.toString()
+          })
+          .end((error,res)=>{
+            if(error){
+              this.loading2 = false
+              console.log(error)
+            }else{
+              this.checkLogin(res)
+              if (JSON.parse(res.text).resultCode === 0) {
+                this.$message({
+                  message: '车辆分配成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message.error('车辆分配失败，请重试！');               
+              }
+              this.countAllotCars = []
+              this.loadDate()
+            }
+          })  
+      }
     }
   },
   // updated:function(){
@@ -480,68 +711,16 @@ export default {
   //   }
   // },
   mounted () {
-    var id = this.$route.params.id.split('&')[0]
-    var cityPartnerId = this.$route.params.id.split('&')[1]
-    this.loading2  = true
-    request
-      .post(host + 'beepartner/admin/cityPartner/getCityPartnerDetail')
-      .withCredentials()
-      .set({
-        'content-type': 'application/x-www-form-urlencoded'
-      })
-      .send({
-        'id':id,
-        'cityPartnerId': cityPartnerId
-      })
-      .end((err, res) => {
-        if (err) {
-          this.loading2 = false
-          console.log('err:' + err)
-        } else {
-          this.checkLogin(res)
-          this.loading2 = false
-          var res = JSON.parse(res.text).data
-          console.log(res)
-          // this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
-          this.franchiseeDetail = res
-          this.cityCode = res.cityId
-          if(this.cityCode.length>0){
-            this.loading2 = true
-            request.post(host + 'beepartner/admin/Bike/findBike')
-              .withCredentials()
-              .set({
-                'content-type': 'application/x-www-form-urlencoded'
-              })
-              .send({
-                'type': 1,
-                'cityCode':this.cityCode
-              })
-              .end((error,res)=>{
-                if(error){
-                  this.loading2 = false
-                  console.log(error)
-                }else{
-                  this.checkLogin(res)
-                  this.loading2 = false
-                  var data = JSON.parse(res.text).data
-                  // var newData = data.map((item)=>{
-                  //   return Object.assign({},item,{onlineTime:moment(item.onlineTime).format('YYYY-MM-DD')})
-                  // })
-                  this.tableData_distribution = data
-                  var totalPage = Number(JSON.parse(res.text).totalPage)
-                  if(totalPage>1){
-                    this.pageShow = true
-                  }else{
-                    this.pageShow = false
-                  }
-                  this.totalItems = Number(JSON.parse(res.text).totalItems)
-                }
-              })
-          }
-        }
-      })
+    this.loadDate()
   },
   watch:{
+    'choseBikes': {
+      handler: function () {
+        if (this.choseBikes === '') {
+          this.loadDate()
+        }        
+      }
+    }
     // currentPage3:{
     //   handler:function(val,oldVal){
     //     if(this.cityCode.length>0){

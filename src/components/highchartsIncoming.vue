@@ -1,5 +1,12 @@
 <template>
-   <div id="container2" style="width:98%;height:200px;"></div>
+  <div style="position: relative;">
+      <div v-title>报表管理-消费数据-统计图</div>
+      <div class="my_noDate" style="position: absolute; min-height:40px; height: 40px;" v-show="noData">
+        <img src="../assets/img/2.png" />
+        <p>暂无数据</p>
+      </div>
+      <div id="container2" style="width:98%;height:400px; position: relative;"></div>
+  </div>
 </template>
 <script>
   import { host } from '../config/index.js'
@@ -9,8 +16,19 @@
   // 在 Highcharts 加载之后加载功能模块
   require('highcharts/modules/exporting')(Highcharts)
   export default {
-    mounted: function () {
-      this.initChart()
+    data () {
+      return {
+        cityList: [],
+        noData: false,
+        chartData: [],
+      }
+    },
+    mounted () {
+      this.loadData()
+      var that = this
+      setInterval( function () {
+        that.loadData()
+      }, 600000)
     },
     methods: {
       initChart () {
@@ -40,7 +58,7 @@
             text: ' '                 // 指定图表标题
           },
           xAxis: {
-            categories: ['无为', '肥西', '蒙城'],
+            categories: this.cityList,
             crosshair: true
           },
           yAxis: {
@@ -83,15 +101,31 @@
               data: [
                 {
                   color: 'rgba(153,102,0,1)',
-                  y: 200
+                  y: this.chartData[0]
                 },
                 {
                   color: 'rgba(0,204,0,1)',
-                  y: 300
+                  y: this.chartData[1]
                 },
                 {
-                  color: 'rgba(0,204,204,1)',
-                  y: 1300
+                  color: 'rgba(0,221,204,1)',
+                  y: this.chartData[2]
+                },
+                {
+                  color: 'rgba(0,112,204,1)',
+                  y: this.chartData[3]
+                },
+                {
+                  color: 'rgba(0,204,111,1)',
+                  y: this.chartData[4]
+                },
+                {
+                  color: 'rgba(0,204,122,1)',
+                  y: this.chartData[5]
+                },
+                {
+                  color: 'rgba(0,210,204,1)',
+                  y: this.chartData[6]
                 }
               ],
               tooltip: {
@@ -107,38 +141,57 @@
 
         })
       },
-      routeChange () {
-        var cityId;
-        if (this.$route.query.type === underfined) {
-          cityId = 0
-        } else {
-          cityId = this.$route.query.type
-        }
-
+      loadData () {
         request
-          .post(host + '')
+          .post(host + 'beepartner/admin/statistics/adminRevenue')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
           })
-          .send({
-            'cityId': cityId
-          })
+          .send()
           .end((err, res) => {
             if (err) {
+              this.noData = true
               console.log('err:' + err)
             } else {
-              console.log(JSON.parse(res.text).data)
+              this.checkLogin(res)
+              var data = JSON.parse(res.text).data || []
+              if (JSON.parse(res.text).data.length === 0) {
+                this.noData = true
+              }
+              var newCity = []
+              data.map( (item) => {
+                newCity.push(item.cityName)
+                return newCity
+              })
+
+              var newChartData = []
+              data.map( (item) => {
+                newChartData.push(item.actualMoney)
+                return newChartData
+              })
+              this.chartData = newChartData
+              this.cityList = newCity
+              this.initChart()
             }
           })
+      },
+      checkLogin (res) {
+        if (JSON.parse(res.text).message === '用户登录超时') {
+          this.$router.push('/login')
+        }
       }
-    },
-    watch: {
-      '$route': 'routeChange'
     }
   }
 </script>
 <style>
   div#container{width:100%;height:265px;}
   div#container g.highcharts-legend-item{display:none;}
+  .my_noDate {
+    width: 100%;
+    text-align: center;
+    font-size: 22px;
+    color: #ccc;
+    /* left: 50%; */
+  }
 </style>

@@ -2,7 +2,7 @@
   <div class="theme">
     <div class="siderBar">
       <el-menu default-active="2" class="el-menu-vertical-demo" router>
-        <el-menu-item index="/index">
+        <el-menu-item index="/index?cityId=0">
           <i class="iconfont my_icon_class">&#xe608;</i>首页</el-menu-item>
         <el-menu-item index="/index/partnerManager">
           <i class="iconfont my_icon_class">&#xe623;</i>合伙人管理</el-menu-item>        
@@ -15,7 +15,7 @@
           <template slot="title">
             <i class="iconfont my_icon_class">&#xe67d;</i>报表管理</template>
           <el-menu-item-group>
-            <el-menu-item index="/index/incomingRank?type=0">收益排行</el-menu-item>
+            <el-menu-item index="/index/incomingRank?type=daily">收益排行</el-menu-item>
             <!-- <el-menu-item index="/index/earningsDetail?type=getAllRevenue">收益明细</el-menu-item> -->
             <!-- <el-menu-item index="/index/allDaysData?type=0">24小时数据走势</el-menu-item> -->
             <!-- <el-menu-item index="/index/hotMap?type=curHour">热力图</el-menu-item> -->
