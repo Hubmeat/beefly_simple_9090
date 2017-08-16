@@ -274,15 +274,20 @@ export default {
                   type: 'success'
                 })
                 var arr = JSON.parse(res.text).data
-                var newArr = []
-                var menuCode = []
-                for (var i = 0; i < arr.length; i++) {
+                // var newArr = []
+                // var menuCode = []
+                // for (var i = 0; i < arr.length; i++) {
                   
-                  menuCode.push(arr[i].menuCode)
-                }
-                newArr.push(menuCode)
+                //   menuCode.push(arr[i].menuCode)
+                // }
+                // newArr.push(menuCode)
                 // newArr.roleId = arr[1].roleId
-                sessionStorage.setItem('userinfo',newArr.toString())
+                // sessionStorage.setItem('userinfo',newArr.toString())
+                var authList = arr.map((item)=>{
+                  return item.menuCode
+                })
+
+                localStorage.setItem('userinfo',JSON.stringify(authList))
                 this.$router.push('/index?cityId=0')
               } else {
                 var message = JSON.parse(res.text).message

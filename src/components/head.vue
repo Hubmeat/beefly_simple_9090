@@ -36,7 +36,7 @@ export default {
                 var code = JSON.parse(res.text).resultCode
                 var message = JSON.parse(res.text).message
                 if(code === 1){
-                    sessionStorage.removeItem('userinfo');
+                    localStorage.removeItem('userinfo');
                     that.$message({
                         type:'success',
                         message:message

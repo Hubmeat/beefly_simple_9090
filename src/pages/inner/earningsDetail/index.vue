@@ -28,7 +28,7 @@
 			<div id="earD_all">
 				<h1>
           <el-tooltip class="item" effect="dark" content="所有车辆骑行收益" placement="bottom-end"> 
-					  <p>合计：<span>30000元</span></p>
+					  <p>合计：<span>{{sumMoney}}元</span></p>
           </el-tooltip>
 					<p @click='export_excel'>导出明细到Excel</p>
 				</h1>
@@ -336,11 +336,11 @@ export default {
       isMonth:false,
       AllTime:false,
       spceTime:false,
+      sumMoney: 0
     }
   },
   mounted () {
     this.getCityList()
-    this.$router.push('/index/earningsDetail?type=0')
 
     this.getDate()
   },
@@ -409,6 +409,7 @@ export default {
             var totalPage = Number(JSON.parse(res.text).totalPage)
             var newArr = JSON.parse(res.text).data
             this.totalItems = Number(JSON.parse(res.text).totalItems)
+            this.sumMoney = JSON.parse(res.text).sumMoney
             if (totalPage > 1) {
               this.pageShow = true
             } else {

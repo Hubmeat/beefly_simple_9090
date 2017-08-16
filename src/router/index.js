@@ -2,32 +2,28 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routeConfig from './router-config.js'
 
-var user = sessionStorage.getItem('userinfo');
-// if (user) {
-//   user = JSON.parse(user);
-// }
-// var that = this;
-// var menuData = JSON.parse(sessionStorage.getItem("userinfo"));
-// that.$router.options.routes.forEach(function(item) {
-// console.log(item)
-//   menuData.forEach(function(menu) {
-//     console.log(menu)
-//   })
-// })
 
-// routeConfig[3].children.map( (item) => {
-//   console.log(item.auth)
-//   if (user.indexOf(item.auth) === -1) {
-//     item.hidden = false
-//   }
-//   if (item.name === '报表管理') {
-//     item.children.map( (list) => {
-//       if (user.indexOf(list.auth) === -1) {
-//         list.hidden = false
-//       }
-//     })
-//   }
-// })
+localStorage.setItem('userinfo', '[]')
+
+function assignRouter() {
+  var userInfo = localStorage.getItem('userinfo') || '[]'
+  var authList = JSON.parse(userInfo)
+  var _index = null
+  var obj = {}
+  var arr = []
+  console.log(routeConfig)
+  authList.map((auth)=>{
+    routeConfig[3].children.map((item)=>{
+          if(auth*1 === item.auth){
+              arr.push(item)
+           }
+      })
+  })
+ routeConfig[3] = Object.assign({},routeConfig[3],{children:arr})
+ routeConfig.splice(3,1, routeConfig[3])
+//console.log(routeConfig)
+}
+assignRouter()
 
 Vue.use(Router)
 export default new Router({

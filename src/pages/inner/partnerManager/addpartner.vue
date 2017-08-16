@@ -105,7 +105,11 @@
         <el-upload
           class="avatar-uploader"
           :show-file-list="false"
-          action='http://localhost:9090/static/headerImg'
+          enctype="multipart/form-data"
+          :multiple="true"
+          :with-credentials="true"
+          :headers='header'
+          action='http://192.168.3.7:8080/beepartner/admin/cityPartner/addCityPartner?cityPartnerId=123456'
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -228,7 +232,7 @@
     border: 1px dashed #ddd;
     position: relative;
     text-align: center;
-    left: 10%;
+    left: 2%;
     top: 0;
   }
 
@@ -287,7 +291,10 @@ export default {
         phone: '',
         email: '',
         userId: '',
-        password: ''
+        password: '',
+      },
+      header: {
+        'content-type': 'application/x-www-form-urlencoded'
       },
       rules: {
         companyName: [
@@ -529,7 +536,9 @@ export default {
       })
     },
     handleAvatarSuccess (res, file) {
-      console.log(file)
+      console.log('SUCCESS')
+      // console.log(file)
+      // console.log(URL.createObjectURL(file.raw))
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload (file) {
@@ -542,6 +551,12 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+      // var reader = new FileReader();   
+      // reader.readAsDataURL(file);   
+      // reader.onload = function(e){   
+      //         alert(this.result); 
+  
+      // }
     },
     checkLogin (res) {
       if (JSON.parse(res.text).message === '用户登录超时') {

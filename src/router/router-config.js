@@ -60,7 +60,7 @@ import settlementManager from '../pages/inner/settlementManage/index.vue'
 import NotFoundPage from '../pages/404/index.vue'
 
 export default [
-  { path: '*', redirect: '/login' },
+  // { path: '*', redirect: '/login' },
   { path: '*', component: NotFoundPage },
   {
     path: '/login',
@@ -95,9 +95,9 @@ export default [
         auth: 30
       },
       {
-        path: '/index/incomingDetail',
+        path: '/index/earningsDetail',
         name: '收益明细',
-        component: incomingDetail,
+        component: earningsDetail,
         auth: 40
       },
       {
@@ -114,7 +114,6 @@ export default [
           {
             path: '/index/incomingRank/queryCharts',
             name: '查看统计图',
-            auth: 51,
             component: queryCharts
           }
         ]
@@ -137,6 +136,7 @@ export default [
       {
         path: '/index/settlementManager',
         name: '结算管理',
+        hidden: false,
         component: settlementManager,
         auth: 60
       },
