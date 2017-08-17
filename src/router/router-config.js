@@ -65,7 +65,8 @@ export default [
   {
     path: '/login',
     name: '登录',
-    component: login
+    component: login,
+    query: {redirect: '/login'}
   },
   {
     path: '/index',
@@ -102,7 +103,6 @@ export default [
       },
       {
         path: '/index/incomingRank',
-        name: '报表管理',
         component: incomingRank,
         auth: 50,
         children: [

@@ -21,8 +21,8 @@
 						<i v-else class="iconfont err">&#xe600;</i>
 					</span>
 					<span>手机验证</span>
-					<span>{{this.phone === null || ''?'未绑定':'已绑定'}}</span>
-					<span>{{this.phone === null || ''?'您尚未绑定手机，请尽快绑定手机号':'手机号码' + this.phone + '已验证'}}</span>
+					<span>{{this.phone === ''?'未绑定':'已绑定'}}</span>
+					<span>{{this.phone === ''?'您尚未绑定手机，请尽快绑定手机号':'手机号码' + this.phone + '已验证'}}</span>
 
 					<span>
 						<button @click='$router.push({path:"/index/memberCenter/bindTel"})'>绑定手机号</button>
@@ -283,8 +283,8 @@ export default {
 			updateEmail: '',
 			name: '姓名',
 			userName: '用户名',
-			phone: null,
-			email: null,
+			phone: '',
+			email: '',
 			telBinded: false,
 			emailBinded: false
 		}
@@ -353,13 +353,13 @@ export default {
 						this.name = JSON.parse(res.text).data.name
 						this.userName = JSON.parse(res.text).data.userName
 						this.phone = JSON.parse(res.text).data.phoneNo
-						if (this.phone === null || '') {
+						if (this.phone ===  '') {
 							this.telBinded = false
 						} else {
 							this.telBinded = true
 						}
 
-						if (this.email === null || '') {
+						if (this.email === '') {
 							this.emailBinded = false
 						} else {
 							this.emailBinded = true

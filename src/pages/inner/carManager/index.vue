@@ -146,8 +146,8 @@
                   prop='code'>
                   <template scope="scope">
                       <!-- <a>{{scope.row.bikeCode}}</a> -->
-                    <!-- <router-link style="color:rgb(118, 103, 233); text-decoration: none;" target='_blank' v-bind:to="{path:'/carUseDetail', query: {code:scope.row.bikeCode}}">{{scope.row.bikeCode}}</router-link>   -->
-                     <a style="color:rgb(118, 103, 233); text-decoration: none;" >{{scope.row.bikeCode}}</a>  
+                        <router-link style="color:rgb(118, 103, 233); text-decoration: none;" target='_blank' v-bind:to="{path:'/carUseDetail', query: {code:scope.row.bikeCode}}">{{scope.row.bikeCode}}</router-link>   
+                      <!-- <a style="color:rgb(118, 103, 233); text-decoration: none;" >{{scope.row.bikeCode}}</a>   -->
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -579,7 +579,7 @@ export default {
   div.selectPlace div.citys {
     display: inline-block;
     vertical-align: top;
-    width: 900px;
+    /* width: 900px; */
     margin-top: -6px;
   }
 

@@ -13,7 +13,9 @@ const state = {
     platTableData: [],
     joinTableData: [],
     keepParnterAccount:[],
-    loginSign: false
+    loginSign: false,
+    items: [],
+    isLoadRoutes: false
 }
 
 const mutations = {
@@ -68,6 +70,23 @@ const mutations = {
     loginSign (state) {
         console.log('loginsian change')
         state.loginSign = !state.loginSign
+    },
+    addMenu(state, menuItems) {
+        if (menuItems.length === 0) {
+            state.items = []
+        } else {
+            // state.items = menuItems
+            menuItems.map(function(item) {
+                item.component = item.component
+                item.children.map(function(child) {
+                    child.component = child.component
+                })
+            })
+            state.items.push(...menuItems)
+        }
+    },
+    loadRoutes(state) {
+        state.isLoadRoutes = !state.isLoadRoutes
     }
 }
 
@@ -89,12 +108,25 @@ const actions = {
     partner_action: ({ commit }, arr) => commit('setPartnerList', { arr }),
     // <=====
     // 登录超时的sign ====>
-    loginSian_action: ({ commit }) => commit('loginSign')
+    loginSian_action: ({ commit }) => commit('loginSign'),
     // <=====
+    addMenu({ commit }, menuItems) {
+        if (menuItems.length > 0) {
+            commit('addMenu', menuItems)
+        }
+    },
+    loadRoutes({ commit }) {
+        commit('loadRoutes')
+    }
 }
 
 const getters = {
-
+    menuitems: state => {
+        return state.items
+    },
+    isLoadRoutes: state => {
+        return state.isLoadRoutes
+    }
 }
 
 

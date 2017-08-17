@@ -82,7 +82,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="userPayAmount"
+          prop="balanceAmount"
           label="实际收益（元）"
         >
         </el-table-column>
@@ -112,7 +112,7 @@
 
   #earD_header div.citys {
     display: inline-block;
-    width: 1000px;
+    /* width: 1000px; */
     vertical-align: top;
   }
 
@@ -501,7 +501,7 @@ export default {
             that.$loading({customClass: 'loading_class'}).close()
             const { export_json_to_excel } = require('../../../assets/lib/js/Export2Excel.js')
             const tHeader = ['车辆编号', '加盟地区', '下单时间', '骑行时间（分钟）', '骑行里程（公里)', '订单费用', '优惠卷支付', '实际收益（元）']
-            const filterVal = ['bikeCode','cityName', 'placeOrderTime', 'rideTime', 'rideMileage', 'orderMoney', 'couponAmount', 'userPayAmount']
+            const filterVal = ['bikeCode','cityName', 'placeOrderTime', 'rideTime', 'rideMileage', 'orderMoney', 'couponAmount', 'balanceAmount']
             var startTime, endTime;
             if (that.timeLine === '') {
               startTime = ''
@@ -566,7 +566,7 @@ export default {
         obj.rideMileage = arr[i].rideMileage
         obj.orderMoney = arr[i].orderMoney
         obj.couponAmount = arr[i].couponAmount
-        obj.userPayAmount = arr[i].userPayAmount
+        obj.balanceAmount = arr[i].balanceAmount
         arrDeled.push(obj)
       }
       return arrDeled

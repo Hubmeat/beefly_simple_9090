@@ -225,7 +225,6 @@
               this.chartData = newChartData
               this.initChart()
               if (JSON.parse(res.text).data.length === 0) {
-                alert()
                 this.noData = true
                 $('#container').html('')
               }

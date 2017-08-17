@@ -75,7 +75,7 @@
           <el-button class="eidtRoleBtn" @click="dialogEditVisible = false">取消</el-button>
         </div>
       </el-dialog>
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage3" :page-size="10" layout="prev, pager, next, jumper" v-show="pageShow" :total="totalItems">
+      <el-pagination style="margin-left: 0px;" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage3" :page-size="10" layout="prev, pager, next, jumper" v-show="pageShow" :total="totalItems">
       </el-pagination>
     </div>
   
@@ -829,6 +829,10 @@ div.account>h1 button:hover {
 ul.roleList li {
   list-style-type: none;
   float: left;
+}
+
+div#addaccount_form .el-form-item__label {
+  margin-left: 0px !important;
 }
 
 span.el-tag {

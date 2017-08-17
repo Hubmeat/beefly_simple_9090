@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
   }
   let user = localStorage.getItem('userinfo') || '[]'
 //   if (!user && to.path != '/login' && user.length === 0 ) {
-  if (user.length === 0 ) {
+  if (user.length === 0 || !user) {
     next({ path: '/login' })
   } else {
     next()

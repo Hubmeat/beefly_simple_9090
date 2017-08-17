@@ -3,19 +3,18 @@
     <div id="addaccount_form">
       <h1 id="addaccount_title">添加平台账号
         <span>
-          <a href="/index/accountManager">
+          <a style="color:#000;" @click="$router.push({path:'/index/accountManager'})">
             <i class="el-icon-close">
             </i>
           </a>
         </span>
       </h1>
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
         <el-form-item label="用户名" prop="userName">
           <el-input v-model="ruleForm.userName" placeholder='不超过100个字符'></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="passWord">
-          <el-input type="password" v-model="ruleForm.passWord" placeholder='请输入密码'></el-input>
-          <span class="tips">6-20位字符，可包括字母数字，区分大小写</span>
+          <el-input type="password" v-model="ruleForm.passWord" placeholder='6-20位字符，可包括字母数字，区分大小写'></el-input>
         </el-form-item>
         <el-form-item label="所属角色" prop="roleName">
           <el-select v-model="ruleForm.roleName" placeholder="选择角色类型" :remote-method="remoteMethod" remote :loading="loading" :disabled="isDisabled">
@@ -138,6 +137,17 @@
 
 div#addaccount_form .el-form-item__content .el-input input.el-input__inner {
   width: initial;
+}
+
+div#addaccount_form .el-form-item__error {
+  color: #ff4949;
+  font-size: 12px;
+  line-height: 1;
+  padding-top: 4px;
+  margin-left: 100px;
+  position: absolute;
+  top: 100%;
+  left: 10%;
 }
 
 span.tips {

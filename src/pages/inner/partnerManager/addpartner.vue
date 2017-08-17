@@ -3,7 +3,7 @@
 	<div id="addpartner_form">
 				<h1 id="addpartner_title">添加合伙人
 					<span>
-						<a href="javascript:void(0)" style="color:#000;" @click="$router.push({path:'/index/partnerManager'})">
+						<a style="color:#000;" @click="$router.push({path:'/index/partnerManager'})">
 							<i class="el-icon-close"></i>		
 						</a>
 					</span>
@@ -104,12 +104,10 @@
 
         <el-upload
           class="avatar-uploader"
-          :show-file-list="false"
-          enctype="multipart/form-data"
-          :multiple="true"
-          :with-credentials="true"
-          :headers='header'
-          action='http://192.168.3.7:8080/beepartner/admin/cityPartner/addCityPartner?cityPartnerId=123456'
+          :show-file-list="true"
+          :with-credentials='true'
+          action=''
+          :http-request = 'uploadWay'
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -292,9 +290,7 @@ export default {
         email: '',
         userId: '',
         password: '',
-      },
-      header: {
-        'content-type': 'application/x-www-form-urlencoded'
+        file: ''
       },
       rules: {
         companyName: [
@@ -351,7 +347,7 @@ export default {
       date1: '',
       checked: false,
       add: false,
-      imageUrl: ''
+      imageUrl: '',
     }
   },
   updated () {
@@ -490,6 +486,13 @@ export default {
       }
     },
     submitForm (formName) {
+      if (this.ruleForm.file === '') {
+        this.$message({
+          message: '请上传营业执照',
+          type: 'warning'
+        })
+        return
+      }
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$confirm('确认添加吗?', '提示', {
@@ -551,12 +554,19 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
-      // var reader = new FileReader();   
-      // reader.readAsDataURL(file);   
-      // reader.onload = function(e){   
-      //         alert(this.result); 
-  
-      // }
+
+    },
+    uploadWay (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file.file);
+      var data; 
+      var that = this
+      reader.onload = function(e){   
+        data = this.result
+        that.imageUrl = data
+        that.ruleForm.file = JSON.stringify(data)
+      }
+      
     },
     checkLogin (res) {
       if (JSON.parse(res.text).message === '用户登录超时') {

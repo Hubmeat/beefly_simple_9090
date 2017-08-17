@@ -1,7 +1,7 @@
 /**
  * 沈惨测试服务端口
  */
-export const host = 'http://192.168.3.7:8080/'
+// export const host = 'http://192.168.3.7:8080/'
 
 /**
  * 海波测试端口
@@ -19,7 +19,7 @@ export const host = 'http://192.168.3.7:8080/'
  * 公网测试端口
  */
 // export const host  = 'http://47.92.136.117:7099/'
-// export const host  = 'http://47.93.48.250:8090/'
+export const host  = 'http://47.93.48.250:8090/'
 
 
 import axios from 'axios'

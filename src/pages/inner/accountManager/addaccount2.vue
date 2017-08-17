@@ -3,19 +3,18 @@
         <div id="addaccount_form">
             <h1 id="addaccount_title">添加加盟商账号
                 <span>
-                    <a href="javscript:void(0)" style="color:#000" @click="$router.push({path:'/index/accountManager'})">
+                    <a style="color:#000" @click="$router.push({path:'/index/accountManager'})">
                         <i class="el-icon-close">
                         </i>
                     </a>
                 </span>
             </h1>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="用户名" prop="userId">
+                <el-form-item label="用户名" prop="userName">
                     <el-input v-model="ruleForm.userName" placeholder='不超过100个字符'></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="passWord">
-                    <el-input type="passWord" v-model="ruleForm.passWord" placeholder='请输入密码'></el-input>
-                    <span class="tips">6-20位字符，可包括字母数字，区分大小写</span>
+                    <el-input type="passWord" v-model="ruleForm.passWord" placeholder='6-20位字符，可包括字母数字，区分大小写'></el-input>
                 </el-form-item>
                 <el-form-item label="所属加盟商">
                     <el-radio-group v-model="ruleForm.cityId">
@@ -148,6 +147,20 @@ div#addaccount_form .el-form-item__content .el-input input.el-input__inner {
 span.tips {
     color: #dedede;
 }
+
+#addaccount_form .el-radio-group {
+    display: inline-block;
+    font-size: 0;
+    height: 46px;
+    width: 337px;
+}
+
+#addaccount_form  .el-radio-group .el-radio {
+    width: 84px;
+    margin-left: 0;
+    height: 30px;
+    display: inline-block;
+}
 </style>
       
 <script>
@@ -159,8 +172,6 @@ export default {
         var validateUserId = function (rule, value, callback) {
             if (value === '') {
                 callback(new Error('请输入用户名'))
-            } else if (!checkUserName(value)) {
-                callback('用户名格式：必须英文字母开头')
             } else {
                 callback()
             }
@@ -206,7 +217,10 @@ export default {
                 description: ''
             },
             rules: {
-                userName: [{ validator: validateUserId, trigger: 'blur', required: true }],
+                userName: [
+                    { required: true, message: '请填写用户名', trigger: 'blur' },
+                    { validator: validateUserId, trigger: 'blur'}
+                ],
                 passWord: [
                     { required: true, message: '请填写密码', trigger: 'blur' },
                     { min: 6, message: '密码应不少于6位', trigger: 'blur' }
@@ -222,7 +236,12 @@ export default {
     },
     methods: {
         loadCity () {
-            request.post(host + 'beepartner/city/findCity')
+            request
+                .post(host + 'beepartner/admin/city/findCity')
+                .withCredentials()
+                .set({
+                'content-type': 'application/x-www-form-urlencoded'
+                })
                 .end((error,res)=>{
                     if(error){
                     console.log(error)

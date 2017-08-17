@@ -10,7 +10,7 @@
           </tr>
           <tr>
             <td><span>认购车辆：</span>{{franchiseeDetail.subscriptionNum}}</td>
-            <td><span>拥有车辆：</span>{{franchiseeDetail.subscriptionNum}}</td>
+            <td><span>拥有车辆：</span>{{franchiseeDetail.bikeNum}}</td>
             <td><span>加盟商区域：</span>{{franchiseeDetail.cityName}}</td>
           </tr>
         </tbody>
@@ -196,7 +196,7 @@ div.allot{text-align: center}
 }
 
 #distribution_selectBase #distribution_table {
-  width: 70%;
+  width: 69%;
   float: left;
   padding: 10px 20px 0 20px;
   border: 1px solid #e7ecf1;
@@ -269,9 +269,9 @@ color: #bfcbd9;
 }
 
 #right_hasbeen_distribution h6 {
-  padding: 0px 0px 8px 20px;
-  width: 266px;
   height: 30px;
+  width: 97%;
+  margin-left: 5px;
   line-height: 30px;
 }
 

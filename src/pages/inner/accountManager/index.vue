@@ -17,7 +17,7 @@
         </div>
   
         <!-- account -->
-        <div class="account">
+        <div id="err_add" class="account">
           <h1>
             <button type="button" @click="addAccount">添加新账号</button>
             <!--新增数据开始-->
@@ -71,7 +71,7 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="加盟商" name="加盟商">
+      <el-tab-pane label="合伙人" name="合伙人">
         <el-row class="selectPlace">
           <address class="joinArea">加盟区域：</address>
           <div class="citys">
@@ -101,7 +101,7 @@
             <el-table-column prop="phoneNo" label="手机号" min-width="15%"></el-table-column>
             <el-table-column prop="email" label="邮箱" min-width="20%"></el-table-column>
             <el-table-column prop="name" label="姓名" min-width="10%"></el-table-column>
-            <el-table-column label="所属加盟商" prop="cityName" min-width="20%"></el-table-column>
+            <el-table-column label="所属合伙人" prop="cityName" min-width="20%"></el-table-column>
             <el-table-column label="状态" min-width="10%" style="font-size:12px;">
               <template scope="scope">
                 <el-switch v-on:change="changeState(scope)" v-model="scope.row.status" on-text="开启" off-text="关闭" on-color="#13ce66" off-color="#ff4949">
@@ -115,9 +115,9 @@
                 </a>
                 <i class="el-icon-close" style="cursor:pointer;" title="删除" @click="openDelete(scope)"></i>
                 <!--dialog 弹窗开始-->
-                <el-dialog title="加盟商账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
-                  <el-form :model="editAccount">
-                    <el-form-item label="用户名" :label-width="formLabelWidth">
+                <el-dialog id="err_form" title="合伙人账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
+                  <el-form :model="editAccount" :rules="editAccountRule">
+                    <el-form-item label="用户名" prop='userName' :label-width="formLabelWidth">
                       <el-input v-model="editAccount.userName" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号" :label-width="formLabelWidth">
@@ -129,7 +129,7 @@
                     <el-form-item label="姓名" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.name" auto-complete="off"></el-input>
                     </el-form-item>
-                    <!--<el-form-item label="所属加盟商" :label-width="formLabelWidth">
+                    <!--<el-form-item label="所属合伙人" :label-width="formLabelWidth">
                           <el-radio-group v-model="editAccount.radio">
                             <el-radio :label="3">上海</el-radio>
                             <el-radio :label="6">北京</el-radio>
@@ -216,7 +216,7 @@ export default {
       emptyText: ' ',
       formLabelWidth: '90px',
       editAccountRule: {
-        userId: [{ required: true, trigger: 'blur', message: '请输入用户名' }]
+        userName: [{ required: true, trigger: 'blur', message: '请输入用户名' }]
       },
       editAccount: {
         userId: '',
@@ -254,7 +254,7 @@ export default {
       }
       var that = this
       if(this.activeName==='平台') {
-        this.loading  = true
+        that.loading  = true
          if (this.accountOrUsername.trim().length > 0 || this.telOrMail.trim().length > 0) {
           request.post(host + 'beepartner/admin/User/findAdminUser')
             .withCredentials()
@@ -311,7 +311,7 @@ export default {
             })
           }
       }else{
-          this.loading = true
+          that.loading = true
           getAllAccount({ cityId:this.cityId,queryName:this.accountOrUsername,queryNumber: this.telOrMail }, function (error, res) {
             if (error) {
               console.log(error)
@@ -345,7 +345,7 @@ export default {
     loadData() {
       if (this.activeName === '平台') {
         var that = this
-        this.loading = true
+        that.loading = true
         getAllAdminUser({}, function (err, res) {
           if (err) {
             console.log(err)
@@ -407,7 +407,6 @@ export default {
                 that.emptyText = '暂无数据'
                 that.pageShow = false
               }
-              alert('222')
               that.$store.state.joinTableData = that.handleData(arr)
               that.joinTableData = that.$store.state.joinTableData
               that.initData = that.joinTableData
@@ -421,7 +420,7 @@ export default {
       this.currentPage = 1
       if(this.activeName==='平台'){
         if (this.accountOrUsername.trim().length === 0 && this.telOrMail.trim().length === 0 && this.isQuery === false) {
-          getAllAdminUser({ franchiseeId: '123456', userId: 'admin' }, 1, function (error, res) {
+          getAllAdminUser({ franchiseeId: '123456', userId: 'admin' }, function (error, res) {
             if (error) {
               console.log(error)
               setTimeout(function () {
@@ -434,8 +433,8 @@ export default {
             } else {
               that.checkLogin(res)
               that.loading = false
-              that.totalPage = JSON.parse(res.text).totalPage || 20
-              var arr = JSON.parse(res.text).list
+              that.totalPage = Number(JSON.parse(res.text).totalPage)
+              var arr = JSON.parse(res.text).data
               if (that.totalPage > 1) {
                 that.emptyText = ' '
                 that.pageShow = true
@@ -443,7 +442,7 @@ export default {
                 that.emptyText = '暂无数据'
                 that.pageShow = false
               }
-              that.totalItems = JSON.parse(res.text).totalItems
+              that.totalItems = Number(JSON.parse(res.text).totalItems)
               that.$store.state.accountMangerData = that.handleData(arr)
               that.initData = that.$store.state.accountMangerData
               that.platTableData = that.$store.state.accountMangerData
@@ -452,7 +451,7 @@ export default {
         }
       }else {
         if (this.accountOrUsername.trim().length === 0 && this.telOrMail.trim().length === 0 && this.isQuery === false) {
-          getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId:this.cityId,type:1 }, 1, function (error, res) {
+          getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId:this.cityId,type:1 }, function (error, res) {
             if (error) {
               console.log(error)
               setTimeout(function () {
@@ -576,13 +575,13 @@ export default {
       }
       var that = this
       e.target.setAttribute('class', 'active')
-      this.cityId = e.target.getAttribute('name')
-      this.loading = true
-       getAllAccount({ cityId:this.cityId }, function (error, res) {
+      that.cityId = e.target.getAttribute('name')
+      that.loading = true
+       getAllAccount({ cityId:that.cityId }, function (error, res) {
           if (error) {
             console.log(error)
-            this.loading = false
-            this.pageShow = false
+            that.loading = false
+            that.pageShow = false
           } else {
             that.checkLogin(res)
             that.loading = false
@@ -607,7 +606,7 @@ export default {
       // if (scope.row.role === 0) {
       //   this.editAccount.role = '管理员'
       // } else {
-      //   this.editAccount.role = '加盟商'
+      //   this.editAccount.role = '合伙人'
       // }
       this.dialogVisible = true
       this.editAccount.roleName = scope.row.roleName
@@ -621,6 +620,9 @@ export default {
       this.editAccount.initUserId = scope.row.userId
     },
     handleEditAccount() {
+      if (this.editAccount.userName === '') {
+        return
+      }    
       this.dialogVisible = false
       var that = this
       var newAccountInfo = {}
@@ -876,7 +878,7 @@ export default {
       var res = arr.map((item) => {
         var obj = {}
         var status = null
-        if (item.status === 0) {
+        if (item.status === 1) {
           status = true
         } else {
           status = false
@@ -1276,6 +1278,11 @@ div.account>h1 button:hover {
 .el-table__footer,
 .el-table__header {
   border: 2px solid red;
+}
+
+#err_form .el-form-item {
+    padding-left: 140px;
+    margin-bottom: 22px;
 }
 
 #account_page {

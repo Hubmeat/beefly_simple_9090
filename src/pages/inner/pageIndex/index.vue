@@ -5,8 +5,9 @@
         <el-col class="incomeTitle">
           <span class="title">今日营收
             <small>每10分钟自动刷新数据</small>
+            {{$store.state.items}}
           </span>
-          <span class="detail_right">&gt;&gt;</span>
+          <span class="detail_right" @click="$router.push({path:'/index/earningsDetail?type=0'})">&gt;&gt;</span>
         </el-col>
         <el-col>
           <incomingVueChart></incomingVueChart>
@@ -240,7 +241,7 @@
 
   div.selectPlace div.citys {
     display: inline-block;
-    width: 1000px;
+    /* width: 1000px; */
     vertical-align: top;
     margin-top: -7px;
   }
