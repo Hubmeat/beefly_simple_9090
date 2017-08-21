@@ -5,7 +5,6 @@
         <el-col class="incomeTitle">
           <span class="title">今日营收
             <small>每10分钟自动刷新数据</small>
-            {{$store.state.items}}
           </span>
           <span class="detail_right" @click="$router.push({path:'/index/earningsDetail?type=0'})">&gt;&gt;</span>
         </el-col>
@@ -24,8 +23,8 @@
             <span class="arrow">&gt;&gt;</span>
           </div>
           <div class="selectPlace">
-            <address class="joinArea">加盟区域</address>
-            <div class="citys">
+            <div class="citys" style="margin-left: 60px;">
+              <address class="joinArea" style="margin-left: -70px;">加盟区域</address>
               <span @click="handleClick" myId='0' class="active">全部地区</span>
               <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
             </div>

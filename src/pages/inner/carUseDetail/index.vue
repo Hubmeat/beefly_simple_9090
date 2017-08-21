@@ -34,7 +34,7 @@
                 </tr>
                 <tr>
                   <td class="lang">
-                    <span class="prex">所属加盟商:</span>{{bikeInfo.alliance}}</td>
+                    <span class="prex">所属加盟商:</span>{{bikeInfo.companyName}}</td>
                 </tr>
               </tbody>
             </table>
@@ -83,8 +83,9 @@
               <el-table-column label="优惠券支付" prop="couponAmount">
 
               </el-table-column>
-              <el-table-column label="实际收益" prop="userPayAmount">
-
+              <el-table-column 
+              label="实际收益" prop="userPayAmount"
+              :render-header="rendHeader">
               </el-table-column>
             </el-table>
               <!--<table>
@@ -420,6 +421,37 @@ export default {
             that.getRepareRecord(e.target.innerHTML)
         }
       }, 200)
+    },
+    mouseEnterHandler(){
+      this.$notify.warning({
+        title: '温馨提示',
+        message: '实际收益就是用户实际支付的金额，但不等于订单费用减去优惠券支付金额；优惠券支付的金额可能大于订单费用；例如某笔订单骑行费用是3元，然后用户可能是用5元的优惠券抵扣的。',
+        offset: 100
+      });
+    },
+    rendHeader (h,{column,$index}){
+       return  h('div',{
+         class:{
+           tips:true,
+           cell:true
+         },
+         attrs:{
+           style:'background:#eee;margin-left:-20px;'
+         }
+       },[
+         h('span','实际收益'),
+         h('i',{
+           class:{
+             'icon iconfont icon-wenhao':true
+           },
+           attrs:{
+             style:'cursor:pointer;margin-left:10px;color:orange;font-size:22px;vertical-align:middle'
+           },
+           on: {
+            mouseenter: this.mouseEnterHandler
+          }
+         })
+       ])
     }
   },
   watch:{

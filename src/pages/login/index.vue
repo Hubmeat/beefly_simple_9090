@@ -30,7 +30,7 @@
                   </div>
                 </el-form>
               </div>
-              <el-dialog class="forgetPsd" title="找回密码" :visible.sync="dialogFormVisible">
+              <el-dialog class="forgetPsd" style="width: 60%; margin: 0 auto;" title="找回密码" :visible.sync="dialogFormVisible">
                 <el-form :model="findForm" :rules="findFormRule" ref="findPsd">
                   <el-form-item label="手机号" prop="tel" :label-width="formLabelWidth">
                     <el-input v-model="findForm.tel" auto-complete="off"></el-input>
@@ -75,6 +75,7 @@
 import request from 'superagent'
 import $ from 'jquery'
 import { checkMobile, IsEmpty } from '../../../utils/index.js'
+import {mapState, mapActions, mapGetters } from 'vuex'
 import { host } from '../../config/index'
 export default {
   data() {
@@ -120,6 +121,7 @@ export default {
       }
     };
     return {
+      authList: [],
       sendPhoneCode:false,
       labelPosition: 'right',
       isPlain: false,
@@ -145,7 +147,9 @@ export default {
           { required: true, message: '请输入用户名', trigger: 'blur' },
         ],
         passWord: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'change' },
+          { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
         ]
       },
       findFormRule: {
@@ -162,7 +166,11 @@ export default {
       }
     }
   },
+  computed:{
+    ...mapGetters(['menuitems','isLoadRoutes'])
+  },
   methods: {
+    ...mapActions(['addMenu','loadRoutes']),
     getVerCode(val) {
       var that = this
       var $btn = $('button.getVerCode')
@@ -171,7 +179,7 @@ export default {
       var initTime = 10
       if (checkMobile(val)) {
         // 像后台发送 手机号，确认手机号是否已经注册，如果注册 则 发送验证码，否则返回 该手机号未注册
-        request.post(host + 'beepartner/system/login/checkAdminePhone')
+        request.post(host + 'beepartner/system/login/checkAdminPhone')
           .withCredentials()
           .set({
             'content-type': 'application/x-www-form-urlencoded'
@@ -273,22 +281,18 @@ export default {
                   message: message,
                   type: 'success'
                 })
-                var arr = JSON.parse(res.text).data
-                // var newArr = []
-                // var menuCode = []
-                // for (var i = 0; i < arr.length; i++) {
-                  
-                //   menuCode.push(arr[i].menuCode)
-                // }
-                // newArr.push(menuCode)
-                // newArr.roleId = arr[1].roleId
-                // sessionStorage.setItem('userinfo',newArr.toString())
-                var authList = arr.map((item)=>{
+                var data = JSON.parse(res.text).data
+                this.authList = data.map((item)=>{
                   return item.menuCode
                 })
-
-                localStorage.setItem('userinfo',JSON.stringify(authList))
-                this.$router.push('/index?cityId=0')
+                this.addMenu(this.authList)
+                if (!this.isLoadRoutes) {  
+                  this.$router.addRoutes(this.menuitems)
+                  this.loadRoutes()
+                }
+                window.sessionStorage.setItem('authList',JSON.stringify(this.authList))   
+                window.sessionStorage.setItem('permission',JSON.stringify(this.menuitems))
+                this.$router.push('/system/office?cityId=0')
               } else {
                 var message = JSON.parse(res.text).message
                 this.$message.error(message);
@@ -389,6 +393,10 @@ export default {
 }
 </script>
 <style>
+.getVerCode {
+  color: #444;
+}
+
 button.login {
     width: 275px;
     height: 36px;

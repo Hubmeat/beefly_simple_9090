@@ -9,8 +9,8 @@
                 <el-form :model="form">
                   <el-row>
                     <el-row class="selectPlace">
-                      <address class="joinArea">加盟区域</address>
-                      <div class="citys">
+                      <div class="citys" style=" margin-left: 69px;">
+                        <address class="joinArea">加盟区域</address>
                         <span @click="handleClick" myId='0' class="active">全部地区</span>
                         <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
                       </div>
@@ -18,7 +18,7 @@
                     <el-col>
                       <el-form-item class="filtercar">
                         <span class="labelAlign">关键字</span>
-                        <input v-model="terminalNumber" v-on:input='inputChange' class="carMan_bar" placeholder="车辆号\终端编号\车辆名称">
+                        <input v-model="terminalNumber" v-on:input='inputChange' class="carMan_bar" placeholder="车辆号\终端编号">
                       </el-form-item>
                       <el-form-item class="filtercar" style="width: 400px;">
                         <span class="labelAlign">状态</span>
@@ -273,6 +273,7 @@ export default {
         })
     },
     searchByTimeline () {
+      this.currentPage = 1
       var type 
       if (this.activeName === '已分配') {
         type = '0'
@@ -332,6 +333,7 @@ export default {
       }
     },
     searchThroughCheckList () {
+      this.currentPage = 1
       this.loading2 = true
       var type 
       if (this.activeName === '已分配') {
@@ -433,6 +435,7 @@ export default {
       }
     },
     getDateByTabName (type) {
+      this.currentPage = 1
       this.loading2 = true
       request
         .post(host + 'beepartner/admin/Bike/findBike')
@@ -559,7 +562,57 @@ export default {
     }
   },
   watch: {
-    'checkList': 'searchThroughCheckList'
+    'checkList': 'searchThroughCheckList',
+    "form.data1": {
+      handler: function (val, oldVal) {
+        if (val.toString().length === 0 && this.form.data2.toString().length === 0 && this.terminalNumber.length === 0 && this.checkList.length === 0) {
+          this.mountedWay()
+        }
+        var startTime = new Date(val).getTime()
+        var endTime = new Date(this.form.data2).getTime()
+        endTime = isNaN(endTime) ? 0 : endTime
+        console.log(endTime.toString().length)
+        if ((startTime > endTime) && endTime.toString().length > 1) {
+          this.$message({
+            type: 'warning',
+            message: '开始日期不能大于结束日期'
+          })
+        } else if ((startTime > endTime) && endTime.toString().length === 1) {
+          this.$message({
+            type: 'warning',
+            message: '请输入结束日期'
+          })
+        } else {
+          return
+        }
+      },
+      deep: true
+    },
+    "form.data2": {
+      handler: function (val, oldVal) {
+        if (val.toString().length === 0 && this.form.data1.toString().length === 0 && this.terminalNumber.length === 0 && this.checkList.length === 0) {
+          this.mountedWay()
+        }
+        var endTime = new Date(val).getTime()
+        var startTime = new Date(this.form.data1).getTime()
+        startTime = isNaN(startTime) ? 0 : startTime
+        console.log(startTime.toString().length)
+        if ((endTime < startTime) && startTime.toString().length > 1) {
+          this.$message({
+            type: 'warning',
+            message: '开始日期不能大于结束日期'
+          })
+        } else if ((endTime > startTime) && startTime.toString().length === 1) {
+          this.$message({
+            type: 'warning',
+            message: '开始日期不能为空'
+          })
+        } else {
+          return
+        }
+      },
+      deep: true
+    }
   }
 }
 </script>
@@ -574,6 +627,7 @@ export default {
     display: inline;
     font-size: 14px;
     margin-right: 8px;
+    margin-left: -70px;
   }
 
   div.selectPlace div.citys {

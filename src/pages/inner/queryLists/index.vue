@@ -31,8 +31,9 @@
         </el-table-column>
         <el-table-column
           min-width="80"
-          label="实际收益（元)?"
-          prop='userPayAmount'>
+          label="实际收益（元)"
+          prop='userPayAmount'
+          :render-header="rendHeader">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -180,8 +181,8 @@ export default {
         })
         .send({
           'type': this.signForQuery === true?'define':this.$route.query.type,
-          'startTimeStr': this.$store.state.timeline.newObj.time1,
-          'endTimeStr': this.$store.state.timeline.newObj.time2,
+          'startTimeStr': this.$store.state.users.timeline.newObj.time1,
+          'endTimeStr': this.$store.state.users.timeline.newObj.time2,
           'currentPage': val,
           'showType': 'table'
         })
@@ -211,7 +212,7 @@ export default {
               newArr.push(obj)
             }
             this.$store.dispatch('consumeData_action', {newArr})
-            this.lists = this.$store.state.consumeData
+            this.lists = this.$store.state.users.consumeData
           }
         })
     },
@@ -258,7 +259,7 @@ export default {
               newArr.push(obj)
             }
             this.$store.dispatch('consumeData_action', {newArr})
-            this.lists = this.$store.state.consumeData
+            this.lists = this.$store.state.users.consumeData
           }
         })
     },
@@ -300,12 +301,12 @@ export default {
               newArr.push(obj)
             }
             this.$store.dispatch('consumeData_action', {newArr})
-            this.lists = this.$store.state.consumeData
+            this.lists = this.$store.state.users.consumeData
           }
         })
     },
     time () {
-      if (this.$store.state.timeline.length === 0) {
+      if (this.$store.state.users.timeline.length === 0) {
         return
       } else {
           this.signForQuery = true
@@ -319,8 +320,8 @@ export default {
             .send({
               'type': 'define',
               'currentPage': 1,
-              'startTimeStr': this.$store.state.timeline.newObj.time1,
-              'endTimeStr': this.$store.state.timeline.newObj.time2,
+              'startTimeStr': this.$store.state.users.timeline.newObj.time1,
+              'endTimeStr': this.$store.state.users.timeline.newObj.time2,
               'showType': 'table'
             })
             .end((error, res) => {
@@ -351,7 +352,7 @@ export default {
                   newArr.push(obj)
                 }
                 this.$store.dispatch('consumeData_action', {newArr})
-                this.lists = this.$store.state.consumeData
+                this.lists = this.$store.state.users.consumeData
                 }
 
             })
@@ -362,10 +363,41 @@ export default {
       if (JSON.parse(res.text).message === '用户登录超时') {
         this.$router.push('/login')
       }
+    },
+    mouseEnterHandler(){
+      this.$notify.warning({
+        title: '温馨提示',
+        message: '实际收益就是用户实际支付的金额，但不等于订单费用减去优惠券支付金额；优惠券支付的金额可能大于订单费用；例如某笔订单骑行费用是3元，然后用户可能是用5元的优惠券抵扣的。',
+        offset: 100
+      });
+    },
+    rendHeader (h,{column,$index}){
+       return  h('div',{
+         class:{
+           tips:true,
+           cell:true
+         },
+         attrs:{
+           style:'background:#eee;margin-left:-20px;'
+         }
+       },[
+         h('span','实际收益'),
+         h('i',{
+           class:{
+             'icon iconfont icon-wenhao':true
+           },
+           attrs:{
+             style:'cursor:pointer;margin-left:10px;color:orange;font-size:22px;vertical-align:middle'
+           },
+           on: {
+            mouseenter: this.mouseEnterHandler
+          }
+         })
+       ])
     }
   },
   mounted () {
-    if (this.$store.state.timeline.length === 0) {
+    if (this.$store.state.users.timeline.length === 0) {
       this.getDateMount()
     } else {
       return

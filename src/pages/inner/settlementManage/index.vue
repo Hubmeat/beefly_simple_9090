@@ -5,8 +5,8 @@
         <span slot="label">
           <i class="el-icon-date"></i> 待结算</span>
         <el-row class="selectPlace" style="padding: 0px 0 13px 0;">
-          <address class="joinArea">加盟区域：</address>
-            <div class="citys">
+            <div class="citys" style="margin-left: 76px;">
+              <address class="joinArea" style="margin-left: -74px;">加盟区域：</address>
               <span @click="handleClick" myId='0' class="active">全部地区</span>
               <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
             </div>

@@ -69,8 +69,8 @@ div.queryCharts div.watchButton {
 
 div.queryCharts div.watchButton div.el-col-2 {
   float: right;
-  /* margin-left: 20px; */
-    width: 7.3%;
+  margin-left: -30px;
+    width: 100px;
 }
 
 div.queryCharts div.watchButton span {

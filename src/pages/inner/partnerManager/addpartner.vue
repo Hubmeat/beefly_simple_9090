@@ -22,8 +22,7 @@
             <el-date-picker
               v-model="ruleForm.joinTime"
               type="date"
-              placeholder="选择日期"
-              :picker-options="pickerOptions0">
+              placeholder="选择日期">
             </el-date-picker>           
         </el-form-item>
         <el-form-item label="认购车辆数">
@@ -97,7 +96,7 @@
           <el-input type="password" v-model="ruleForm.password" placeholder='6-20位，可包括字母、数字、下划线'></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button class='addpartner_button' type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+          <el-button class='addpartner_button' v-loading='loading8' type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
           <el-button class='addpartner_button' @click="$router.push({path:'/index/partnerManager'})">取消</el-button>
         </el-form-item>
       </el-form>
@@ -265,6 +264,7 @@ export default {
   data () {
     return {
       areaShow:true,
+      loading8: false,
       proloading:false,
       provinceList:[],
       cityList:[],
@@ -368,7 +368,6 @@ export default {
       }
     },
     handleChangeProvince(val){
-      console.log(val)
        if(this.provinceList.length>0){
         this.provinceList.map((item)=>{
           if(val === item.name){
@@ -380,10 +379,10 @@ export default {
       }
     },
     handleChangeCity(val){
-      console.log(val)
        if(this.cityList.length>0){
         this.cityList.map((item)=>{
           if(val === item.name){
+            console.log(item)
             this.ruleForm.cityId = item.id
           }
         })
@@ -391,12 +390,13 @@ export default {
         this.filterAreaMethod()
       }
     },
-     handleChangeArea(val){
-        console.log(val)
+    handleChangeArea (val) {
        if(this.areaList.length>0){
         this.areaList.map((item)=>{
           if(val === item.name){
             this.ruleForm.areaId = item.id
+            // 这是坑！！！！
+            this.ruleForm.cityId = item.areaId
           }
         })
       }
@@ -439,6 +439,7 @@ export default {
             if(error){
               console.log(error)
             }else{
+              console.log(JSON.parse(res.text).data)
               this.checkLogin(res)
               var result = JSON.parse(res.text).data
               var cityList = result.map((item)=>{
@@ -478,6 +479,7 @@ export default {
                 var obj = {}
                 obj.id = item.id
                 obj.name = item.name
+                obj.areaId = item.code
                 return obj
               })
               this.areaList = areaList
@@ -501,6 +503,7 @@ export default {
             type: 'warning'
           })
         .then(() => {
+          this.loading8 = true
           var obj = {}
           obj = Object.assign({},this.ruleForm,{cardType:this.ruleForm.cardType==='身份证'?0:1},{percent:parseFloat(this.ruleForm.percent/100)})
           request
@@ -513,26 +516,27 @@ export default {
             .end((error,res)=>{
               if(error){
                 console.log(error)
+                this.loading8 = false
               }else{
                 this.checkLogin(res)
-                console.log(JSON.parse(res.text).data)
-                console.log(JSON.parse(JSON.parse(res.text).data))
-                var newAccount = JSON.parse(JSON.parse(res.text).data)
-                 this.$router.push('/index/partnerManager')
-                 this.$message({
-                    type: 'success',
-                    message: '添加成功'
-                  })
-                  this.$store.commit('keepParnterAccount',newAccount)
+                this.loading8 = false
+                var newAccount = JSON.parse(res.text).data
+                this.$router.push('/index/partnerManager')
+                this.$message({
+                  type: 'success',
+                  message: '添加成功'
+                })
+                this.$store.commit('keepParnterAccount',newAccount)
               }
             })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消添加'
-          })
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消添加'
+          // })
         })
         } else {
+          this.loading8 = false
           console.log('error submit!!')
           return false
         }

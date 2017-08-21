@@ -155,7 +155,9 @@ export default {
       },
       rules: {
         pass: [
-            { validator: validatePass, trigger: 'blur' }
+          { validator: validatePass, trigger: 'blur' },
+          { min: 6, max: 20, message: '密码长度应该在6-20位之间', trigger: 'change' },
+          { min: 6, max: 20, message: '密码长度应该在6-20位之间', trigger: 'blur' }
         ],
         checkPass: [
           { validator: validateCheckPass, trigger: 'blur' }

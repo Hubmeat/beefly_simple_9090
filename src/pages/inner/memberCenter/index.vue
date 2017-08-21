@@ -22,10 +22,11 @@
 					</span>
 					<span>手机验证</span>
 					<span>{{this.phone === ''?'未绑定':'已绑定'}}</span>
-					<span>{{this.phone === ''?'您尚未绑定手机，请尽快绑定手机号':'手机号码' + this.phone + '已验证'}}</span>
+					<span>{{this.phone === ''?'您的手机号码' + this.phone + '尚未绑定，请尽快绑定手机号':'手机号码' + this.phone + '已验证'}}</span>
 
 					<span>
-						<button @click='$router.push({path:"/index/memberCenter/bindTel"})'>绑定手机号</button>
+						<!-- <button disabled='isBinded' @click='$router.push({path:"/index/memberCenter/bindTel"})'>绑定手机号</button> -->
+						<button :class="{disabled:isBinded}" :disabled="isBinded" @click='$router.push({path:"/index/memberCenter/bindTel"})'>绑定手机号</button>
 					</span>
 
 					<span>
@@ -207,6 +208,15 @@
 		text-decoration: underline;
 	}
 
+	.homepage_select ul li button.disabled {
+		color: #ccc;
+		text-decoration: none;
+	}
+
+	.homepage_select ul li button.disabled:hover {
+		text-decoration: none;
+	}
+
 	.homepage_select ul li button:hover {
     /*background: rgba(66,66,66, 0.8);*/
 		/*background: rgb(66,66,66);*/
@@ -286,7 +296,8 @@ export default {
 			phone: '',
 			email: '',
 			telBinded: false,
-			emailBinded: false
+			emailBinded: false,
+			isBinded: false
 		}
 	},
   methods: {
@@ -349,13 +360,14 @@ export default {
             console.log('err:' + err)
           } else {
             this.checkLogin(res)
-						console.log(JSON.parse(res.text).data)
 						this.name = JSON.parse(res.text).data.name
 						this.userName = JSON.parse(res.text).data.userName
 						this.phone = JSON.parse(res.text).data.phoneNo
-						if (this.phone ===  '') {
+						if (Number(JSON.parse(res.text).data.phoneNoBand) === 0) {
+							this.isBinded = false
 							this.telBinded = false
 						} else {
+							this.isBinded = true
 							this.telBinded = true
 						}
 

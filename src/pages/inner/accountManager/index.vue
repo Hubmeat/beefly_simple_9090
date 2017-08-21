@@ -7,7 +7,7 @@
         <div class="am_search">
           <label>
             <span>关键字</span>
-            <input type="text" placeholder="账号/用户名" v-on:blur="initQuery" v-model="accountOrUsername" class="account_my_input">
+            <input type="text" placeholder="账号/姓名" v-on:blur="initQuery" v-model="accountOrUsername" class="account_my_input">
           </label>
           <label>
             <span>联系方式</span>
@@ -73,8 +73,8 @@
       </el-tab-pane>
       <el-tab-pane label="合伙人" name="合伙人">
         <el-row class="selectPlace">
-          <address class="joinArea">加盟区域：</address>
-          <div class="citys">
+          <div class="citys" style="margin-left: 70px;">
+            <address class="joinArea" style="margin-left: -70px;">加盟区域：</address>
             <span @click="handleClick" name="0" class="active">全部地区</span>
             <span @click="handleClick" :name="list.cityId" :key="list.cityId" v-for="list of cityList">{{list.cityName}}</span>
           </div>
@@ -673,7 +673,6 @@ export default {
                 type: 'success',
                 message: '恭喜您，修改成功！'
               })
-              alert('22222')
               that.joinTableData.splice(index, 1, that.editAccount)
             } else {
               that.$message({
@@ -1010,7 +1009,11 @@ export default {
         that.loading = true
         if (this.activeName === '平台') {
           if (this.name.trim().length === 0 && this.phone.trim().length === 0) {
-            getAllAdminUser({ 'currentPage': val }, function (err, res) {
+            getAllAdminUser({ 
+                'currentPage': val,
+                'queryName': this.accountOrUsername,
+                'queryNumber': this.telOrMail,
+              }, function (err, res) {
               if (err) {
                 console.log(err)
                 that.loading = false
@@ -1032,9 +1035,9 @@ export default {
           } else {
             request.post(host + 'beepartner/admin/User/findAdminUser')
               .send({
-                name: this.name.trim(),
-                phone: this.phone.trim(),
-                currentPage: val
+                'queryName': this.accountOrUsername,
+                'queryNumber': this.telOrMail,
+                'currentPage': val
               }).end(function (error, res) {
                 if (error) {
                   console.log(error)
@@ -1055,7 +1058,12 @@ export default {
           }
         } else {
           if (this.name.trim().length === 0 && this.phone.trim().length === 0) {
-            getAllAccount({ cityId: this.cityId,currentPage:val }, function (error, res) {
+            getAllAccount({ 
+              'cityId': this.cityId,
+              'currentPage':val,
+              'queryName': this.accountOrUsername,
+              'queryNumber': this.telOrMail
+            }, function (error, res) {
               if (error) {
                 console.log(error)
                 that.loading = false
@@ -1076,11 +1084,11 @@ export default {
           } else {
             request.post(host + 'beepartner/admin/User/findFranchiseeUser').
               send({
-                name: this.name.trim(),
-                phone: this.phone.trim(),
-                type: 1,
-                cityId: this.cityId,
-                currentPage:val
+                'queryName': this.accountOrUsername,
+                'queryNumber': this.telOrMail,
+                'type': 1,
+                'cityId': this.cityId,
+                'currentPage': val
               })
               .withCredentials()
                .set({

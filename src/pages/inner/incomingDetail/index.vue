@@ -1,6 +1,6 @@
 <template>
 	<div style="margin-right:20px;">
-		<div id="earD_header">
+		<div id="earIncom_header">
       <div class="earD_con">
         <div class="timeSelectBtn">
           <el-button @click='getAllDate' class="active">所有明细</el-button>
@@ -78,7 +78,7 @@
     background: rgba(68,68,68,0.4);
   }
 
-	#earD_header {
+	#earIncom_header {
     /*width: 100%;*/
     height: 72px;
     line-height: 52px;
@@ -87,12 +87,12 @@
     padding: 20px 30px 20px 30px;
 	}
 
-  #earD_header .earD_con {
+  #earIncom_header .earD_con {
     background: #f3f0f0;
     padding: 10px;
   }
 
-	/*#earD_header button {
+	/*#earIncom_header button {
 		width: 100px;
     height: 30px;
 		font-size: 12px;
@@ -106,17 +106,17 @@
     transition: all .2s linear 0s;
 	}
 
-	#earD_header button:nth-of-type(1) {
+	#earIncom_header button:nth-of-type(1) {
 		margin-left: 30px;
 	}*/
 
-	/*#earD_header button:hover {
+	/*#earIncom_header button:hover {
     background: rgb(66,66,66);
     border: 1px solid rgb(66,66,66);
 		color: #fff;
 	}*/
 
-	/*#earD_header button.active {
+	/*#earIncom_header button.active {
     font-size: 12px;
     color: #fff;
     background: rgba(66,66,66, 0.8);
@@ -310,7 +310,7 @@ export default {
       })
 
     // 点击切换查看类型
-    $('#earD_header button').click('button', function () {
+    $('#earIncom_header button').click('button', function () {
       $('button.active').removeClass('active')
       $(this).addClass('active')
     })

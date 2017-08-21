@@ -10,52 +10,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import { host } from './config/index.js'
 import request from 'superagent'
-
-
-/**
- * http配置
- */
-// 引入axios以及element ui中的loading和message组件
-import { Loading, Message } from 'element-ui'
-// 超时时间
-axios.defaults.timeout = 5000
-// http请求拦截器
-var loadinginstace
-axios.interceptors.request.use(config => {
-  // element ui Loading方法
-  loadinginstace = Loading.service({ fullscreen: true })
-  return config
-}, error => {
-  loadinginstace.close()
-  Message.error({
-    message: '加载超时'
-  })
-  return Promise.reject(error)
-})
-// http响应拦截器
-axios.interceptors.response.use(data => {// 响应成功关闭loading
-  loadinginstace.close()
-  return data
-}, error => {
-  loadinginstace.close()
-  Message.error({
-    message: '加载失败'
-  })
-  return Promise.reject(error)
-})
-
-export default axios
-
-Vue.prototype.$axios = axios
-
-axios.defaults.withCredentials = true
-
-var instance = axios.create({
-    headers: { 'content-type': 'application/x-www-form-urlencoded' }
-});
-
-Vue.config.productionTip = false
-Vue.use(Element)
+import * as types from './store/mutation_types.js'
 
 Vue.directive('title', {
     inserted: function(el, binding) {
@@ -64,17 +19,42 @@ Vue.directive('title', {
     }
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.path == '/login') {
-    localStorage.removeItem('userinfo');
+
+Vue.use(Element)
+
+let authList = window.sessionStorage.getItem('authList') 
+let permission = window.sessionStorage.getItem('permission')
+
+if (authList) {
+  store.commit(types.ADD_MENU, JSON.parse(authList) )
+  router.addRoutes(store.state.menus.items)  
+}  
+
+router.beforeEach((route, redirect, next) => {  
+  if(route.path === '/login'){
+    window.sessionStorage.removeItem('permission')
+    window.sessionStorage.removeItem('authList')
+    // store.state = [] 
+    console.log(store)
+    store.commit(types.ADD_MENU, []) 
   }
-  let user = localStorage.getItem('userinfo') || '[]'
-//   if (!user && to.path != '/login' && user.length === 0 ) {
-  if (user.length === 0 || !user) {
+  let authList = window.sessionStorage.getItem('authList')
+  if (!authList && route.path !== '/login') {  
     next({ path: '/login' })
   } else {
-    next()
-  }
+      console.log(route)
+      console.log(route.name)
+    if (route.name) {
+      next()
+      if($('div.editcontainer')){
+          console.log($('div.editcontainer').position())
+          console.log($('div.editcontainer').offset().top)
+          $("div.scrollArea").animate({scrollTop: $('div.editcontainer').position().top}, 1000);    
+      }
+    } else {  
+      next({ path: '/nofound' })  
+    }  
+  }  
 })
 
 /* eslint-disable no-new */

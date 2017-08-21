@@ -643,11 +643,11 @@ export default {
               })
               var pageNumber = Number(JSON.parse(res.text).totalPage)
               this.totalItems = Number(JSON.parse(res.text).totalItems)
-              that.$store.state.keepParnterAccount = []
+              that.$store.state.users.keepParnterAccount = []
               result.map((item)=>{
                 that.$store.commit('keepParnterAccount',item)
               })
-              this.tableData = that.$store.state.keepParnterAccount
+              this.tableData = that.$store.state.users.keepParnterAccount
               if(pageNumber>1){
                 that.pageShow = true
               }else{
@@ -910,11 +910,11 @@ export default {
                   type: 'success',
                   message: '删除成功!'
                 })
-                this.$store.state.keepParnterAccount.splice(index, 1)
+                this.$store.state.users.keepParnterAccount.splice(index, 1)
               } else {
                 this.$message({
                   type: 'error',
-                  message: '删除失败:' + message
+                  message: message
                 })
               }
             }
@@ -956,7 +956,7 @@ export default {
           this.checkLogin(res)
         }
       })
-      that.$store.state.keepParnterAccount.splice(this.editAccount.editIndex, 1, this.editAccount)
+      that.$store.state.users.keepParnterAccount.splice(this.editAccount.editIndex, 1, this.editAccount)
       that.dialogVisible = false
     },
     show_detail (row, column) {
@@ -974,6 +974,59 @@ export default {
       if (this.$refs.val1.value === '' && this.$refs.val2.value === '') {
         this.loadData()
       } 
+    }
+  },
+  watch: {
+    '$route': 'loadData',
+    "startTime": {
+      handler: function (val, oldVal) {
+        if (val.toString().length === 0 && this.startTime.toString().length === 0 && this.terminalNumber.length === 0 && this.checkList.length === 0) {
+          this.mountedWay()
+        }
+        var startTime = new Date(val).getTime()
+        var endTime = new Date(this.startTime).getTime()
+        endTime = isNaN(endTime) ? 0 : endTime
+        console.log(endTime.toString().length)
+        if ((startTime > endTime) && endTime.toString().length > 1) {
+          this.$message({
+            type: 'warning',
+            message: '开始日期不能大于结束日期'
+          })
+        } else if ((startTime > endTime) && endTime.toString().length === 1) {
+          // this.$message({
+          //   type: 'warning',
+          //   message: '请输入结束日期'
+          // })
+        } else {
+          return
+        }
+      },
+      deep: true
+    },
+    "endTime": {
+      handler: function (val, oldVal) {
+        if (val.toString().length === 0 && this.startTime.toString().length === 0 && this.terminalNumber.length === 0 && this.checkList.length === 0) {
+          this.mountedWay()
+        }
+        var endTime = new Date(val).getTime()
+        var startTime = new Date(this.startTime).getTime()
+        startTime = isNaN(startTime) ? 0 : startTime
+        console.log(startTime.toString().length)
+        if ((endTime < startTime) && startTime.toString().length > 1) {
+          this.$message({
+            type: 'warning',
+            message: '开始日期不能大于结束日期'
+          })
+        } else if ((endTime > startTime) && startTime.toString().length === 1) {
+          this.$message({
+            type: 'warning',
+            message: '开始日期不能为空'
+          })
+        } else {
+          return
+        }
+      },
+      deep: true
     }
   }
 }

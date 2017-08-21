@@ -127,6 +127,9 @@ export default {
         this.$store.dispatch('timeline_action', { newObj })
       }
     }
+  },
+  mounted () {
+    
   }
 }
 </script>

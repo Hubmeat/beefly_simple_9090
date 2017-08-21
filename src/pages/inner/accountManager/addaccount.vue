@@ -167,7 +167,30 @@ export default {
       } else if (!checkUserName(value)) {
         callback('用户名格式：必须英文字母开头 不可以为汉字')
       } else {
-        callback()
+        request
+          .post(host + 'beepartner/admin/User/AdminUserUserNameOrPhone')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'userName': value
+          })
+          .end((err, res) => {
+            if (err) {
+              this.$message({
+                type: 'warning',
+                message: '网络请求错误'
+              })
+            } else {
+              if (JSON.parse(res.text).resultCode === 1) {
+                callback()
+              } else {
+                var message = JSON.parse(res.text).message
+                callback(new Error(message))
+              }
+            }
+          })
       }
     }
     var validatePhoneNo = function (rule, value, callback) {
@@ -176,7 +199,30 @@ export default {
       } else if (!checkMobile(value)) {
         callback(new Error('手机号格式不正确'))
       } else {
-        callback()
+        request
+          .post(host + 'beepartner/admin/User/AdminUserUserNameOrPhone')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'phoneNo': value
+          })
+          .end((err, res) => {
+            if (err) {
+              this.$message({
+                type: 'warning',
+                message: '网络请求错误'
+              })
+            } else {
+              if (JSON.parse(res.text).resultCode === 1) {
+                callback()
+              } else {
+                var message = JSON.parse(res.text).message
+                callback(new Error(message))
+              }
+            }
+          })
       }
     }
     var validateEmail = function (rule, value, callback) {
@@ -209,16 +255,19 @@ export default {
         des: ''
       },
       rules: {
-        userName: [{ validator: validateUserId, trigger: 'blur', required: true }],
+        userName: [
+          { validator: validateUserId, trigger: 'blur', required: true },
+          { max: 100, message: '用户名长度应不超过100个字符', trigger: 'change' }
+        ],
         passWord: [
           { required: true, message: '请填写密码', trigger: 'blur' },
-          { min: 6, message: '密码应不少于6位', trigger: 'blur' }
+          { min: 6, max: 20, message: '密码长度应该在6-20位之间', trigger: 'change' }
         ],
         roleName: [{ validator: validateRole, trigger: 'change', required: true }],
         name: [
           { message: '请输入姓名', trigger: 'blur' },
-        ]
-        // phoneNo: [{ validator: validatePhoneNo, trigger: 'blur' }],
+        ],
+        phoneNo: [{ validator: validatePhoneNo, trigger: 'blur' }]
         // email: [{ validator: validateEmail, trigger: 'blur' }]
       }
     }

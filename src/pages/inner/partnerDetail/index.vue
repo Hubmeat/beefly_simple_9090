@@ -37,7 +37,7 @@
       <el-col :span="6" class="battery">
         <ul>
           <li>
-            <img src="../../../assets/img/1.jpg" alt="img">
+            <img :src="imgUrl" alt="img">
           </li>
         </ul>
       </el-col>
@@ -143,6 +143,7 @@ export default {
       pageShow: false,
       carDetail: [],
       drawalData: [],
+      imgUrl: '',
       partnerData: [],
       franchiseeDetail: {},
       router: this.$route.query.carNum,
@@ -333,6 +334,7 @@ export default {
           var res = JSON.parse(res.text).data
           // this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
           this.franchiseeDetail = res
+          this.imgUrl = res.businessLicenseIconUrl
         }
       })
     /**

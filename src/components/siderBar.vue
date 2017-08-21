@@ -2,7 +2,7 @@
   <div class="theme">
     <div class="siderBar">
       <el-menu default-active="2" class="el-menu-vertical-demo" router>
-        <el-menu-item class="sign" name='10' index="/index?cityId=0">
+        <el-menu-item class="sign" name='10' index="/system/office?cityId=0">
           <i class="iconfont my_icon_class">&#xe608;</i>首页</el-menu-item>
         <el-menu-item class="sign" name='20' index="/index/partnerManager">
           <i class="iconfont my_icon_class">&#xe623;</i>合伙人管理</el-menu-item>        
@@ -132,9 +132,16 @@ div.el-submenu__title li i.el-icon-menu {
             } 
         },
         handlerUserInfo () {
-          this.userInfo = localStorage.getItem('userinfo')
+          this.userInfo = sessionStorage.getItem('authList')
           this.authList = JSON.parse(this.userInfo)
+        },
+        checkSlideBar () {
+          console.log(this.$route)
+          console.log($('.sign is-active'))
         }
+      },
+      watch: {
+        '$route': 'checkSlideBar'
       }
   }
 </script>

@@ -5,11 +5,11 @@
                 <h2>
                     <img src="../assets/header/logo.jpg" alt="logo">
                 </h2>
-                <h3>蜜蜂出行加盟商管理平台<span>合肥</span></h3>
+                <h3>蜜蜂出行加盟商管理平台<span></span></h3>
                 <div class="admin">
                     <i class="icon iconfont icon-touxiang"></i>
                     <span class="username">管理员</span>
-                    <i class="icon iconfont icon-xinfeng"></i>
+                    <!-- <i class="icon iconfont icon-xinfeng"></i> -->
                     <i class="icon iconfont icon-tuichu" @click="handleLoginOut"></i>
                 </div>
             </el-col>

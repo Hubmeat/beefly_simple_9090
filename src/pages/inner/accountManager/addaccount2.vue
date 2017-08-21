@@ -16,13 +16,13 @@
                 <el-form-item label="密码" prop="passWord">
                     <el-input type="passWord" v-model="ruleForm.passWord" placeholder='6-20位字符，可包括字母数字，区分大小写'></el-input>
                 </el-form-item>
-                <el-form-item label="所属加盟商">
-                    <el-radio-group v-model="ruleForm.cityId">
-                        <el-radio  :key="list.cityId" :name="list.cityId" :label="list.cityId" v-for="list of cityList">{{list.cityName}}</el-radio>
+                <el-form-item label="所属合伙人" prop="alliance">
+                    <el-radio-group v-model="ruleForm.cityId"  v-on:input='remoteMethod'>
+                        <el-radio :key="list.cityId" :myId="list.cityId" :label="list.cityId" v-for="list of cityList">{{list.cityName}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="所属角色" prop="role">
-                    <el-select v-model="ruleForm.roleName" placeholder="选择角色类型" :remote-method="remoteMethod" remote :loading="loading" :disabled="isDisabled">
+                    <el-select v-model="ruleForm.roleName" placeholder="选择角色类型" :remote-method="remoteMethod" remote  :disabled="isDisabled">
                         <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                         <!--<el-option label="管理员" value="管理员"></el-option>-->
@@ -54,9 +54,10 @@
 @media screen and (min-width:1367px) {
     #addaccount_form {
         /*  适配好的样式 */
-        min-height: 30%;
+        height: 60%;
         /*overflow-y: scroll; 
       overflow-x: hidden;*/
+        overflow-y: scroll; 
         width: 50%;
         box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
         position: fixed;
@@ -75,8 +76,9 @@
 
 @media screen and (max-width:1367px) {
     #addaccount_form {
-        min-height: 30%;
+        height: 60%;
         width: 62%;
+        overflow-y: scroll; 
         box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
         position: fixed;
         display: block;
@@ -151,7 +153,7 @@ span.tips {
 #addaccount_form .el-radio-group {
     display: inline-block;
     font-size: 0;
-    height: 46px;
+    padding-top: 10px;
     width: 337px;
 }
 
@@ -172,8 +174,33 @@ export default {
         var validateUserId = function (rule, value, callback) {
             if (value === '') {
                 callback(new Error('请输入用户名'))
+            } else if (!checkUserName(value)) {
+                callback('用户名格式：必须英文字母开头 不可以为汉字')
             } else {
-                callback()
+                request
+                .post(host + 'beepartner/admin/User/AdminUserUserNameOrPhone')
+                .withCredentials()
+                .set({
+                    'content-type': 'application/x-www-form-urlencoded'
+                })
+                .send({
+                    'userName': value
+                })
+                .end((err, res) => {
+                    if (err) {
+                    this.$message({
+                        type: 'warning',
+                        message: '网络请求错误'
+                    })
+                    } else {
+                        if (JSON.parse(res.text).resultCode === 1) {
+                            callback()
+                        } else {
+                            var message = JSON.parse(res.text).message
+                            callback(new Error(message))
+                        }
+                    }
+                })
             }
         }
         var validatePhoneNo = function (rule, value, callback) {
@@ -182,7 +209,30 @@ export default {
             } else if (!checkMobile(value)) {
                 callback(new Error('手机号格式不正确'))
             } else {
-                callback()
+                request
+                .post(host + 'beepartner/admin/User/AdminUserUserNameOrPhone')
+                .withCredentials()
+                .set({
+                    'content-type': 'application/x-www-form-urlencoded'
+                })
+                .send({
+                    'phoneNo': value
+                })
+                .end((err, res) => {
+                    if (err) {
+                    this.$message({
+                        type: 'warning',
+                        message: '网络请求错误'
+                    })
+                    } else {
+                        if (JSON.parse(res.text).resultCode === 1) {
+                            callback()
+                        } else {
+                            var message = JSON.parse(res.text).message
+                            callback(new Error(message))
+                        }
+                    }
+                })
             }
         }
         var validateEmail = function (rule, value, callback) {
@@ -210,6 +260,7 @@ export default {
                 userName: '',
                 passWord: '',
                 roleName: '',
+                alliance: '',
                 name: '',
                 phoneNo: '',
                 cityId: ' ',
@@ -218,18 +269,24 @@ export default {
             },
             rules: {
                 userName: [
-                    { required: true, message: '请填写用户名', trigger: 'blur' },
-                    { validator: validateUserId, trigger: 'blur'}
+                    { validator: validateUserId, trigger: 'blur', required: true },
+                    { max: 100, message: '用户名长度应不超过100个字符', trigger: 'change' }
                 ],
                 passWord: [
                     { required: true, message: '请填写密码', trigger: 'blur' },
-                    { min: 6, message: '密码应不少于6位', trigger: 'blur' }
+                    { min: 6, max: 20, message: '密码长度应该在6-20位之间', trigger: 'change' }
                 ],
                 roleName: [{ validator: validateRole, trigger: 'change', required: true }],
                 name: [
                     { message: '请输入姓名', trigger: 'blur' },
-                ]
-                // phoneNo: [{ validator: validatePhoneNo, trigger: 'blur' }],
+                ],
+                alliance: [
+                    { required: true, message: '请选择加盟商', trigger: 'blur' }
+                ],
+                role: [
+                    { required: true, message: '请选择所属于的角色', trigger: 'blur' }
+                ],
+                phoneNo: [{ validator: validatePhoneNo, trigger: 'blur' }],
                 // email: [{ validator: validateEmail, trigger: 'blur' }]
             }
         }
@@ -261,35 +318,43 @@ export default {
                 })
         },
         remoteMethod() {
-            this.loading = true;
-            setTimeout(() => {
-                this.loading = false
-                request.post(host + 'beepartner/admin/User/findRole')
-                 .withCredentials()
-                    .set({
-                        'content-type': 'application/x-www-form-urlencoded'
-                    })
-                    .end((error, res) => {
-                        if (error) {
-                            console.log(error)
-                            this.options4 = []
-                        } else {
-                            this.checkLogin(res)
-                            console.log(res)
-                            var roles = JSON.parse(res.text).data.map((item) => {
-                                var obj = {}
-                                obj.value = item.roleName
-                                obj.label = item.roleName
-                                obj.id = item.id
-                                return obj
-                            })
-                            if (roles.length > 0) {
-                                this.isDisabled = false
+            var that = this
+            that.loading = true;
+            if (this.ruleForm.cityId === '') {
+                return
+            } else {
+                setTimeout(() => {
+                    that.loading = false
+                    request.post(host + 'beepartner/admin/User/findRole')
+                    .withCredentials()
+                        .set({
+                            'content-type': 'application/x-www-form-urlencoded'
+                        })
+                        .send({
+                            'cityId': that.ruleForm.cityId
+                        })
+                        .end((error, res) => {
+                            if (error) {
+                                console.log(error)
+                                that.options4 = []
+                            } else {
+                                that.checkLogin(res)
+                                console.log(res)
+                                var roles = JSON.parse(res.text).data.map((item) => {
+                                    var obj = {}
+                                    obj.value = item.roleName
+                                    obj.label = item.roleName
+                                    obj.id = item.id
+                                    return obj
+                                })
+                                if (roles.length > 0) {
+                                    that.isDisabled = false
+                                }
+                                that.options4 = roles
                             }
-                            this.options4 = roles
-                        }
-                    })
-            }, 200)
+                        })
+                }, 200)
+            }
         },
         submitForm(formName) {
             var that = this
@@ -303,7 +368,6 @@ export default {
                     ).then(() => {
                         var obj = {}
                         this.options4.map((item) => {
-                        console.log(item)
                             if (item.value === this.ruleForm.roleName) {
                                 obj = Object.assign({}, this.ruleForm, { roleId: item.id })
                             }
