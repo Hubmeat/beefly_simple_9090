@@ -181,8 +181,8 @@ export default {
         })
         .send({
           'type': this.signForQuery === true?'define':this.$route.query.type,
-          'startTimeStr': this.$store.state.users.timeline.newObj.time1,
-          'endTimeStr': this.$store.state.users.timeline.newObj.time2,
+          'startTimeStr': this.$store.state.users.timeline.time1,
+          'endTimeStr': this.$store.state.users.timeline.time2,
           'currentPage': val,
           'showType': 'table'
         })
@@ -220,6 +220,7 @@ export default {
       this.$router.push('/index/incomingRank/queryCharts?type=' + this.$route.query.type)
     },
     dataUpdate () {
+      this.currentPage = 1
       this.signForQuery = false
       this.loading2 = true
       request
@@ -309,6 +310,7 @@ export default {
       if (this.$store.state.users.timeline.length === 0) {
         return
       } else {
+          this.currentPage = 1
           this.signForQuery = true
           this.loading2 = true
           request
@@ -364,6 +366,9 @@ export default {
         this.$router.push('/login')
       }
     },
+    mouseLeaveHandler () {
+      $('div.el-notification').hide()
+    },
     mouseEnterHandler(){
       this.$notify.warning({
         title: '温馨提示',
@@ -390,7 +395,7 @@ export default {
              style:'cursor:pointer;margin-left:10px;color:orange;font-size:22px;vertical-align:middle'
            },
            on: {
-            mouseenter: this.mouseEnterHandler
+            mouseleave: this.mouseLeaveHandler
           }
          })
        ])
@@ -411,7 +416,7 @@ export default {
   // },
   watch: {
     '$route': 'dataUpdate',
-    '$store.state.timeline': 'time'
+    '$store.state.users.timeline': 'time'
   }
 }
 </script>

@@ -351,7 +351,6 @@ export default {
       }
       // 根据用户选择不同状态进行数据的筛选
       var radio = this.checkList.toString()
-      console.log(radio)
       request
         .post(host + 'beepartner/admin/Bike/findBike')
         .withCredentials()
@@ -363,7 +362,7 @@ export default {
           'endOnlineTime': endTime,
           'bikeState': radio,
           'keyName': this.terminalNumber,
-          'cityCode': this.active === '已分配'?$('.citys span.active').attr('myId'):'',
+          'cityCode': this.activeName === '已分配'?$('.citys span.active').attr('myId'):'',
           'type': type
         })
         .end((error, res) => {
@@ -578,10 +577,10 @@ export default {
             message: '开始日期不能大于结束日期'
           })
         } else if ((startTime > endTime) && endTime.toString().length === 1) {
-          this.$message({
-            type: 'warning',
-            message: '请输入结束日期'
-          })
+          // this.$message({
+          //   type: 'warning',
+          //   message: '请输入结束日期'
+          // })
         } else {
           return
         }
@@ -605,7 +604,7 @@ export default {
         } else if ((endTime > startTime) && startTime.toString().length === 1) {
           this.$message({
             type: 'warning',
-            message: '开始日期不能为空'
+            message: '请选择开始日期'
           })
         } else {
           return
@@ -618,6 +617,7 @@ export default {
 </script>
 <style>
   div.selectPlace {
+    margin-top: 8px;
     margin-bottom: 10px;
     padding-left: 10px;
   }

@@ -8,7 +8,7 @@
 						</a>
 					</span>
 				</h1>
-			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm">
+			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
         <el-form-item label="企业名称" prop="companyName">
           <el-input v-model="ruleForm.companyName" placeholder='长度不超过100字符'></el-input>
         </el-form-item>
@@ -25,16 +25,17 @@
               placeholder="选择日期">
             </el-date-picker>           
         </el-form-item>
-        <el-form-item label="认购车辆数">
+        <el-form-item label="认购车辆数" prop='subscriptionNum'>
           <el-input v-model.number="ruleForm.subscriptionNum" placeholder='请输入车辆数(单位：/辆)'></el-input>
         </el-form-item>
-        <el-form-item label="加盟资金">
+        <el-form-item label="加盟资金" prop='subscriptionMoney'>
           <el-input v-model.number="ruleForm.subscriptionMoney" placeholder='请输入加盟资金（元）'></el-input>
         </el-form-item>
-        <el-form-item label="加盟地区" prop="cityName">
+        <el-form-item label="加盟地区" prop="cityName"  id='selectCity' style="width:700px">
             <el-select @change="handleChangeProvince"
               v-model="ruleForm.provinceName"
               loading-text
+             
               placeholder="请选择省"
               :loading="proloading">
               <el-option
@@ -161,7 +162,7 @@
   }
 
   #form_checkBox {
-    margin-left: 109px;
+    margin-left: 129px;
     margin-bottom: 20px;
   }
 
@@ -254,6 +255,17 @@
     width: 300px;
     display: block;
   }
+
+  /* #selectCity .el-select {
+    display: inline-block;
+    float: left;
+    width: 50px;
+  }
+
+  #selectCity .el-select input.el-input__inner {
+    width: 50px;
+  } */
+
 </style>
           
 <script>
@@ -294,38 +306,41 @@ export default {
       },
       rules: {
         companyName: [
-          { message: '请输入企业名称', trigger: 'blur' }
+          { required: true, message: '请输入企业名称', trigger: 'blur' }
         ],
         businessLicense: [
-          { message: '非法营业执照号', trigger: 'blur' }
+          { required: true, message: '请输入营业执照号', trigger: 'blur' }
         ],
         address: [
           { message: '请输入正确的地址', trigger: 'blur' }
         ],
+        joinTime: [
+          { type: 'date', required: true, message: '请选择加盟日期', tigger: 'blur'}
+        ],
         subscriptionNum: [
-          { message: '请选择输入认购车辆数', trigger: 'blur' }
+          { type: 'date', required: true, message: '请选择输入认购车辆数', trigger: 'blur' }
         ],
         subscriptionMoney: [
-          { message: '输入正确的金额', trigger: 'blur' }
+          { type: 'date', required: true, message: '输入正确的金额', trigger: 'blur' }
+        ],
+        cityName: [
+          { required: true, message: '请选择加盟城市', tigger: 'change'}
         ],
         cardType: [
-          {message: '请选择证件类型', trigger: 'blur' }
+          { required: true, message: '请选择证件类型', trigger: 'blur' }
         ],
         percent: [
-          {message: '请输入加盟比例', trigger: 'blur' }
+          { required: true, message: '请输入加盟比例', trigger: 'blur' }
         ],
         userName: [
-          {  message: '请输入姓名', trigger: 'blur' }
-        ],
-        cardType: [
-          {message: '请选择证件类型', trigger: 'change' }
+          { message: '请输入姓名', trigger: 'blur' }
         ],
         idCard: [
-          {  message: '请输入身份证号码', trigger: 'blur' },
+          { required: true, message: '请输入身份证号码', trigger: 'blur' },
           { min: 15, max: 19, message: '请输入合法的身份证号码', trigger: 'blur' }
         ],
         phone: [
-          {   message: '请填写手机号', trigger: 'blur' },
+          { message: '请填写手机号', trigger: 'blur' },
           { min: 11, message: '请输入正确的手机号', trigger: 'blur' }
         ],
         email: [
@@ -488,15 +503,16 @@ export default {
       }
     },
     submitForm (formName) {
-      if (this.ruleForm.file === '') {
-        this.$message({
-          message: '请上传营业执照',
-          type: 'warning'
-        })
-        return
-      }
+      console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          if (this.ruleForm.file === '') {
+            this.$message({
+              message: '请上传营业执照',
+              type: 'warning'
+            })
+            return
+          }
           this.$confirm('确认添加吗?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '信息有误',

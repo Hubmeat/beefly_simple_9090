@@ -1,7 +1,7 @@
 <template>
-  <div style="margin-right: 20px;">
+  <div class="vehicleBikeAlone">
     <div id='distribution_header'>
-      <h1>分配车辆</h1>
+      <h3>分配车辆</h3>
       <table class="franchiseeDetail">
         <tbody>
           <tr>
@@ -20,7 +20,7 @@
     <div id='distribution_selectBase'>
       <div id='distribution_table'>
         <div class='distribution_table_search'>
-          <h5>【{{franchiseeDetail.cityName}}地区】待分配的车辆</h5>
+          <h5>【{{franchiseeDetail.cityName}}】待分配的车辆</h5>
           <input type="text" v-on:blur='inputBlurFun' ref="val" placeholder="车辆号\终端号" />
           <span>
             <i class='el-icon-search'></i>
@@ -86,9 +86,6 @@
               layout="prev, pager, next, jumper"
               :total="totalItems">
         </el-pagination>
-        <!-- <div id="distribution_page">
-          <div class="M-box"></div>
-        </div>   -->
       </div>
 
       <div id='right_hasbeen_distribution'>
@@ -107,6 +104,12 @@
 </template>
 
 <style>
+.vehicleBikeAlone {
+  background: #fff;
+  margin: 0 auto;
+  width: 1200px;
+}
+
 .btn_bike:nth-of-type(1) {
   width: 60px;
   height: 30px;
@@ -140,21 +143,19 @@
 
 div.allot{text-align: center}
 #distribution_header {
-  height: 110px;
+  min-height: 110px;
   display: block;
   background: #fff;
   border: 1px solid #e7ecf1;
-  padding: 10px 20px 20px 20px;
-  margin-bottom: 20px;
+  border-bottom: none;
 }
 
-#distribution_header>h1 {
-  width: 100%;
-  height: 40px;
-  line-height: 40px;
-  font-size: 18px;
-  text-indent: 2px;
-  font-weight: 600;
+#distribution_header>h3 {
+    line-height: 30px;
+    background: #555;
+    color: #fff;
+    margin-bottom: 20px;
+    padding: 10px
 }
 
 #distribution_header ul {
@@ -196,13 +197,14 @@ div.allot{text-align: center}
 }
 
 #distribution_selectBase #distribution_table {
-  width: 69%;
+  width: 800px;
   float: left;
   padding: 10px 20px 0 20px;
   border: 1px solid #e7ecf1;
-  margin-right: 20px;
+  border-right: none;
   background: #fff;
-  height:98%;
+  box-sizing: border-box;
+  height:100%;
 }
 
 .distribution_table_search>h5 {
@@ -262,17 +264,16 @@ color: #bfcbd9;
   background: #fff;
   border: 1px solid #e7ecf1;
   float: left;
-  padding: 29px 0 10px 0;
-  width: 24.88%;
+  padding: 0 10px 0 10px;
+  width: 400px;
   height:100%;
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 #right_hasbeen_distribution h6 {
-  height: 30px;
-  width: 97%;
-  margin-left: 5px;
-  line-height: 30px;
+  height: 70px;
+  width: 100%;
+  line-height: 70px;
 }
 
 #right_hasbeen_distribution h6 span:nth-of-type(2) {

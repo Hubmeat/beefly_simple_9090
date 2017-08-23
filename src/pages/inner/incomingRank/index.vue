@@ -2,8 +2,8 @@
   <div class="consumeData">
     <div class="countInfo">
       <el-row class="countTitle">
-        <span class="countDimension labelAlign" style="margin-right: 0px;">统计维度</span>
-        <div class="timeSelectBtn">
+        <!-- <span class="countDimension labelAlign" style="margin-right: 0px;">统计维度</span> -->
+        <div class="timeSelectBtn" style='margin-left: -10px;'>
           <el-button class="active" @click="handleChangeType">今日</el-button>
           <el-button @click="handleChangeType">本周</el-button>
           <el-button @click="handleChangeType">本月</el-button>

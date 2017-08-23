@@ -168,9 +168,6 @@
             </el-tab-pane> -->
           </el-tabs>
         </el-row>
-        <div id="carUseDetail_page">
-          <div class="M-box"></div>
-        </div>
       </div>
   </div>
 </template>

@@ -3,7 +3,19 @@
 		<div id="homepage_content">
 			<div id="home_header">
 				<h1>
-					<img src="../../../assets/homepage/2.jpg">
+					<!-- <img src="../../../assets/homepage/2.jpg"> -->
+					<el-upload
+						class="my_upload"
+						:show-file-list="true"
+						:with-credentials='true'
+						action=''
+						:http-request = 'uploadWay'
+						:on-success="handleAvatarSuccess"
+						:before-upload="beforeAvatarUpload">
+						<img v-if="imageUrl" :src="imageUrl" class="avatar">
+					  <i v-else  class="icon iconfont icon-touxiang" style="font-size: 180px;line-height: 196px; margin-left: 7px;"></i>
+						<!-- <h3>点击上传营业执照</h3> -->
+					</el-upload>
 				</h1>
 				<div class="homepage_info">
 					<h2>{{name}}</h2>
@@ -108,11 +120,12 @@
 	}
 
 	#home_header h1 img {
-		display: block;
-		margin-top: 10px;
-		width: 90%;
-		height: 180px;
-		border-radius: 50%;
+    display: block;
+    margin-top: 6px;
+    width: 90%;
+    height: 180px;
+    border-radius: 50%;
+    border: 3px solid #fff;
 	}
 
  	.homepage_info {   
@@ -297,10 +310,66 @@ export default {
 			email: '',
 			telBinded: false,
 			emailBinded: false,
-			isBinded: false
+			isBinded: false,
+			imageUrl: ''
+			
 		}
 	},
   methods: {
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    handleAvatarSuccess (res, file) {
+      console.log(file)
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+		uploadWay (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file.file);
+      var data; 
+      var that = this
+      reader.onload = function(e){   
+        data = this.result
+        that.imageUrl = data
+				request
+					.post(host + 'beepartner/admin/Own/getFaceImageUrl')
+					.withCredentials()
+					.set({
+						'content-type': 'application/x-www-form-urlencoded'
+					})
+					.send({
+						'file': data
+					})
+					.end((err, res) => {
+						if (err) {
+							console.log('err:' + err)
+						} else {
+							that.checkLogin(res)
+							if (JSON.parse(res.text).resultCode === 1) {
+								that.$message({
+									type: 'success',
+									message: JSON.parse(res.text).message
+								})
+								that.$store.state.users.isHeaderImg = true
+								that.getInfo()
+							} else {
+								that.$message({
+									type: 'warning',
+									message: JSON.parse(res.text).message
+								})							
+							}
+						}
+					})
+      }
+		},
     modifyEmail () {
       this.$prompt('请输入邮箱', '提示', {
         confirmButtonText: '确定',
@@ -348,6 +417,7 @@ export default {
       })
 		},
     getInfo () {
+			this.$store.state.users.isHeaderImg = false
       request
         .post(host + 'beepartner/admin/Own/findAdminUserOwn')
         .withCredentials()
@@ -363,6 +433,13 @@ export default {
 						this.name = JSON.parse(res.text).data.name
 						this.userName = JSON.parse(res.text).data.userName
 						this.phone = JSON.parse(res.text).data.phoneNo
+						this.imageUrl = JSON.parse(res.text).data.adminUserIconUrl
+						window.sessionStorage.setItem('headImg',JSON.parse(res.text).data.adminUserIconUrl)
+						/**
+						 * 一旦上传成功，就讲store里面的标识改为true
+						 */
+						this.$store.state.users.isHeaderImg = true
+
 						if (Number(JSON.parse(res.text).data.phoneNoBand) === 0) {
 							this.isBinded = false
 							this.telBinded = false
@@ -386,8 +463,8 @@ export default {
     }
 	},
 	mounted () {
+    // this.$store.state.users.isHeaderImg = false
 		this.getInfo()
-		//alert(this.phone)
 		
 	},
 	watch: {

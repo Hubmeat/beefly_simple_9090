@@ -81,8 +81,8 @@
       <!-- 已结算  -->
       <el-tab-pane label="已结算" name='已结算'>
         <el-row class="selectPlace" style="padding: 0px 0 13px 0;">
-          <address class="joinArea">加盟区域：</address>
-            <div class="citys2">
+            <div class="citys2" style="margin-left: 90px;">
+              <address class="joinArea" style="margin-left: -88px;">加盟区域：</address>
               <span @click="handleClick" myId='0' class="active">全部地区</span>
               <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
             </div>

@@ -188,18 +188,6 @@ export default [
         }]
       },
       {
-        auth: 30,
-        path: '/index/vehicleDistribution/:id',
-        name: '车辆分配',
-        component: vehicleDistribution
-      },
-      {
-        auth: 20,
-        path: '/index/partnerDetail/:id',
-        name: '加盟商明细',
-        component: partnerDetail
-      },
-      {
         path: '/index/earningsDetail',
         name: '收入明细',
         component: earningsDetail,
@@ -250,4 +238,16 @@ export default [
       name: '车辆明细',
       component: carUseDetail
   },
+  {
+    auth: 30,
+    path: '/index/vehicleDistribution/:id',
+    name: '车辆分配',
+    component: vehicleDistribution
+  },
+  {
+    auth: 20,
+    path: '/index/partnerDetail/:id',
+    name: '加盟商明细',
+    component: partnerDetail
+  }
 ]

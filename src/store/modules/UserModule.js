@@ -13,7 +13,8 @@ const state = {
     platTableData: [],
     joinTableData: [],
     keepParnterAccount:[],
-    loginSign: false
+    loginSign: false,
+    isHeaderImg: false
 }
 
 const mutations = {

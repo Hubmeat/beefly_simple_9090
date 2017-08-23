@@ -3,12 +3,14 @@
         <el-row>
             <el-col :span="24">
                 <h2>
-                    <img src="../assets/header/logo.jpg" alt="logo">
+                    <img src="../assets/header/logo.jpg">
                 </h2>
                 <h3>蜜蜂出行加盟商管理平台<span></span></h3>
+                {{$store.state.users.isHeaderImg}}
                 <div class="admin">
-                    <i class="icon iconfont icon-touxiang"></i>
-                    <span class="username">管理员</span>
+                    <img class="headImg" v-if="imageUrl" :src="imageUrl">
+                    <i v-else class="icon iconfont icon-touxiang"></i>
+                    <span class="username">{{userName}}</span>
                     <!-- <i class="icon iconfont icon-xinfeng"></i> -->
                     <i class="icon iconfont icon-tuichu" @click="handleLoginOut"></i>
                 </div>
@@ -20,6 +22,16 @@
 import { host } from '../config/index'
 import request from 'superagent'
 export default {
+    data () {
+        return {
+            imageUrl: '',
+            userName: '用户名'
+        }
+    },  
+    mounted () {
+        this.imageUrl = sessionStorage.getItem('headImg')
+        this.userName = sessionStorage.getItem('userName')
+    },
   methods: {
     handleLoginOut () {
       var that = this
@@ -36,26 +48,39 @@ export default {
                 var code = JSON.parse(res.text).resultCode
                 var message = JSON.parse(res.text).message
                 if(code === 1){
-                    localStorage.removeItem('userinfo');
-                    that.$message({
-                        type:'success',
-                        message:message
-                    })
+                    // localStorage.removeItem('userinfo');
+
                     this.$router.push('/login')
                 }else{
-                    that.$message({
-                        type:'error',
-                        message:message
-                    })
+
                 }
                 
             }
         })
+    },
+    headWay () {
+        if (this.$store.state.users.isHeaderImg) {
+            this.imageUrl = sessionStorage.getItem('headImg')
+        } else {
+            return
+        }
     }
+  },
+  watch: {
+      '$store.state.users.isHeaderImg': 'headWay'
   }
 }
 </script>
 <style scoped>
+img.headImg {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 10px;
+    margin-top: 18px;
+    display: inline-block;
+}
 header {
     height: 65px;
     line-height: 65px;
@@ -104,7 +129,7 @@ div.admin {
 
 div.admin span.username {
     font-size: 14px;
-    margin-right: 5px;
+    margin-right: 25px;
 }
 
 div.admin i.iconfont {

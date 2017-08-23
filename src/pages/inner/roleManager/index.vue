@@ -649,8 +649,8 @@ export default {
 .el-pagination {
   padding-left: 0;
   border-left: 0;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 0px;
 }
 
 html,
@@ -725,7 +725,7 @@ div.account {
   background: #fff;
   margin-top: 20px;
   border: 1px solid #e7ecf1;
-  border-bottom: none;
+  /* border-bottom: none; */
   /* padding-bottom: 100%; */
 }
 

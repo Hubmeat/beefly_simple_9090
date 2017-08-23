@@ -4,7 +4,7 @@
       <el-tab-pane name="平台">
         <span slot="label">
           <i class="el-icon-date"></i> 平台</span>
-        <div class="am_search">
+        <div class="am_search" style="border: 1px solid #e7ecf1;">
           <label>
             <span>关键字</span>
             <input type="text" placeholder="账号/姓名" v-on:blur="initQuery" v-model="accountOrUsername" class="account_my_input">
@@ -34,7 +34,7 @@
             </el-table-column>
             <el-table-column label="状态" min-width="120" style="font-size:12px;">
               <template scope="scope">
-                <el-switch v-on:change="changeState(scope)" v-model="scope.row.status" on-text="开启" off-text="关闭" on-color="#13ce66" off-color="#ff4949">
+                <el-switch v-on:change="changeState(scope)" v-model="scope.row.status" on-text="启用" off-text="冻结" on-color="#13ce66" off-color="#ff4949">
                 </el-switch>
               </template>
             </el-table-column>
@@ -45,19 +45,31 @@
                 </a>
                 <i class="el-icon-close" title="删除" @click="openDelete(scope)"></i>
                 <!--dialog 弹窗开始-->
-                <el-dialog title="账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
+                <el-dialog title="编辑平台账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
                   <el-form class="editAccount" :model="editAccount" :rules="editAccountRule" ref="editRuleForm">
                     <el-form-item label="用户名" prop="userName" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.userName" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号" :label-width="formLabelWidth">
+                    <el-form-item label="密码" prop="passWord" :label-width="formLabelWidth">
+                      <el-input type='password' v-model="editAccount.passWord" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所属角色" prop="roleName">
+                      <el-select v-model="editAccount.roleName" placeholder="选择角色类型">
+                        <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="姓名" :label-width="formLabelWidth">
+                      <el-input v-model="editAccount.name" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="手机号" prop='phoneNo' :label-width="formLabelWidth">
                       <el-input v-model="editAccount.phoneNo"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.email" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="姓名" :label-width="formLabelWidth">
-                      <el-input v-model="editAccount.name" auto-complete="off"></el-input>
+                    <el-form-item label="备注">
+                      <el-input type="textarea" style="width:340px" v-model="editAccount.description" placeholder="不超过200个字符"></el-input>
                     </el-form-item>
                   </el-form>
                   <div slot="footer" class="dialog-footer editfooter">
@@ -71,24 +83,26 @@
           </el-table>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="合伙人" name="合伙人">
-        <el-row class="selectPlace">
-          <div class="citys" style="margin-left: 70px;">
-            <address class="joinArea" style="margin-left: -70px;">加盟区域：</address>
-            <span @click="handleClick" name="0" class="active">全部地区</span>
-            <span @click="handleClick" :name="list.cityId" :key="list.cityId" v-for="list of cityList">{{list.cityName}}</span>
+      <el-tab-pane label="合伙人" name="合伙人" id="partner">
+        <div id="search_content">
+          <el-row class="selectPlace">
+            <div class="citys" style="margin-left: 70px;">
+              <address class="joinArea" style="margin-left: -70px;">加盟区域：</address>
+              <span @click="handleClick" name="0" class="active">全部地区</span>
+              <span @click="handleClick" :name="list.cityId" :key="list.cityId" v-for="list of cityList">{{list.cityName}}</span>
+            </div>
+          </el-row>
+          <div class="am_search">
+            <label>
+              <span>关键字 :</span>
+              <input type="text" v-model="accountOrUsername" placeholder="姓名/用户名" @blur="initQuery" class="account_my_input">
+            </label>
+            <label>
+              <span>联系方式 :</span>
+              <input type="text" v-model="telOrMail" placeholder="邮箱/手机号" @blur="initQuery" class="account_my_input">
+            </label>
+            <el-button id="accountSearchBtn2" @click="queryAccountInfo" class="timeSelect_button">查询</el-button>
           </div>
-        </el-row>
-        <div class="am_search">
-          <label>
-            <span>关键字 :</span>
-            <input type="text" v-model="accountOrUsername" placeholder="姓名/用户名" @blur="initQuery" class="account_my_input">
-          </label>
-          <label>
-            <span>联系方式 :</span>
-            <input type="text" v-model="telOrMail" placeholder="邮箱/手机号" @blur="initQuery" class="account_my_input">
-          </label>
-          <el-button id="accountSearchBtn2" @click="queryAccountInfo" class="timeSelect_button">查询</el-button>
         </div>
         <!-- account -->
         <div class="account">
@@ -104,7 +118,7 @@
             <el-table-column label="所属合伙人" prop="cityName" min-width="20%"></el-table-column>
             <el-table-column label="状态" min-width="10%" style="font-size:12px;">
               <template scope="scope">
-                <el-switch v-on:change="changeState(scope)" v-model="scope.row.status" on-text="开启" off-text="关闭" on-color="#13ce66" off-color="#ff4949">
+                <el-switch v-on:change="changeState(scope)" v-model="scope.row.status" on-text="启用" off-text="冻结" on-color="#13ce66" off-color="#ff4949">
                 </el-switch>
               </template>
             </el-table-column>
@@ -115,10 +129,30 @@
                 </a>
                 <i class="el-icon-close" style="cursor:pointer;" title="删除" @click="openDelete(scope)"></i>
                 <!--dialog 弹窗开始-->
-                <el-dialog id="err_form" title="合伙人账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
+                <el-dialog id="err_form" title="编辑合伙人账号信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
                   <el-form :model="editAccount" :rules="editAccountRule">
                     <el-form-item label="用户名" prop='userName' :label-width="formLabelWidth">
                       <el-input v-model="editAccount.userName" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label='密码' prop='passWord' :label-width="formLabelWidth">
+                      <el-input v-model="editAccount.passWord" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所属合伙人" prop="alliance">
+                        <el-radio-group v-model="editAccount.alliance"  v-on:input='remoteMethodPartner'>
+                            <el-radio :key="list.cityId" :myId="list.cityId" :label="list.cityId.toString()" v-for="list of cityList">{{list.cityName}}</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="所属角色" style="margin-left: 12px;" prop="roleName">
+                        <el-select v-model="editAccount.roleName" placeholder="选择角色类型" :remote-method="remoteMethodPartner" :disabled="isDisabled">
+                            <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                            <!--<el-option label="管理员" value="管理员"></el-option>-->
+                            <!-- <el-option label="加盟商" value="加盟商"></el-option> -->
+                            <!--<el-option label="合伙人" value="合伙人"></el-option>-->
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="姓名" :label-width="formLabelWidth">
+                      <el-input v-model="editAccount.name" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.phoneNo"></el-input>
@@ -126,8 +160,8 @@
                     <el-form-item label="邮箱" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.email" auto-complete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="姓名" :label-width="formLabelWidth">
-                      <el-input v-model="editAccount.name" auto-complete="off"></el-input>
+                    <el-form-item label="备注" style="margin-left: 50px;">
+                        <el-input type="textarea" style="width:340px" v-model="editAccount.description" placeholder="不超过200个字符"></el-input>
                     </el-form-item>
                     <!--<el-form-item label="所属合伙人" :label-width="formLabelWidth">
                           <el-radio-group v-model="editAccount.radio">
@@ -146,23 +180,19 @@
               </template>
             </el-table-column>
           </el-table>
+
         </div>
       </el-tab-pane>
-      <div style="border: 1px solid #e7ecf1; border-top: none; border-bottom: none;">
-        <el-pagination 
-          v-show="pageShow"
-           @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage" 
-            :page-size="10" 
-            layout="prev, pager, next, jumper" 
-            :total="totalItems">
-        </el-pagination>
-      </div>
-      <div id="account_page">
-        <div class="M-box">
-        </div>
-      </div>
+
+      <el-pagination 
+        v-show="pageShow"
+        @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage" 
+          :page-size="10" 
+          layout="prev, pager, next, jumper" 
+          :total="totalItems">
+      </el-pagination>
     </el-tabs>
 
     <!-- 添加账号  -->
@@ -176,6 +206,7 @@ import request from 'superagent'
 import { siblings, checkPositiveNumber } from '../../../../utils/index.js'
 require('../../../assets/lib/js/jquery.pagination.js')
 import '../../../assets/css/pagination.css'
+import { checkUserName, checkMobile, isEmail } from '../../../../utils/index.js'
 import { getAllAdminUser } from '../../../api/getAdminUser.api.js'
 import { getAllAccount } from '../../../api/getAllAccount.api'
 import { updateAdmin } from '../../../api/updateAdmin.api'
@@ -187,6 +218,65 @@ import { delAccountByAdmin } from '../../../api/delAccountByAdmin.api'
 import { host } from '../../../config/index.js'
 export default {
   data() {
+    var validatorUserName = function (rule, value, callback) {
+      if (value === '') {
+        callback(new Error('请输入用户名'))
+      } else if (!checkUserName(value)) {
+        callback('用户名格式：必须英文字母开头 不可以为汉字')
+      } else {
+        request
+          .post(host + 'beepartner/admin/User/AdminUserUserNameOrPhone')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'userName': value,
+            'sign': 1
+          })
+          .end((err, res) => {
+            if (err) {
+              console.log(err)
+            } else {
+              if (JSON.parse(res.text).resultCode === 1) {
+                callback()
+              } else {
+                var message = JSON.parse(res.text).message
+                callback(new Error(message))
+              }
+            }
+          })
+      }
+    }
+    var validatePhoneNo = function (rule, value, callback) {
+      if (value === '') {
+        callback(new Error('请输入手机号'))
+      } else if (!checkMobile(value)) {
+        callback(new Error('手机号格式不正确'))
+      } else {
+        request
+          .post(host + 'beepartner/admin/User/AdminUserUserNameOrPhone')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send({
+            'phoneNo': value
+          })
+          .end((err, res) => {
+            if (err) {
+              console.log(err)
+            } else {
+              if (JSON.parse(res.text).resultCode === 1) {
+                callback()
+              } else {
+                var message = JSON.parse(res.text).message
+                callback(new Error(message))
+              }
+            }
+          })
+      }
+    }
     return {
       cityList:[],
       cityId: '0',
@@ -215,23 +305,75 @@ export default {
       loadingText: '',
       emptyText: ' ',
       formLabelWidth: '90px',
+      options4: [],
       editAccountRule: {
-        userName: [{ required: true, trigger: 'blur', message: '请输入用户名' }]
+        userName: [
+          { validator: validatorUserName, trigger: 'blur', required: true},
+          { required: true, trigger: 'blur', message: '请输入用户名' }
+        ],
+        passWord: [
+          { required: true, message: '请填写密码', trigger: 'blur' },
+          { min: 6, max: 20, message: '密码长度应该在6-20位之间', trigger: 'change' }
+        ],
+        roleName: [{  trigger: 'blur', required: true }],
+        phoneNo: [{ validator: validatePhoneNo, trigger: 'blur' }],
+        alliance: [{ required: true, message: '请选择合伙人', trigger: 'blur' }]
       },
       editAccount: {
-        userId: '',
+        userName: '',
+        passWord: '********',
+        roleName: '',
+        name: '',
         phoneNo: '',
         email: '',
-        name: '',
-        role: '',
-        state: '',
-        value: '',
-        index: '',
-        radio: ''
-      }
+        description: '',
+        alliance: '',
+        cityId: '',
+        email: '',
+        description: ''
+      },
+      isDisabled: true
     }
   },
   methods: {
+    remoteMethodPartner() {
+        var that = this
+        alert(this.editAccount.alliance)
+        if (this.editAccount.alliance === '') {
+            return
+        } else {
+            setTimeout(() => {
+                request.post(host + 'beepartner/admin/User/findRole')
+                .withCredentials()
+                    .set({
+                        'content-type': 'application/x-www-form-urlencoded'
+                    })
+                    .send({
+                        'cityId': that.editAccount.alliance
+                    })
+                    .end((error, res) => {
+                        if (error) {
+                            console.log(error)
+                            that.options4 = []
+                        } else {
+                            that.checkLogin(res)
+                            console.log(JSON.parse(res.text))
+                            var roles = JSON.parse(res.text).data.map((item) => {
+                                var obj = {}
+                                obj.value = item.roleName
+                                obj.label = item.roleName
+                                obj.id = item.id
+                                return obj
+                            })
+                            if (roles.length > 0) {
+                                that.isDisabled = false
+                            }
+                            that.options4 = roles
+                        }
+                    })
+            }, 200)
+        }
+    },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
     },
@@ -359,8 +501,8 @@ export default {
           } else {
             that.checkLogin(res)
             that.loading = false
-            that.emptyText = ' '
-            that.totalPage = JSON.parse(res.text).totalPage
+            that.emptyText = ''
+            that.totalPage = Number(JSON.parse(res.text).totalPage)
             var arr = JSON.parse(res.text).data
             if (that.totalPage > 1) {
               that.emptyText = ' '
@@ -370,8 +512,8 @@ export default {
               that.pageShow = false
             }
             that.totalItems = Number(JSON.parse(res.text).totalItems)
-            that.$store.state.platTableData = that.handleData(arr)
-            that.platTableData = that.$store.state.platTableData
+            that.$store.state.users.platTableData = that.handleData(arr)
+            that.platTableData = that.$store.state.users.platTableData
             that.initData = that.platTableData
           }
         })
@@ -443,9 +585,9 @@ export default {
                 that.pageShow = false
               }
               that.totalItems = Number(JSON.parse(res.text).totalItems)
-              that.$store.state.accountMangerData = that.handleData(arr)
-              that.initData = that.$store.state.accountMangerData
-              that.platTableData = that.$store.state.accountMangerData
+              that.$store.state.users.accountMangerData = that.handleData(arr)
+              that.initData = that.$store.state.users.accountMangerData
+              that.platTableData = that.$store.state.users.accountMangerData
             }
           })
         }
@@ -602,12 +744,25 @@ export default {
         })
     },
     openEdit(scope) {
-      console.log(scope)
-      // if (scope.row.role === 0) {
-      //   this.editAccount.role = '管理员'
-      // } else {
-      //   this.editAccount.role = '合伙人'
-      // }
+    console.log(scope.row)
+    this.remoteMethod()
+    // request.post(host + 'beepartner/admin/User/findFranchiseePassWord')
+    //   .withCredentials()
+    //   .set({
+    //     'content-type': 'application/x-www-form-urlencoded'
+    //   })
+    //   .send({
+    //     "id": scope.row.id
+    //   })
+    //   .end((error,res)=>{
+    //     if(error){
+    //       console.log(error)
+    //     }else {
+    //       console.log(JSON.parse(res.text).data)
+    //       this.editAccount.passWord = scope.row.passWord
+    //       this.editAccount.description = scope.row.description
+    //     }
+    //   })
       this.dialogVisible = true
       this.editAccount.roleName = scope.row.roleName
       this.editAccount.userName = scope.row.userName
@@ -616,6 +771,8 @@ export default {
       this.editAccount.name = scope.row.name
       this.editAccount.status = scope.row.status
       this.editAccount.index = scope.$index
+      this.editAccount.description = scope.row.description
+      this.editAccount.cityName = scope.row.cityName
       this.editAccount.id = scope.row.id
       this.editAccount.initUserId = scope.row.userId
     },
@@ -633,6 +790,9 @@ export default {
       }
       newAccountInfo.id = this.editAccount.id
       newAccountInfo.userName = this.editAccount.userName
+      newAccountInfo.roleName = this.editAccount.roleName
+      newAccountInfo.passWord = this.editAccount.passWord
+      newAccountInfo.description = this.editAccount.description
       newAccountInfo.email = this.editAccount.email
       newAccountInfo.phoneNo = this.editAccount.phoneNo
       newAccountInfo.name = this.editAccount.name
@@ -996,7 +1156,35 @@ export default {
       if (JSON.parse(res.text).message === '用户登录超时') {
         this.$router.push('/login')
       }
-    }
+    },
+    remoteMethod() {
+        var that = this
+          setTimeout(() => {
+              request.post(host + 'beepartner/admin/User/findAdminRole')
+              .withCredentials()
+                  .set({
+                      'content-type': 'application/x-www-form-urlencoded'
+                  })
+                  .send()
+                  .end((error, res) => {
+                      if (error) {
+                          console.log(error)
+                          that.options4 = []
+                      } else {
+                          that.checkLogin(res)
+                          console.log(JSON.parse(res.text))
+                          var roles = JSON.parse(res.text).data.map((item) => {
+                              var obj = {}
+                              obj.value = item.roleName
+                              obj.label = item.roleName
+                              obj.id = item.id
+                              return obj
+                          })
+                          that.options4 = roles
+                      }
+                  })
+          }, 200)
+    },
   },
   mounted() {
     this.loadData()
@@ -1173,6 +1361,11 @@ body {
   top: 0;
 }
 
+#search_content {
+  border: 1px solid #e7ecf1;
+  overflow: hidden;
+}
+
 
 /*#account_router {
   position: fixed;
@@ -1193,8 +1386,7 @@ div.account {
   padding: 0 30px 10px 30px;
   background: #fff;
   margin-top: 20px;
-  border: 1px solid #e7ecf1;
-  border-bottom: none;
+  /* border: 1px solid #e7ecf1; */
   /* padding-bottom: 100%; */
 }
 
@@ -1227,7 +1419,7 @@ div.account>h1 button:hover {
   width: 100%;
   height: 70px;
   background: #fff;
-  border: 1px solid #e7ecf1;
+  /* border: 1px solid #e7ecf1; */
 }
 
 .account_my_input {
@@ -1291,15 +1483,6 @@ div.account>h1 button:hover {
 #err_form .el-form-item {
     padding-left: 140px;
     margin-bottom: 22px;
-}
-
-#account_page {
-  padding: 4px 10px 0 20px;
-  padding-bottom: 100px;
-  background: #fff;
-  border: 1px solid #e7ecf1;
-  border-top: none;
-  min-height: 230px;
 }
 
 .el-switch__label,
@@ -1430,13 +1613,17 @@ div.el-input {
 }
 
 div.el-pagination {
-  margin-left: 32px;
   padding-left: 0;
   border-left: 0;
-}
-div.selectPlace {
-  margin-bottom: 20px;
   margin-left: 30px;
+}
+
+#partner .selectPlace {
+  width: 100%;
+  min-height: 40px;
+  /* border: 1px solid #e7ecf1; */
+  padding: 15px 10px 10px 30px;
+  box-sizing: border-box;
 }
 
 div.selectPlace address {

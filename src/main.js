@@ -42,15 +42,18 @@ router.beforeEach((route, redirect, next) => {
   if (!authList && route.path !== '/login') {  
     next({ path: '/login' })
   } else {
-      console.log(route)
       console.log(route.name)
     if (route.name) {
       next()
-      if($('div.editcontainer')){
-          console.log($('div.editcontainer').position())
-          console.log($('div.editcontainer').offset().top)
-          $("div.scrollArea").animate({scrollTop: $('div.editcontainer').position().top}, 1000);    
-      }
+        if (route.name === '首页') {
+            return
+        } else {
+            if($('div.editcontainer')){
+                console.log($('div.editcontainer').position())
+                console.log($('div.editcontainer').offset().top)
+                $("div.scrollArea").animate({scrollTop: $('div.editcontainer').position().top}, 1000);    
+            }
+        }
     } else {  
       next({ path: '/nofound' })  
     }  

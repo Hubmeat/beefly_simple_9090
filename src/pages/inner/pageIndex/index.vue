@@ -23,8 +23,7 @@
             <span class="arrow">&gt;&gt;</span>
           </div>
           <div class="selectPlace">
-            <div class="citys" style="margin-left: 60px;">
-              <address class="joinArea" style="margin-left: -70px;">加盟区域</address>
+            <div class="citys" style="margin-left: -10px;">
               <span @click="handleClick" myId='0' class="active">全部地区</span>
               <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
             </div>
@@ -85,14 +84,16 @@
 
   div.incomming span.title small {
     font-weight: normal;
-    margin-left: 20px;
-    color: #9e9696;
+    margin-left: 6px;
+    /* color: #9e9696; */
+    color: #bbb;
     font-size: 12px;
   }
 
   div.incomming span.detail_right {
     float: right;
     cursor: pointer;
+    color:gray;font-weight:normal;
   }
 
   div.mounthIncoming {
@@ -146,7 +147,7 @@
 
   div.datas_title span.data_display small {
     margin-left: 5px;
-    color: #9e9696;
+    color: #bbb;
     font-weight: normal;
   }
 
@@ -154,7 +155,8 @@
   div.datas_title span.arrow {
     margin: 0 10px 0 0;
     float: right;
-    cursor: pointer
+    cursor: pointer;
+    color:gray;font-weight:normal;
   }
 
   div.status div.list ul li {

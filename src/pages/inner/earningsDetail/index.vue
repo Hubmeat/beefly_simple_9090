@@ -149,7 +149,7 @@
 
     #earD_header {
       /* width: 100%; */
-      min-height: 132px;
+      min-height: 102px;
       line-height: 36px;
       background: #fff;
       border: 1px solid #e7ecf1;
@@ -159,7 +159,7 @@
       display:block;
       float:left;
       margin-right: 8px;
-      /* margin-top: 8px; */
+      margin-top: 8px;
       padding-left: 25px;
     }
 
@@ -230,13 +230,13 @@
     }
 
     #earD_body {
-      padding: 10px 20px 100px 20px;
+      padding: 10px 20px 10px 20px;
       background: #fff;
-      /*margin-top: 20px;*/
+      /* margin-top: 20px; */
       padding-left: 28px;
       padding-right: 28px;
       border: 1px solid #e7ecf1;
-      border-bottom: none;
+      /* border-bottom: none; */
       border-top: none;
     }
 

@@ -43,13 +43,23 @@
         v-loading="loading"
         element-loading-text="拼命加载中"
         style="width: 100% font-size:13px;"
-        @cell-click='show_detail'
         :empty-text="emptyText"
         >
+        <!-- <el-table-column
+          prop="cityPartnerId"
+          label="合伙人编号"
+          min-width="70">
+        </el-table-column> -->
         <el-table-column
           prop="cityPartnerId"
           label="合伙人编号"
           min-width="70">
+          <template scope="scope">
+            <!-- $router.push('/index/partnerDetail/' +  scope.row.id + '&' + scope.row.cityPartnerId) -->
+                <router-link style="color:rgb(118, 103, 233); text-decoration: none; cursor: pointer;" target='_blank' v-bind:to="{
+                  path: '/index/partnerDetail/' + scope.row.id + '&' + scope.row.cityPartnerId
+                }">{{scope.row.cityPartnerId}}</router-link>   
+          </template>
         </el-table-column>
         <el-table-column
           prop="companyName"
@@ -77,16 +87,19 @@
           <template scope="scope">
               <span>{{scope.row.subscriptionNum}}</span>
              <!-- @click='handleRowHandle(scope.row.subscription_id)'  -->
-            <span><a @click="$router.push('/index/vehicleDistribution/' + scope.row.id + '&' + scope.row.cityPartnerId)" class="alliance_table_allocation">分配车辆</a></span>
+            <!-- <span><a  class="alliance_table_allocation">分配车辆</a></span> -->
+            <router-link style="color:rgb(118, 103, 233); text-decoration: none; cursor: pointer;" target='_blank' v-bind:to="{
+              path: '/index/vehicleDistribution/' + scope.row.id + '&' + scope.row.cityPartnerId
+            }">分配车辆</router-link>
           </template>
         </el-table-column>    
         <el-table-column
           label="操作"
           prop="del">
           <template scope="scope">
-            <a style="color:#444; margin-right:10px; cursor: pointer;" @click="goDetail(scope)" title="查看">
+            <!-- <a style="color:#444; margin-right:10px; cursor: pointer;" @click="goDetail(scope)" title="查看">
               <i class="el-icon-document"></i>
-            </a>
+            </a> -->
             <a href="javascript:;" @click="openEdit(scope.row, scope.$index)" style="color:#444; margin-right:10px;" title="编辑">
               <i class="el-icon-edit"></i>
             </a>
@@ -120,7 +133,7 @@
                 <el-form-item label="加盟资金" prop="subscriptionMoney">
                   <el-input v-model.number="editAccount.subscriptionMoney" placeholder='请输入加盟资金（元）'></el-input>
                 </el-form-item>
-                <el-form-item label="加盟地区" prop="cityName">
+                <el-form-item label="加盟地区" prop="cityName"  id='selectCity' style="width: 700px;">
                    <el-select @change="handleEditProvince"
                       v-model="editAccount.provinceName"
                       loading-text
@@ -186,8 +199,10 @@
               </el-form>
                 <el-upload
                   class="avatar-uploader"
-                  :show-file-list="false"
-                  action='http://localhost:9090/static/headerImg'
+                  :show-file-list="true"
+                  :with-credentials='true'
+                  action=''
+                  :http-request = 'uploadWay'
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload">
                   <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -362,7 +377,7 @@
 /*  #partner_table  */
 
 #partner_table {
-  padding: 0 30px 100px 30px;
+  padding: 0 30px 20px 30px;
   background: #fff;
   border: 1px solid #e7ecf1;
   /* border-bottom: none; */
@@ -418,7 +433,7 @@
   background: #f87e2b;
   border: none;
   color: #fff;
-  margin-left: 70px;
+  margin-left: 110px;
 }
 
 .partner_button:nth-of-type(1):hover {
@@ -585,6 +600,7 @@ export default {
       search_Number: '',
       date1: '',
       date2: '',
+      imageUrl: '',
       pickerOptions0: {
         disabledDate (time) {
           return time.getTime() < Date.now() - 8.64e7
@@ -776,6 +792,12 @@ export default {
           })
       }
     },
+    handleAvatarSuccess (res, file) {
+      console.log('SUCCESS')
+      // console.log(file)
+      // console.log(URL.createObjectURL(file.raw))
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -786,10 +808,19 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+
     },
-     handleAvatarSuccess (res, file) {
-      console.log(file)
-      this.imageUrl = URL.createObjectURL(file.raw)
+    uploadWay (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file.file);
+      var data; 
+      var that = this
+      reader.onload = function(e){   
+        data = this.result
+        that.imageUrl = data
+        that.ruleForm.file = JSON.stringify(data)
+      }
+      
     },
     queryInfo () {
       var name =  this.name.trim()
@@ -933,7 +964,8 @@ export default {
     openEdit(row,index) {
       console.log(row)
       this.dialogVisible = true
-      this.editAccount = Object.assign({},row,{editIndex:index},{outTime: null},{registerTime: null},{provinceName:''},{areaName:''},{cardType:row.cardType===0?'居民身份证':'护照'})
+      this.imageUrl = row.businessLicenseIconUrl
+      this.editAccount = Object.assign({},row,{editIndex:index},{outTime: null},{registerTime: null},{cardType:row.cardType===0?'居民身份证':'护照'})
       //this.editAccount = Object.assign({},row,{provinceName:''},{areaName:''})
       //this.editAccount.cityName = ' '
       this.filterProvinceMethod()
@@ -1020,7 +1052,7 @@ export default {
         } else if ((endTime > startTime) && startTime.toString().length === 1) {
           this.$message({
             type: 'warning',
-            message: '开始日期不能为空'
+            message: '请选择开始日期'
           })
         } else {
           return

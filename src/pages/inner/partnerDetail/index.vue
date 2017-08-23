@@ -346,9 +346,10 @@ export default {
 </script>
 <style scoped>
 div.carUseDetail {
-  margin-right: 20px;
   background: #fff;
-  padding-bottom: 120px;
+  margin: 0 auto;
+  border: 1px solid #e7ecf1;
+  width: 1000px;
 }
 
 div.carUseDetail table {
