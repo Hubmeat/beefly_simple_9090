@@ -745,24 +745,7 @@ export default {
     },
     openEdit(scope) {
     console.log(scope.row)
-    this.remoteMethod()
-    // request.post(host + 'beepartner/admin/User/findFranchiseePassWord')
-    //   .withCredentials()
-    //   .set({
-    //     'content-type': 'application/x-www-form-urlencoded'
-    //   })
-    //   .send({
-    //     "id": scope.row.id
-    //   })
-    //   .end((error,res)=>{
-    //     if(error){
-    //       console.log(error)
-    //     }else {
-    //       console.log(JSON.parse(res.text).data)
-    //       this.editAccount.passWord = scope.row.passWord
-    //       this.editAccount.description = scope.row.description
-    //     }
-    //   })
+      this.remoteMethod()
       this.dialogVisible = true
       this.editAccount.roleName = scope.row.roleName
       this.editAccount.userName = scope.row.userName
@@ -795,6 +778,8 @@ export default {
       newAccountInfo.description = this.editAccount.description
       newAccountInfo.email = this.editAccount.email
       newAccountInfo.phoneNo = this.editAccount.phoneNo
+      newAccountInfo.cityId = this.editAccount.alliance
+      newAccountInfo.cityName = this.editAccount.cityName
       newAccountInfo.name = this.editAccount.name
       newAccountInfo.status = (this.editAccount.status == true ? 0 : 1)
       var index = this.editAccount.index
@@ -813,6 +798,7 @@ export default {
                 message: '恭喜您，修改成功！'
               })
               that.platTableData.splice(index, 1, that.editAccount)
+              that.loadData()
             } else {
               that.$message({
                 type: 'error',
@@ -822,6 +808,7 @@ export default {
           }
         })
       } else {
+        console.log('edit', that.editAccount)
         updateAccountByAdmin(newAccountInfo, function (error, res) {
           if (error) {
             console.log(error)
