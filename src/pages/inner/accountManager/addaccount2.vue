@@ -423,6 +423,7 @@ export default {
         }
     },
     mounted: function () {
+    document.title = '蜜蜂平台管理——添加合伙人账号'
         this.remoteMethod()
         this.loadCity()
     }

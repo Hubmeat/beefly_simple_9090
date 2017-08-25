@@ -463,6 +463,7 @@ export default {
     }
 	},
 	mounted () {
+    document.title = '蜜蜂平台管理——个人中心'
     // this.$store.state.users.isHeaderImg = false
 		this.getInfo()
 		

@@ -15,7 +15,7 @@
           </label>
           <el-button id="accountSearchBtn" @click="queryAccountInfo" class="timeSelect_button">查询</el-button>
         </div>
-  
+
         <!-- account -->
         <div id="err_add" class="account">
           <h1>
@@ -23,7 +23,7 @@
             <!--新增数据开始-->
             <!--新增数据结束-->
           </h1>
-  
+
           <!-- 表单 -->
           <el-table :data="platTableData" :empty-text='emptyText' style="width: 100%; font-size:13px;" v-loading="loading" :element-loading-text="loadingText">
             <el-table-column prop="userName" label="用户名" min-width="140"></el-table-column>
@@ -138,18 +138,18 @@
                       <el-input v-model="editAccount.passWord" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="所属合伙人" prop="alliance">
-                        <el-radio-group v-model="editAccount.alliance"  v-on:input='remoteMethodPartner'>
-                            <el-radio :key="list.cityId" :myId="list.cityId" :label="list.cityId.toString()" v-for="list of cityList">{{list.cityName}}</el-radio>
-                        </el-radio-group>
+                      <el-radio-group v-model="editAccount.alliance" v-on:input='remoteMethodPartner'>
+                        <el-radio :key="list.cityId" :myId="list.cityId" :label="list.cityId.toString()" v-for="list of cityList">{{list.cityName}}</el-radio>
+                      </el-radio-group>
                     </el-form-item>
                     <el-form-item label="所属角色" style="margin-left: 12px;" prop="roleName">
-                        <el-select v-model="editAccount.roleName" placeholder="选择角色类型" :remote-method="remoteMethodPartner" :disabled="isDisabled">
-                            <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                            <!--<el-option label="管理员" value="管理员"></el-option>-->
-                            <!-- <el-option label="加盟商" value="加盟商"></el-option> -->
-                            <!--<el-option label="合伙人" value="合伙人"></el-option>-->
-                        </el-select>
+                      <el-select v-model="editAccount.roleName" placeholder="选择角色类型" :remote-method="remoteMethodPartner" :disabled="isDisabled">
+                        <el-option v-for="item in options4" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                        <!--<el-option label="管理员" value="管理员"></el-option>-->
+                        <!-- <el-option label="加盟商" value="加盟商"></el-option> -->
+                        <!--<el-option label="合伙人" value="合伙人"></el-option>-->
+                      </el-select>
                     </el-form-item>
                     <el-form-item label="姓名" :label-width="formLabelWidth">
                       <el-input v-model="editAccount.name" auto-complete="off"></el-input>
@@ -161,15 +161,15 @@
                       <el-input v-model="editAccount.email" auto-complete="off"></el-input>
                     </el-form-item>
                     <el-form-item label="备注" style="margin-left: 50px;">
-                        <el-input type="textarea" style="width:340px" v-model="editAccount.description" placeholder="不超过200个字符"></el-input>
+                      <el-input type="textarea" style="width:340px" v-model="editAccount.description" placeholder="不超过200个字符"></el-input>
                     </el-form-item>
                     <!--<el-form-item label="所属合伙人" :label-width="formLabelWidth">
-                          <el-radio-group v-model="editAccount.radio">
-                            <el-radio :label="3">上海</el-radio>
-                            <el-radio :label="6">北京</el-radio>
-                            <el-radio :label="9">芜湖</el-radio>
-                          </el-radio-group>
-                        </el-form-item>-->
+                            <el-radio-group v-model="editAccount.radio">
+                              <el-radio :label="3">上海</el-radio>
+                              <el-radio :label="6">北京</el-radio>
+                              <el-radio :label="9">芜湖</el-radio>
+                            </el-radio-group>
+                          </el-form-item>-->
                   </el-form>
                   <div slot="footer" class="dialog-footer editfooter">
                     <el-button class="accountMangerBtn" type="primary" @click="handleEditAccount">确 定</el-button>
@@ -184,14 +184,7 @@
         </div>
       </el-tab-pane>
 
-      <el-pagination 
-        v-show="pageShow"
-        @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage" 
-          :page-size="10" 
-          layout="prev, pager, next, jumper" 
-          :total="totalItems">
+      <el-pagination v-show="pageShow" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="10" layout="prev, pager, next, jumper" :total="totalItems">
       </el-pagination>
     </el-tabs>
 
@@ -218,7 +211,7 @@ import { delAccountByAdmin } from '../../../api/delAccountByAdmin.api'
 import { host } from '../../../config/index.js'
 export default {
   data() {
-    var validatorUserName = function (rule, value, callback) {
+    var validatorUserName = function(rule, value, callback) {
       if (value === '') {
         callback(new Error('请输入用户名'))
       } else if (!checkUserName(value)) {
@@ -248,7 +241,7 @@ export default {
           })
       }
     }
-    var validatePhoneNo = function (rule, value, callback) {
+    var validatePhoneNo = function(rule, value, callback) {
       if (value === '') {
         callback(new Error('请输入手机号'))
       } else if (!checkMobile(value)) {
@@ -278,7 +271,7 @@ export default {
       }
     }
     return {
-      cityList:[],
+      cityList: [],
       cityId: '0',
       isQuery: false,
       accountOrUsername: '',
@@ -308,14 +301,14 @@ export default {
       options4: [],
       editAccountRule: {
         userName: [
-          { validator: validatorUserName, trigger: 'blur', required: true},
+          { validator: validatorUserName, trigger: 'blur', required: true },
           { required: true, trigger: 'blur', message: '请输入用户名' }
         ],
         passWord: [
           { required: true, message: '请填写密码', trigger: 'blur' },
           { min: 6, max: 20, message: '密码长度应该在6-20位之间', trigger: 'change' }
         ],
-        roleName: [{  trigger: 'blur', required: true }],
+        roleName: [{ trigger: 'blur', required: true }],
         phoneNo: [{ validator: validatePhoneNo, trigger: 'blur' }],
         alliance: [{ required: true, message: '请选择合伙人', trigger: 'blur' }]
       },
@@ -337,42 +330,41 @@ export default {
   },
   methods: {
     remoteMethodPartner() {
-        var that = this
-        alert(this.editAccount.alliance)
-        if (this.editAccount.alliance === '') {
-            return
-        } else {
-            setTimeout(() => {
-                request.post(host + 'beepartner/admin/User/findRole')
-                .withCredentials()
-                    .set({
-                        'content-type': 'application/x-www-form-urlencoded'
-                    })
-                    .send({
-                        'cityId': that.editAccount.alliance
-                    })
-                    .end((error, res) => {
-                        if (error) {
-                            console.log(error)
-                            that.options4 = []
-                        } else {
-                            that.checkLogin(res)
-                            console.log(JSON.parse(res.text))
-                            var roles = JSON.parse(res.text).data.map((item) => {
-                                var obj = {}
-                                obj.value = item.roleName
-                                obj.label = item.roleName
-                                obj.id = item.id
-                                return obj
-                            })
-                            if (roles.length > 0) {
-                                that.isDisabled = false
-                            }
-                            that.options4 = roles
-                        }
-                    })
-            }, 200)
-        }
+      var that = this
+      if (this.editAccount.alliance === '') {
+        return
+      } else {
+        setTimeout(() => {
+          request.post(host + 'beepartner/admin/User/findRole')
+            .withCredentials()
+            .set({
+              'content-type': 'application/x-www-form-urlencoded'
+            })
+            .send({
+              'cityId': that.editAccount.alliance
+            })
+            .end((error, res) => {
+              if (error) {
+                console.log(error)
+                that.options4 = []
+              } else {
+                that.checkLogin(res)
+                console.log(JSON.parse(res.text))
+                var roles = JSON.parse(res.text).data.map((item) => {
+                  var obj = {}
+                  obj.value = item.roleName
+                  obj.label = item.roleName
+                  obj.id = item.id
+                  return obj
+                })
+                if (roles.length > 0) {
+                  that.isDisabled = false
+                }
+                that.options4 = roles
+              }
+            })
+        }, 200)
+      }
     },
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
@@ -387,24 +379,24 @@ export default {
         queryNumber: this.telOrMail,
         cityId: $('.citys span.active').attr('name')
       }
-      if(this.accountOrUsername.trim().length===0&&this.telOrMail.trim().length===0){
-          this.$message({
-            type:'error',
-            message: '查询条件并不能为空！'
-          })
-          return false
+      if (this.accountOrUsername.trim().length === 0 && this.telOrMail.trim().length === 0) {
+        this.$message({
+          type: 'error',
+          message: '查询条件并不能为空！'
+        })
+        return false
       }
       var that = this
-      if(this.activeName==='平台') {
-        that.loading  = true
-         if (this.accountOrUsername.trim().length > 0 || this.telOrMail.trim().length > 0) {
+      if (this.activeName === '平台') {
+        that.loading = true
+        if (this.accountOrUsername.trim().length > 0 || this.telOrMail.trim().length > 0) {
           request.post(host + 'beepartner/admin/User/findAdminUser')
             .withCredentials()
             .set({
-                'content-type': 'application/x-www-form-urlencoded'
+              'content-type': 'application/x-www-form-urlencoded'
             })
             .send(obj)
-            .end(function (error, res) {
+            .end(function(error, res) {
               if (error) {
                 console.log(error)
                 that.loading = false
@@ -424,14 +416,14 @@ export default {
                 that.platTableData = that.handleData(newArr)
               }
             })
-          } else {
-            request.post(host + 'franchisee/account/getAllAdminUser')
+        } else {
+          request.post(host + 'franchisee/account/getAllAdminUser')
             .send(obj)
             .withCredentials()
             .set({
-                'content-type': 'application/x-www-form-urlencoded'
+              'content-type': 'application/x-www-form-urlencoded'
             })
-            .end(function (error, res) {
+            .end(function(error, res) {
               if (error) {
                 console.log(error)
                 that.loading = false
@@ -451,51 +443,51 @@ export default {
                 that.platTableData = that.handleData(newArr)
               }
             })
-          }
-      }else{
-          that.loading = true
-          getAllAccount({ cityId:this.cityId,queryName:this.accountOrUsername,queryNumber: this.telOrMail }, function (error, res) {
-            if (error) {
-              console.log(error)
-              setTimeout(function () {
-                that.loading = false
-                that.loadingText = '服务器链接超时'
-              }, 5000)
-              setTimeout(function () {
-                that.emptyText = '暂无数据'
-              }, 6000)
-            } else {
-              that.checkLogin(res)
+        }
+      } else {
+        that.loading = true
+        getAllAccount({ cityId: this.cityId, queryName: this.accountOrUsername, queryNumber: this.telOrMail }, function(error, res) {
+          if (error) {
+            console.log(error)
+            setTimeout(function() {
               that.loading = false
-              that.totalPage = Number(JSON.parse(res.text).totalPage)
-              var arr = JSON.parse(res.text).data
-              console.log(arr)
-              that.totalItems = Number(JSON.parse(res.text).totalItems)
-              if (that.totalPage > 1) {
-                that.emptyText = ' '
-                that.pageShow = true
-              } else {
-                that.emptyText = '暂无数据'
-                that.pageShow = false
-              }
-              that.$store.state.joinTableData = that.handleData(arr)
-              that.joinTableData = that.$store.state.joinTableData
+              that.loadingText = '服务器链接超时'
+            }, 5000)
+            setTimeout(function() {
+              that.emptyText = '暂无数据'
+            }, 6000)
+          } else {
+            that.checkLogin(res)
+            that.loading = false
+            that.totalPage = Number(JSON.parse(res.text).totalPage)
+            var arr = JSON.parse(res.text).data
+            console.log(arr)
+            that.totalItems = Number(JSON.parse(res.text).totalItems)
+            if (that.totalPage > 1) {
+              that.emptyText = ' '
+              that.pageShow = true
+            } else {
+              that.emptyText = '暂无数据'
+              that.pageShow = false
             }
-          })
+            that.$store.state.joinTableData = that.handleData(arr)
+            that.joinTableData = that.$store.state.joinTableData
+          }
+        })
       }
     },
     loadData() {
       if (this.activeName === '平台') {
         var that = this
         that.loading = true
-        getAllAdminUser({}, function (err, res) {
+        getAllAdminUser({}, function(err, res) {
           if (err) {
             console.log(err)
-            setTimeout(function () {
+            setTimeout(function() {
               that.loading = false
               that.loadingText = '服务器链接超时'
             }, 5000)
-            setTimeout(function () {
+            setTimeout(function() {
               that.emptyText = '暂无数据'
             }, 6000)
           } else {
@@ -517,8 +509,8 @@ export default {
             that.initData = that.platTableData
           }
         })
-      }else{
-         request
+      } else {
+        request
           .post(host + 'beepartner/admin/User/findFranchiseeUser')
           .withCredentials()
           .set({
@@ -530,11 +522,11 @@ export default {
           .end((error, res) => {
             if (error) {
               console.log(error)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.loading = false
                 that.loadingText = '服务器链接超时'
               }, 5000)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
@@ -556,20 +548,20 @@ export default {
           })
       }
     },
-   initQuery() {
+    initQuery() {
       var that = this
       this.isQuery = false
       this.currentPage = 1
-      if(this.activeName==='平台'){
+      if (this.activeName === '平台') {
         if (this.accountOrUsername.trim().length === 0 && this.telOrMail.trim().length === 0 && this.isQuery === false) {
-          getAllAdminUser({ franchiseeId: '123456', userId: 'admin' }, function (error, res) {
+          getAllAdminUser({ franchiseeId: '123456', userId: 'admin' }, function(error, res) {
             if (error) {
               console.log(error)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.loading = false
                 that.loadingText = '服务器链接超时'
               }, 5000)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
@@ -591,16 +583,16 @@ export default {
             }
           })
         }
-      }else {
+      } else {
         if (this.accountOrUsername.trim().length === 0 && this.telOrMail.trim().length === 0 && this.isQuery === false) {
-          getAllAccount({ franchiseeId: '123456', userId: 'admin',cityId:this.cityId,type:1 }, function (error, res) {
+          getAllAccount({ franchiseeId: '123456', userId: 'admin', cityId: this.cityId, type: 1 }, function(error, res) {
             if (error) {
               console.log(error)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.loading = false
                 that.loadingText = '服务器链接超时'
               }, 5000)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
@@ -642,7 +634,7 @@ export default {
               name: this.name.trim(),
               phone: this.phone.trim(),
               type: type
-            }).end(function (error, res) {
+            }).end(function(error, res) {
               if (error) {
                 console.log(error)
               } else {
@@ -672,7 +664,7 @@ export default {
               name: this.name.trim(),
               phone: this.phone.trim(),
               type: type
-            }).end(function (error, res) {
+            }).end(function(error, res) {
               if (error) {
                 console.log(error)
               } else {
@@ -719,32 +711,32 @@ export default {
       e.target.setAttribute('class', 'active')
       that.cityId = e.target.getAttribute('name')
       that.loading = true
-       getAllAccount({ cityId:that.cityId }, function (error, res) {
-          if (error) {
-            console.log(error)
-            that.loading = false
-            that.pageShow = false
+      getAllAccount({ cityId: that.cityId }, function(error, res) {
+        if (error) {
+          console.log(error)
+          that.loading = false
+          that.pageShow = false
+        } else {
+          that.checkLogin(res)
+          that.loading = false
+          that.totalPage = Number(JSON.parse(res.text).totalPage)
+          var arr = JSON.parse(res.text).data
+          that.totalItems = Number(JSON.parse(res.text).totalItems)
+          if (that.totalPage > 1) {
+            that.emptyText = ' '
+            that.pageShow = true
           } else {
-            that.checkLogin(res)
-            that.loading = false
-            that.totalPage = Number(JSON.parse(res.text).totalPage)
-            var arr = JSON.parse(res.text).data
-            that.totalItems = Number(JSON.parse(res.text).totalItems)
-            if (that.totalPage > 1) {
-              that.emptyText = ' '
-              that.pageShow = true
-            } else {
-              that.emptyText = '暂无数据'
-              that.pageShow = false
-            }
-            that.$store.state.joinTableData = that.handleData(arr)
-            that.joinTableData = that.$store.state.joinTableData
-            that.initData = that.joinTableData
+            that.emptyText = '暂无数据'
+            that.pageShow = false
           }
-        })
+          that.$store.state.joinTableData = that.handleData(arr)
+          that.joinTableData = that.$store.state.joinTableData
+          that.initData = that.joinTableData
+        }
+      })
     },
     openEdit(scope) {
-    console.log(scope.row)
+      console.log(scope.row)
       this.remoteMethod()
       this.dialogVisible = true
       this.editAccount.roleName = scope.row.roleName
@@ -762,7 +754,7 @@ export default {
     handleEditAccount() {
       if (this.editAccount.userName === '') {
         return
-      }    
+      }
       this.dialogVisible = false
       var that = this
       var newAccountInfo = {}
@@ -786,7 +778,7 @@ export default {
       if (this.activeName === '平台') {
         var AccountInfo = newAccountInfo
         delete AccountInfo.role
-        updateAdmin(AccountInfo, function (error, res) {
+        updateAdmin(AccountInfo, function(error, res) {
           if (error) {
             console.log(error)
           } else {
@@ -809,7 +801,7 @@ export default {
         })
       } else {
         console.log('edit', that.editAccount)
-        updateAccountByAdmin(newAccountInfo, function (error, res) {
+        updateAccountByAdmin(newAccountInfo, function(error, res) {
           if (error) {
             console.log(error)
           } else {
@@ -844,7 +836,7 @@ export default {
             {
               id: scope.row.id
             },
-            function (error, res) {
+            function(error, res) {
               if (error) {
                 that.loading = false
                 that.$message({
@@ -902,7 +894,7 @@ export default {
               // }
               id: scope.row.id,
               userId: scope.row.userId
-            }, function (error, res) {
+            }, function(error, res) {
               if (error) {
                 console.log(error)
                 that.loading = false
@@ -952,7 +944,7 @@ export default {
           {
             id: scope.row.id,
             status: !scope.row.status ? 0 : 1
-          }, function (error, res) {
+          }, function(error, res) {
             if (error) {
               console.log(error)
               that.$message({
@@ -988,10 +980,10 @@ export default {
         var obj2 = Object.assign({}, scope.row, { status: !scope.row.status ? 0 : 1 })
         console.log(obj2)
         modifyAccountStateByAdmin(
-         {
-           id: obj2.id,
-           status: obj2.status
-         }, function (error, res) {
+          {
+            id: obj2.id,
+            status: obj2.status
+          }, function(error, res) {
             if (error) {
               console.log(error)
               that.$message({
@@ -1034,28 +1026,28 @@ export default {
       })
       return res
     },
-    loadCity () {
-    request.post(host + 'beepartner/admin/city/findCity')
-      .withCredentials()
-      .set({
-        'content-type': 'application/x-www-form-urlencoded'
-      })
-      .end((error,res)=>{
-        if(error){
-          console.log(error)
-          this.cityList = []
-        }else {
-          this.checkLogin(res)
-          var result = JSON.parse(res.text).data
-          var map = result.map((item)=>{
-            var obj = {}
-            obj.cityId = item.cityId
-            obj.cityName = item.cityName
-            return obj
-          })
-          this.cityList = map
-        }
-      })
+    loadCity() {
+      request.post(host + 'beepartner/admin/city/findCity')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .end((error, res) => {
+          if (error) {
+            console.log(error)
+            this.cityList = []
+          } else {
+            this.checkLogin(res)
+            var result = JSON.parse(res.text).data
+            var map = result.map((item) => {
+              var obj = {}
+              obj.cityId = item.cityId
+              obj.cityName = item.cityName
+              return obj
+            })
+            this.cityList = map
+          }
+        })
     },
     handleClickTab(tab, event) {
       var that = this
@@ -1066,16 +1058,16 @@ export default {
       this.pageShow = false
       if (this.activeName === '平台') {
         this.currentPage = 1
-         var that = this
+        var that = this
         this.loading = true
-        getAllAdminUser({}, function (err, res) {
+        getAllAdminUser({}, function(err, res) {
           if (err) {
             console.log(err)
-            setTimeout(function () {
+            setTimeout(function() {
               that.loading = false
               that.loadingText = '服务器链接超时'
             }, 5000)
-            setTimeout(function () {
+            setTimeout(function() {
               that.emptyText = '暂无数据'
             }, 6000)
           } else {
@@ -1112,11 +1104,11 @@ export default {
           .end((error, res) => {
             if (error) {
               console.log(error)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.loading = false
                 that.loadingText = '服务器链接超时'
               }, 5000)
-              setTimeout(function () {
+              setTimeout(function() {
                 that.emptyText = '暂无数据'
               }, 6000)
             } else {
@@ -1139,61 +1131,76 @@ export default {
           })
       }
     },
-    checkLogin (res) {
+    checkLogin(res) {
       if (JSON.parse(res.text).message === '用户登录超时') {
         this.$router.push('/login')
       }
     },
     remoteMethod() {
-        var that = this
-          setTimeout(() => {
-              request.post(host + 'beepartner/admin/User/findAdminRole')
-              .withCredentials()
-                  .set({
-                      'content-type': 'application/x-www-form-urlencoded'
-                  })
-                  .send()
-                  .end((error, res) => {
-                      if (error) {
-                          console.log(error)
-                          that.options4 = []
-                      } else {
-                          that.checkLogin(res)
-                          console.log(JSON.parse(res.text))
-                          var roles = JSON.parse(res.text).data.map((item) => {
-                              var obj = {}
-                              obj.value = item.roleName
-                              obj.label = item.roleName
-                              obj.id = item.id
-                              return obj
-                          })
-                          that.options4 = roles
-                      }
-                  })
-          }, 200)
+      var that = this
+      setTimeout(() => {
+        request.post(host + 'beepartner/admin/User/findAdminRole')
+          .withCredentials()
+          .set({
+            'content-type': 'application/x-www-form-urlencoded'
+          })
+          .send()
+          .end((error, res) => {
+            if (error) {
+              console.log(error)
+              that.options4 = []
+            } else {
+              that.checkLogin(res)
+              console.log(JSON.parse(res.text))
+              var roles = JSON.parse(res.text).data.map((item) => {
+                var obj = {}
+                obj.value = item.roleName
+                obj.label = item.roleName
+                obj.id = item.id
+                return obj
+              })
+              that.options4 = roles
+            }
+          })
+      }, 200)
     },
   },
   mounted() {
+    document.title = '蜜蜂平台管理——账号管理'
     this.loadData()
     this.loadCity()
   },
   watch: {
+    'editAccount.alliance': {
+      handler: function(val, oldVal) {
+        console.log(val)
+        console.log(this.cityList)
+        this.cityList.map((item) => {
+          console.log(item.cityId, val)
+          if (item.cityId == val) {
+            this.editAccount.cityName = item.cityName
+          }
+        })
+        console.log(this.editAccount)
+      },
+      deep: true
+    },
     currentPage: {
-      handler: function (val, oldVal) {
+      handler: function(val, oldVal) {
         var that = this
         that.loading = true
         if (this.activeName === '平台') {
           if (this.name.trim().length === 0 && this.phone.trim().length === 0) {
-            getAllAdminUser({ 
-                'currentPage': val,
-                'queryName': this.accountOrUsername,
-                'queryNumber': this.telOrMail,
-              }, function (err, res) {
+            getAllAdminUser({
+              'currentPage': val,
+              'queryName': this.accountOrUsername,
+              'queryNumber': this.telOrMail,
+            }, function(err, res) {
               if (err) {
                 console.log(err)
                 that.loading = false
               } else {
-                 that.loading = false
+                that.loading = false
                 var arr = JSON.parse(res.text).data
                 var totalPage = Number(JSON.parse(res.text).totalPage)
                 if (totalPage > 1) {
@@ -1213,7 +1220,7 @@ export default {
                 'queryName': this.accountOrUsername,
                 'queryNumber': this.telOrMail,
                 'currentPage': val
-              }).end(function (error, res) {
+              }).end(function(error, res) {
                 if (error) {
                   console.log(error)
                   that.loading = false
@@ -1233,12 +1240,12 @@ export default {
           }
         } else {
           if (this.name.trim().length === 0 && this.phone.trim().length === 0) {
-            getAllAccount({ 
+            getAllAccount({
               'cityId': this.cityId,
-              'currentPage':val,
+              'currentPage': val,
               'queryName': this.accountOrUsername,
               'queryNumber': this.telOrMail
-            }, function (error, res) {
+            }, function(error, res) {
               if (error) {
                 console.log(error)
                 that.loading = false
@@ -1246,11 +1253,11 @@ export default {
                 that.loading = false
                 var arr = JSON.parse(res.text).data
                 var totalPage = JSON.parse(res.text).totalPage
-                if (totalPage>1) {
-                   that.pageShow = true
+                if (totalPage > 1) {
+                  that.pageShow = true
                 } else {
-                  that.pageShow  = false
-                   that.emptyText = '暂无数据'
+                  that.pageShow = false
+                  that.emptyText = '暂无数据'
                 }
                 that.$store.state.joinTableData = that.handleData(arr)
                 that.joinTableData = that.$store.state.joinTableData
@@ -1266,10 +1273,10 @@ export default {
                 'currentPage': val
               })
               .withCredentials()
-               .set({
-                  'content-type': 'application/x-www-form-urlencoded'
+              .set({
+                'content-type': 'application/x-www-form-urlencoded'
               })
-              .end(function (error, res) {
+              .end(function(error, res) {
                 if (error) {
                   console.log(error)
                   that.loading = false
@@ -1329,6 +1336,7 @@ body {
 }
 
 
+
 /*#account_router_cover {
   width: 100%;
   height: 100%;
@@ -1354,6 +1362,7 @@ body {
 }
 
 
+
 /*#account_router {
   position: fixed;
   left: 0;
@@ -1370,7 +1379,7 @@ body {
 
 div.account {
   /* width: 100%; */
-  padding: 0 30px 10px 30px;
+  padding: 0 30px 0px 30px;
   background: #fff;
   margin-top: 20px;
   /* border: 1px solid #e7ecf1; */
@@ -1468,8 +1477,8 @@ div.account>h1 button:hover {
 }
 
 #err_form .el-form-item {
-    padding-left: 140px;
-    margin-bottom: 22px;
+  padding-left: 140px;
+  margin-bottom: 22px;
 }
 
 .el-switch__label,
@@ -1603,6 +1612,7 @@ div.el-pagination {
   padding-left: 0;
   border-left: 0;
   margin-left: 30px;
+    margin-top: 10px;
 }
 
 #partner .selectPlace {

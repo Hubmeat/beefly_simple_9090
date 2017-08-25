@@ -230,7 +230,7 @@
     }
 
     #earD_body {
-      padding: 10px 20px 10px 20px;
+      padding: 10px 20px 800px 20px;
       background: #fff;
       /* margin-top: 20px; */
       padding-left: 28px;
@@ -345,6 +345,7 @@ export default {
     }
   },
   mounted () {
+    document.title = '蜜蜂平台管理——收益明细'
     this.getCityList()
 
     this.getDate()

@@ -231,15 +231,7 @@ export default {
     }
   },
   mounted () {
-    $('.M-box').pagination({
-      pageCount: 50,
-      jump: true,
-      coping: true,
-      homePage: '首页',
-      endPage: '尾页',
-      prevContent: '«',
-      nextContent: '»'
-    })
+    document.title = '蜜蜂平台管理——结算管理'
   }
 }
 </script>

@@ -6,7 +6,6 @@
                     <img src="../assets/header/logo.jpg">
                 </h2>
                 <h3>蜜蜂出行加盟商管理平台<span></span></h3>
-                {{$store.state.users.isHeaderImg}}
                 <div class="admin">
                     <img class="headImg" v-if="imageUrl" :src="imageUrl">
                     <i v-else class="icon iconfont icon-touxiang"></i>

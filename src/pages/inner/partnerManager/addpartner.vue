@@ -35,7 +35,6 @@
             <el-select @change="handleChangeProvince"
               v-model="ruleForm.provinceName"
               loading-text
-             
               placeholder="请选择省"
               :loading="proloading">
               <el-option
@@ -318,10 +317,10 @@ export default {
           { type: 'date', required: true, message: '请选择加盟日期', tigger: 'blur'}
         ],
         subscriptionNum: [
-          { type: 'date', required: true, message: '请选择输入认购车辆数', trigger: 'blur' }
+          { type: 'number', required: true, message: '请选择输入认购车辆数', trigger: 'blur' }
         ],
         subscriptionMoney: [
-          { type: 'date', required: true, message: '输入正确的金额', trigger: 'blur' }
+          { type: 'number', required: true, message: '输入正确的金额', trigger: 'blur' }
         ],
         cityName: [
           { required: true, message: '请选择加盟城市', tigger: 'change'}
@@ -373,6 +372,7 @@ export default {
     }
   },
   mounted:function(){
+    document.title = '蜜蜂平台管理——添加合伙人'
     this.filterProvinceMethod()
   },
   methods: {

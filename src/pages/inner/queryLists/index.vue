@@ -72,7 +72,7 @@
     width: 100%;
     box-sizing: border-box;
     border: 1px solid #dfe6ec;
-    padding: 20px 30px 10px 30px;
+    padding: 20px 30px 800px 30px;
   }
 
   div.queryLists h3 button {
@@ -402,6 +402,7 @@ export default {
     }
   },
   mounted () {
+    document.title = '蜜蜂平台管理——收益排行列表'
     if (this.$store.state.users.timeline.length === 0) {
       this.getDateMount()
     } else {

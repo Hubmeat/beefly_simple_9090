@@ -312,6 +312,7 @@ export default {
   },
   mounted: function () {
     //this.loading = true
+    document.title = '蜜蜂平台管理——合伙人详情'
     var id = this.$route.params.id.split('&')[0]
     var cityPartnerId = this.$route.params.id.split('&')[1]
     request

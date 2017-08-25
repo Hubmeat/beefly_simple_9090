@@ -107,9 +107,9 @@
               <i class="el-icon-close"></i>
             </a>
             <!--dialog 弹窗开始-->
-            <el-dialog title="合伙人信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
+            <el-dialog title="编辑合伙人信息" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
              <div id="editpartner_form">
-              <el-form :model="editAccount"  ref="ruleForm" label-width="110px" class="demo-ruleForm">
+              <el-form :model="editAccount" :rules="editRules"  ref="editAccount" label-width="110px" class="demo-ruleForm">
                 <el-form-item label="企业名称" prop="companyName">
                   <el-input v-model="editAccount.companyName" placeholder='长度不超过100字符'></el-input>
                 </el-form-item>
@@ -123,8 +123,7 @@
                     <el-date-picker
                       v-model="editAccount.joinTime"
                       type="date"
-                      placeholder="选择日期"
-                      :picker-options="pickerOptions0">
+                      placeholder="选择日期">
                     </el-date-picker>           
                 </el-form-item>
                 <el-form-item label="车辆数" prop="subscriptionNum">
@@ -145,7 +144,7 @@
                         :value="(item.name)">
                       </el-option>
                     </el-select>
-                    <el-select style='display: block;' @change="handleEditCity"
+                    <el-select  @change="handleEditCity"
                       v-model="editAccount.cityName"
                       placeholder="请选择城市"
                       :loading="proloading">
@@ -167,9 +166,6 @@
                         :value="item.name">
                       </el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                  <el-input v-model="editAccount.email" placeholder='请输入邮箱'></el-input>
                 </el-form-item>
                 <el-form-item label="加盟分成比例" prop="percent">
                   <el-input v-model="editAccount.percent" placeholder='请输入分成比例(%)'></el-input>
@@ -205,13 +201,13 @@
                   :http-request = 'uploadWay'
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width: 100%;">
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  <h3>点击上传营业执照</h3>
+                  <h3>点击更换营业执照</h3>
                 </el-upload>
               </div>
               <div slot="footer" class="dialog-footer">
-                <el-button class="partner_button" type="primary" v-loading.fullscreen.lock="fullscreenLoading" @click="editConfim(scope.row, scope.$index)">确定</el-button>
+                <el-button class="partner_button" type="primary" v-loading.fullscreen.lock="fullscreenLoading" @click="submitForm('editAccount')">确定</el-button>
                 <el-button class="partner_button" @click="dialogVisible = false">取消</el-button>
               </div>
             </el-dialog>
@@ -238,311 +234,311 @@
 </template>
 
 <style>
-.alliance_table_allocation {
-  color: #f60;
-  cursor: pointer;
-  text-decoration: underline;
-  margin-left: 6px;
-}
+  .alliance_table_allocation {
+    color: #f60;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 6px;
+  }
 
-#partnerManager_router {
-  width: 100%;
-  height: 100%;
-  background: rgba(68, 68, 68, 0.6);
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  top: 0;
-}
+  #partnerManager_router {
+    width: 100%;
+    height: 100%;
+    background: rgba(68, 68, 68, 0.6);
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+  }
 
-	#partner_header {
-    /*width: 100%;*/
-    height: 70px;
+    #partner_header {
+      /*width: 100%;*/
+      height: 70px;
+      background: #fff;
+      border: 1px solid #e7ecf1;
+      border-bottom: none;
+    }
+
+    #partner_header .partner_my_input1 {
+      width: 192px; 
+      height: 30px;
+      outline: none;
+      margin-top: 4px;
+      border-radius: 4px;
+      border: 1px solid #ddd; 
+      text-indent: 10px;
+      display: inline-block;
+    }
+    
+    #partner_header .partner_my_input2 {
+      width: 181px;
+      border-radius: 4px;
+      height: 30px;
+      outline: none;
+      margin-top: 4px;
+      text-indent: 10px;
+      border: 1px solid #ddd;
+      display: inline-block;
+    }
+
+    #partner_header label:nth-of-type(1) {
+      height: 70px;
+      width: 280px;
+      line-height: 70px;
+      margin-left: 30px;
+      font-size: 14px;
+      float: left;
+    }
+
+    #partner_header label:nth-of-type(1)>span {
+      margin-right: 20px;
+    }
+
+    #partner_header label:nth-of-type(2) {
+      height: 70px;
+      font-size: 14px;
+      width: 400px;
+      line-height: 70px;
+      /*margin-left: 20px;*/
+      float: left;
+    }
+
+    #partner_header label:nth-of-type(2)>span {
+      margin-right: 6px;
+    }
+
+    /*partner_data_select*/
+    #partner_data_select {
+      padding: 0px 30px 20px 30px;
+      background: #fff;
+      border: 1px solid #e7ecf1;
+      border-top: none;
+    }
+
+    #partner_data_select label:nth-child(1) span {
+      font-size: 14px;
+      margin-right: 6px;
+    }
+
+    #partner_data_select label:nth-child(2) span {
+      font-size: 16px;
+      margin: 0 25px;
+    }
+
+    #partner_data_select button:hover {
+      color: #20a0ff;
+      border-color: #20a0ff;
+    }
+
+  ::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #bfcbd9;
+  }
+
+  :-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #bfcbd9;
+  }
+
+  ::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #bfcbd9;
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #bfcbd9;
+  }
+
+
+  /*#partner_header button {
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+    float: right;
+    border: 1px solid #c4c4c4;
+    color: #1f2d3d;
+    margin: 17px 33px;
+    padding: 10px 15px;
+    border-radius: 4px;
+  }
+
+  #partner_header button:hover {
+    color: #20a0ff;
+    border-color: #20a0ff;
+  }*/
+
+  /*  #partner_table  */
+
+  #partner_table {
+    padding: 0 30px 800px 30px;
     background: #fff;
     border: 1px solid #e7ecf1;
-    border-bottom: none;
-	}
+    /* border-bottom: none; */
+    margin-top: 20px;
+  }
 
-  #partner_header .partner_my_input1 {
-    width: 192px; 
+  #partner_table .el-pagination{
+    white-space: nowrap;
+    padding: 2px 5px;
+    color: #48576a;
+    margin-top: 10px;
+    margin-left: -5px;
+    border: none;
+    background: #fff;
+    /* border-left: 1px solid #f3f3f5; */
+  }
+
+  #partner_add {
+    width: 90%;
+    height: 68px;
+    line-height: 68px;
+  }
+
+  #partner_add button {
+    width: 100px;
     height: 30px;
-    outline: none;
-    margin-top: 4px;
-    border-radius: 4px;
-    border: 1px solid #ddd; 
-    text-indent: 10px;
+    line-height: 30px;
     display: inline-block;
-  }
-  
-  #partner_header .partner_my_input2 {
-    width: 181px;
-    border-radius: 4px;
-    height: 30px;
+    border: none;
     outline: none;
-    margin-top: 4px;
-    text-indent: 10px;
-    border: 1px solid #ddd;
-    display: inline-block;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #fff;
+    background: rgba(66, 66, 66, 0.8);
+    transition: all .2s linear 0s;
   }
 
-	#partner_header label:nth-of-type(1) {
-    height: 70px;
-    width: 280px;
-    line-height: 70px;
-    margin-left: 30px;
-    font-size: 14px;
-    float: left;
-	}
-
-  #partner_header label:nth-of-type(1)>span {
-    margin-right: 20px;
+  #partner_add button:hover {
+    background: rgb(66, 66, 66);
+    cursor: pointer;
   }
 
-	#partner_header label:nth-of-type(2) {
-    height: 70px;
-    font-size: 14px;
-    width: 400px;
-    line-height: 70px;
-    /*margin-left: 20px;*/
-    float: left;
-	}
-
-  #partner_header label:nth-of-type(2)>span {
-    margin-right: 6px;
-  }
-
-  /*partner_data_select*/
-  #partner_data_select {
-    padding: 0px 30px 20px 30px;
+  #partner_page {
+    padding: 4px 10px 0 20px;
+    padding-bottom: 100px;
     background: #fff;
     border: 1px solid #e7ecf1;
     border-top: none;
+    min-height: 230px;
   }
 
-  #partner_data_select label:nth-child(1) span {
-    font-size: 14px;
-    margin-right: 6px;
-  }
-
-  #partner_data_select label:nth-child(2) span {
-    font-size: 16px;
-    margin: 0 25px;
-  }
-
-  #partner_data_select button:hover {
-    color: #20a0ff;
-    border-color: #20a0ff;
-	}
-
-::-webkit-input-placeholder {
-  /* WebKit browsers */
-  color: #bfcbd9;
-}
-
-:-moz-placeholder {
-  /* Mozilla Firefox 4 to 18 */
-  color: #bfcbd9;
-}
-
-::-moz-placeholder {
-  /* Mozilla Firefox 19+ */
-  color: #bfcbd9;
-}
-
-:-ms-input-placeholder {
-  /* Internet Explorer 10+ */
-  color: #bfcbd9;
-}
-
-
-/*#partner_header button {
-  display: inline-block;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  background: #fff;
-  float: right;
-  border: 1px solid #c4c4c4;
-  color: #1f2d3d;
-  margin: 17px 33px;
-  padding: 10px 15px;
-  border-radius: 4px;
-}
-
-#partner_header button:hover {
-  color: #20a0ff;
-  border-color: #20a0ff;
-}*/
-
-/*  #partner_table  */
-
-#partner_table {
-  padding: 0 30px 20px 30px;
-  background: #fff;
-  border: 1px solid #e7ecf1;
-  /* border-bottom: none; */
-  margin-top: 20px;
-}
-
-#partner_table .el-pagination{
-  white-space: nowrap;
-  padding: 2px 5px;
-  color: #48576a;
-  margin-top: 30px;
-  margin-left: -5px;
-  border: none;
-  background: #fff;
-  /* border-left: 1px solid #f3f3f5; */
-}
-
-#partner_add {
-  width: 90%;
-  height: 68px;
-  line-height: 68px;
-}
-
-#partner_add button {
-  width: 100px;
-  height: 30px;
-  line-height: 30px;
-  display: inline-block;
-  border: none;
-  outline: none;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #fff;
-  background: rgba(66, 66, 66, 0.8);
-  transition: all .2s linear 0s;
-}
-
-#partner_add button:hover {
-  background: rgb(66, 66, 66);
-  cursor: pointer;
-}
-
-#partner_page {
-  padding: 4px 10px 0 20px;
-  padding-bottom: 100px;
-  background: #fff;
-  border: 1px solid #e7ecf1;
-  border-top: none;
-  min-height: 230px;
-}
-
-.partner_button:nth-of-type(1) {
-  background: #f87e2b;
-  border: none;
-  color: #fff;
-  margin-left: 110px;
-}
-
-.partner_button:nth-of-type(1):hover {
-  background: rgba(248, 126, 43, 0.9);
-}
-
-.partner_button:nth-of-type(2) {
-  background: #fff;
-  color: #444;
-  border: 1px solid rgba(196,196,196,1);
-}
-
-.partner_button:nth-of-type(2):hover {
-  border: 1px solid rgb(248, 126, 43);
-  color: rgb(248, 126, 43);
-}
-
-.partner_button {
-  width: 120px;
-  height: 50px;
-  float: left;
-  margin-top: -30px;
-  margin-bottom: 20px;
-}
-
- .el-input__inner {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-color: #fff;
-  background-image: none;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-  color: #1f2d3d;
-  font-size: inherit;
-  height: 36px;
-  line-height: 1;
-  outline: 0;
-  padding: 3px 10px;
-  transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-}
-
-.el-input__inner::-webkit-input-placeholder {
-  color: #ddd;
-}
-
-.el-date-table td.current:not(.disabled), .el-date-table td.end-date, .el-date-table td.start-date {
-  background: black !important;
-  color: #fff !important;
-}
-
-.el-input__inner:hover {
-  border: 1px solid #bbb;
-}
-
-/**华丽的分割线**/
-.demo-ruleForm{position:relative}
-.avatar-uploader{
-border-radius: 6px;
-    cursor: pointer;
-    height: 200px;
-    width: 300px;
-    float: left;
-    border: 1px dashed #ddd;
-    position: absolute;
-    text-align: center;
-    right: 10%;
-    top: 0;}
-.avatar-uploader-icon{font-size: 28px;
-    color: #ccc;
-    width: 10px;
-    height: 10px;
-    line-height: 200px;}    
-.avatar-uploader h3{
-    margin-top: 20px;
-    font-size: 18px;
-    text-align: center;
-    margin-left: 14px;
-    color: #ccc;}
-    .form_table_h1 {
-    width: 100%;
-    line-height: 30px;
-    padding: 10px 0 10px 3px;
-    height: 30px;
-    font-size: 20px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-}
-div#editpartner_form{position:relative}
-
-.my_btn {
-    width: 80px;
-    float: right;
-    height: 36px;
-    line-height: 11px;
-    color: #fff;
-    /*margin-top: 10px;*/
-    outline: none;
+  .partner_button:nth-of-type(1) {
+    background: #f87e2b;
     border: none;
-    border-radius: 4px; 
-    cursor: pointer;
-    background: rgba(52,52,67, 0.8);
-}
+    color: #fff;
+    margin-left: 110px;
+  }
 
-.my_btn:hover {
-    background: rgba(52,52,67, 0.9);
+  .partner_button:nth-of-type(1):hover {
+    background: rgba(248, 126, 43, 0.9);
+  }
+
+  .partner_button:nth-of-type(2) {
+    background: #fff;
+    color: #444;
+    border: 1px solid rgba(196,196,196,1);
+  }
+
+  .partner_button:nth-of-type(2):hover {
+    border: 1px solid rgb(248, 126, 43);
+    color: rgb(248, 126, 43);
+  }
+
+  .partner_button {
+    width: 120px;
+    height: 50px;
+    float: left;
+    margin-top: -30px;
+    margin-bottom: 20px;
+  }
+
+  .el-input__inner {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    color: #1f2d3d;
+    font-size: inherit;
+    height: 36px;
+    line-height: 1;
+    outline: 0;
+    padding: 3px 10px;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+  }
+
+  .el-input__inner::-webkit-input-placeholder {
+    color: #ddd;
+  }
+
+  .el-date-table td.current:not(.disabled), .el-date-table td.end-date, .el-date-table td.start-date {
+    background: black !important;
     color: #fff !important;
-}
+  }
+
+  .el-input__inner:hover {
+    border: 1px solid #bbb;
+  }
+
+  /**华丽的分割线**/
+  .demo-ruleForm{position:relative}
+  .avatar-uploader{
+  border-radius: 6px;
+      cursor: pointer;
+      height: 200px;
+      width: 300px;
+      float: left;
+      border: 1px dashed #ddd;
+      position: absolute;
+      text-align: center;
+      right: 10%;
+      top: 0;}
+  .avatar-uploader-icon{font-size: 28px;
+      color: #ccc;
+      width: 10px;
+      height: 10px;
+      line-height: 200px;}    
+  .avatar-uploader h3{
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      margin-left: 14px;
+      color: #ccc;}
+      .form_table_h1 {
+      width: 100%;
+      line-height: 30px;
+      padding: 10px 0 10px 3px;
+      height: 30px;
+      font-size: 20px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+  }
+  div#editpartner_form{position:relative}
+
+  .my_btn {
+      width: 80px;
+      float: right;
+      height: 36px;
+      line-height: 11px;
+      color: #fff;
+      /*margin-top: 10px;*/
+      outline: none;
+      border: none;
+      border-radius: 4px; 
+      cursor: pointer;
+      background: rgba(52,52,67, 0.8);
+  }
+
+  .my_btn:hover {
+      background: rgba(52,52,67, 0.9);
+      color: #fff !important;
+  }
 
 </style>
 
@@ -570,6 +566,7 @@ export default {
       totalItems:1,
       pageShow:false,
       tableData: [],
+      userIDID: '',
       loading: false,
       options: [{
         value: '0',
@@ -591,7 +588,72 @@ export default {
       pagetotal: '',
       dialogVisible: false,
       formLabelWidth: '70px',
-      editAccount: {},
+      editAccount: {
+        provinceId:'',
+        cityId:'',
+        areaId:'',
+        provinceName:'',
+        cityName:'',
+        areaName:'',
+        joinTime: '',
+        companyName: '',
+        businessLicense: '',
+        address: '',
+        subscriptionNum: '',
+        subscriptionMoney: '',
+        percent: '',
+        userName: '',
+        cardType: '',
+        idCard: '',
+        phone: '',
+        email: '',
+        userId: '',
+        password: '',
+        file: ''
+      },
+      editRules: {
+        companyName: [
+          { required: true, message: '请输入企业名称', trigger: 'blur' }
+        ],
+        businessLicense: [
+          { required: true, message: '请输入营业执照号', trigger: 'blur' }
+        ],
+        address: [
+          { message: '请输入正确的地址', trigger: 'blur' }
+        ],
+        joinTime: [
+          { required: true, message: '请选择加盟日期', tigger: 'blur'}
+        ],
+        subscriptionNum: [
+          { type: 'number', required: true, message: '请选择输入认购车辆数', trigger: 'blur' }
+        ],
+        subscriptionMoney: [
+          { type: 'number', required: true, message: '输入正确的金额', trigger: 'blur' }
+        ],
+        cityName: [
+          { required: true, message: '请选择加盟城市', tigger: 'change'}
+        ],
+        cardType: [
+          { required: true, message: '请选择证件类型', trigger: 'blur' }
+        ],
+        percent: [
+          { required: true, message: '请输入加盟比例', trigger: 'blur' }
+        ],
+        userName: [
+          { message: '请输入姓名', trigger: 'blur' }
+        ],
+        idCard: [
+          { required: true, message: '请输入身份证号码', trigger: 'blur' },
+          { min: 15, max: 19, message: '请输入合法的身份证号码', trigger: 'blur' }
+        ],
+        phone: [
+          { message: '请填写手机号', trigger: 'blur' },
+          { min: 11, message: '请输入正确的手机号', trigger: 'blur' }
+        ],
+        email: [
+          { message: '请填写正确邮箱', trigger: 'blur' }
+        ],
+      },
       add: false,
       imageUrl: '',
       fullscreenLoading: false,
@@ -631,6 +693,7 @@ export default {
     }
   },
   mounted() {
+    document.title = '蜜蜂平台管理——合伙人管理'
     this.loadData()
   },
   methods: {
@@ -702,7 +765,9 @@ export default {
        if(this.areaList.length>0){
         this.areaList.map((item)=>{
           if(val === item.name){
+            console.log(item)
             this.editAccount.areaId = item.id
+            this.editAccount.cityId = item.code
           }
         })
         //this.ruleForm.areaName = ''
@@ -785,6 +850,7 @@ export default {
                 var obj = {}
                 obj.id = item.id
                 obj.name = item.name
+                obj.code = item.code
                 return obj
               })
               this.areaList = areaList
@@ -818,7 +884,7 @@ export default {
       reader.onload = function(e){   
         data = this.result
         that.imageUrl = data
-        that.ruleForm.file = JSON.stringify(data)
+        that.editAccount.file = JSON.stringify(data)
       }
       
     },
@@ -965,7 +1031,8 @@ export default {
       console.log(row)
       this.dialogVisible = true
       this.imageUrl = row.businessLicenseIconUrl
-      this.editAccount = Object.assign({},row,{editIndex:index},{outTime: null},{registerTime: null},{cardType:row.cardType===0?'居民身份证':'护照'})
+      this.userIDID = row.id
+      this.editAccount = Object.assign({},row,{editIndex:index},{cardType:row.cardType===0?'居民身份证':'护照'},{provinceName: row.provinceName},{cityName: row.cityName},{areaName: row.areaName},)
       //this.editAccount = Object.assign({},row,{provinceName:''},{areaName:''})
       //this.editAccount.cityName = ' '
       this.filterProvinceMethod()
@@ -990,6 +1057,76 @@ export default {
       })
       that.$store.state.users.keepParnterAccount.splice(this.editAccount.editIndex, 1, this.editAccount)
       that.dialogVisible = false
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.editAccount.file === '' && this.imageUrl === null ) {
+            this.$message({
+              message: '请上传营业执照',
+              type: 'warning'
+            })
+            return
+          }
+          this.$confirm('确认修改吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '信息有误',
+            type: 'warning'
+          })
+        .then(() => {
+          var that = this
+          //this.fullscreenLoading = true
+          // var obj  = Object.assign({},this.editAccount,{cardType:this.editAccount.cardType==='居民身份证'?0:1, file:this.editAccount.file })
+          request
+            .post(host + 'beepartner/admin/cityPartner/updateCityPartner')
+            .withCredentials()
+            .set({
+                'content-type': 'application/x-www-form-urlencoded'
+            })
+          .send({
+            id: this.userIDID,
+            provinceId: this.editAccount.provinceId,
+            cityId: this.editAccount.cityId,
+            areaId:this.editAccount.areaId,
+            provinceName:this.editAccount.provinceName,
+            cityName:this.editAccount.cityName,
+            areaName:this.editAccount.areaName,
+            joinTime: this.editAccount.joinTime,
+            companyName: this.editAccount.companyName,
+            businessLicense: this.editAccount.businessLicense,
+            address: this.editAccount.address,
+            subscriptionNum: this.editAccount.subscriptionNum,
+            subscriptionMoney: this.editAccount.subscriptionMoney,
+            percent: this.editAccount.percent,
+            userName: this.editAccount.userName,
+            cardType: this.editAccount.cardType === '居民身份证'?0:1,
+            idCard:this.editAccount.idCard,
+            phone: this.editAccount.phone,
+            email: this.editAccount.email,
+            userId: this.editAccount.userId,
+            password: this.editAccount.password,
+            file: this.editAccount.file
+          })
+          .end((error,res)=>{
+            if(error){
+              console.log(error)
+            }else{
+              this.checkLogin(res)
+            }
+          })
+          that.$store.state.users.keepParnterAccount.splice(this.editAccount.editIndex, 1, this.editAccount)
+          that.dialogVisible = false
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消添加'
+          // })
+        })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     show_detail (row, column) {
       console.log(row)

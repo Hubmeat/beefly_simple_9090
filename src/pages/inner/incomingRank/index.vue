@@ -129,7 +129,7 @@ export default {
     }
   },
   mounted () {
-    
+    document.title = '蜜蜂平台管理——收益排行'
   }
 }
 </script>

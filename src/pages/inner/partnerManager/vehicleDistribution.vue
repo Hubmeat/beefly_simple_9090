@@ -712,6 +712,7 @@ export default {
   //   }
   // },
   mounted () {
+    document.title = '蜜蜂平台管理——分配车辆'
     this.loadDate()
   },
   watch:{

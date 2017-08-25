@@ -206,6 +206,7 @@ export default {
     }
   },
   mounted: function () {
+    document.title = '蜜蜂平台管理——车辆详情'
     this.loading2 = true
     this.bikeInfo.code = this.$route.query.code
     request.post(host + 'beepartner/admin/Bike/getBikeDetail')

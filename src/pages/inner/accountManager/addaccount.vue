@@ -375,6 +375,7 @@ export default {
     }
   },
   mounted: function () {
+    document.title = '蜜蜂平台管理——添加平台账号'
     this.remoteMethod()
   }
 }

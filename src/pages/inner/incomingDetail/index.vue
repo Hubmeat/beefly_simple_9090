@@ -273,6 +273,7 @@ export default {
     }
   },
   mounted () {
+    document.title = '蜜蜂平台管理——收益明细'
     // console.log(this.$route.query)
     this.$router.push('/index/earningsDetail?type=getAllRevenue')
     request

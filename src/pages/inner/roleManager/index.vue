@@ -627,6 +627,7 @@ export default {
     }
   },
   mounted() {
+    document.title = '蜜蜂平台管理———角色管理'
     this.loadRole()
   },
   watch: {
@@ -721,7 +722,7 @@ body {
 
 div.account {
   /* width: 100%; */
-  padding: 0 30px 10px 30px;
+  padding: 0 30px 800px 30px;
   background: #fff;
   margin-top: 20px;
   border: 1px solid #e7ecf1;

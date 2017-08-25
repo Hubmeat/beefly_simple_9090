@@ -15,11 +15,11 @@
                 </div>
                 <el-form label-width="60px" :model="formLabelAlign" ref="formLabelAlign">
                   <el-form-item class="userClass" prop="userName" label="">
-                    <el-input v-model="formLabelAlign.userName" placeholder="请输入用户名" v-on:change="checkUserName" autofocus="autofocus" tabindex="1"></el-input>
+                    <input class="my_input" v-model="formLabelAlign.userName" placeholder="请输入用户名" v-on:change="checkUserName" autofocus="autofocus" tabindex="1">
                     <div class="el-form-item__error" v-show="showUserNameError">请输入用户名</div>
                   </el-form-item>
                   <el-form-item class="userClass" prop="passWord" label="">
-                    <el-input v-model="formLabelAlign.passWord" @keyup.enter.native="handleEnter" v-on:change="checkPsd" type="passWord" placeholder="请输入密码" tabindex="2"></el-input>
+                    <input class="my_input" v-model="formLabelAlign.passWord" @keyup.enter.native="handleEnter" v-on:change="checkPsd" type="passWord" placeholder="请输入密码" tabindex="2">
                     <div class="el-form-item__error" v-show="showPsdError">请输入密码</div>
                   </el-form-item>
                   <div class="button-group" style="">
@@ -417,7 +417,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 
 div.showErrorMsg{color: red;
     /* display: inline-block; */
@@ -643,5 +643,12 @@ button.restConfirm:hover{background:rgba(248,126,43,0.9);}
 button.restCancel:hover{border: 1px solid rgb(248,126,43);
 		color: rgb(248,126,43);}    
 div.el-dialog__wrapper.forgetPsd .el-dialog__footer{padding-bottom: 23px;padding-top:0;}
+
+.my_input {
+      border: 1px solid #888585;
+      height: 36px;
+      text-indent: .8em;
+      outline: none;
+}
 </style>
 

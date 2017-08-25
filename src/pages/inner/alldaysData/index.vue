@@ -261,6 +261,7 @@ export default {
     highChart
   },
   mounted () {
+    document.title = '蜜蜂平台管理——24小时数据趋势'
     this.getCityList()
     this.nowTime = moment().format('YYYY-MM-DD')
     this.$router.push({ query: { type:  '0'}})

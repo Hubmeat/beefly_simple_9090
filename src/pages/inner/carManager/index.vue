@@ -217,7 +217,7 @@ export default {
     }
   },
   mounted: function () {
-
+    document.title = '蜜蜂平台管理——车辆管理'
     this.getCityList()
     this.getDateByTabName('0')
   },
@@ -308,7 +308,7 @@ export default {
             'endOnlineTime': endTime,
             'bikeState': radio,
             'keyName': this.terminalNumber,
-            'cityCode': this.active === '已分配'?$('.citys span.active').attr('myId'):'',
+            'cityCode': this.activeName === '已分配'?$('.citys span.active').attr('myId'):'',
             'type': type
           })
           .end((error, res) => {
@@ -386,6 +386,7 @@ export default {
         })
     },
     handleClick (e) {
+      this.currentPage = 1
       var elems = siblings(e.target)
       for (var i = 0; i < elems.length; i++) {
         elems[i].setAttribute('class', '')
@@ -529,7 +530,7 @@ export default {
                 'endOnlineTime': endTime,
                 'bikeState': radio,
                 'keyName': this.terminalNumber,
-                'cityCode': this.active === '已分配'?$('.citys span.active').attr('myId'):'',
+                'cityCode': this.activeName === '已分配'?$('.citys span.active').attr('myId'):'',
                 'type': type
               })
               .end((error, res) => {

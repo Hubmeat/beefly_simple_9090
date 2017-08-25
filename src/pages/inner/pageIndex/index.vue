@@ -107,7 +107,7 @@
   }
 
   div.statuAndData {
-    padding: 20px 15px 20px 15px;
+    padding: 20px 15px 100% 15px;
     background: #fff;
     margin-right: 20px;
     border-bottom: none;
@@ -318,6 +318,7 @@ export default {
     incomingVueChart
   },
   mounted() {
+    document.title = '蜜蜂平台管理——首页'
     this.getCityList()
   },
   methods: {
