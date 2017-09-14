@@ -65,7 +65,7 @@
             <el-input type="textarea" v-model="editForm.description"></el-input>
           </el-form-item>
           <el-form-item label="权限列表" :label-width="formLabelWidth">
-            <el-tree :data="editForm.rolePowerList" show-checkbox ref="tree" node-key="id" :props="defaultProps2" :default-checked-keys="fathCode">
+            <el-tree ref="tree"  :data="editForm.rolePowerList" show-checkbox node-key="id" :props="defaultProps2" :default-checked-keys="fathCode">
             </el-tree>
           </el-form-item>
         </el-form>
@@ -101,6 +101,7 @@ export default {
       }
     }
     return {
+      rowMenuList: [],
       isQuery: false,
       currentPage3: 1,
       totalItems: 1,
@@ -294,9 +295,19 @@ export default {
       flag: false
     }
   },
+  mounted() {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="90"]').addClass('is-active')
+    document.title = '蜜蜂平台管理———角色管理'
+    this.loadRole()
+    var roleList = window.sessionStorage.authList
+  },
   methods: {
+    setCheckedKeys(){
+      this.$refs.tree.setCheckedKeys(this.rowMenuList)
+    },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       // 初始化查询
@@ -319,7 +330,6 @@ export default {
           this.checkLogin(res)
           this.loading = false
           var result = JSON.parse(res.text).data
-          console.log(result)
           var totalPage = Number(JSON.parse(res.text).totalPage)
           var newArr = result.map((item)=>{
             var arr = item.adminUserList.map((item)=>{
@@ -356,7 +366,6 @@ export default {
               this.checkLogin(res)
               this.loading = false
               var result = JSON.parse(res.text).data
-              console.log(result)
               var totalPage = Number(JSON.parse(res.text).totalPage)
               var newArr = result.map((item)=>{
                 var arr = item.adminUserList.map((item)=>{
@@ -427,6 +436,11 @@ export default {
       this.flag = false
     },
     openEditRole(scope) {
+      this.rowMenuList = scope.row.menuList.map((item)=>{return item*1})
+      var that = this;
+       setTimeout(function(){
+             that.setCheckedKeys()
+          },200)
       this.dialogEditVisible = true
       this.editForm.roleName = scope.row.roleName
       this.editForm.description = scope.row.description
@@ -435,8 +449,6 @@ export default {
       this.editForm.roleType = scope.row.roleType
       this.fathCode = []
       this.childrenCode = []
-      // this.fathCode  = scope.row.fathCode
-      // this.childrenCode  = scope.row.childrenCode
     },
     handleEditRole() {
       var that = this
@@ -473,6 +485,7 @@ export default {
               // //that.tableData.splice(that.editForm.index,1,{roleName: that.editForm.roleName,description: that.editForm.description, id: that.editForm.id})
               that.flag = true
               that.dialogEditVisible = false
+              that.loadRole()
             } else {
               that.$message({
                 type: 'error',
@@ -574,7 +587,7 @@ export default {
               }
             })
         } else {
-          console.log('error submit!!');
+          // console.log('error submit!!');
           return false;
         }
       })
@@ -600,7 +613,6 @@ export default {
             that.checkLogin(res)
             that.loading = false
             var result = JSON.parse(res.text).data
-            console.log(result)
             var totalPage = Number(JSON.parse(res.text).totalPage)
             var newArr = result.map((item)=>{
               var arr = item.adminUserList.map((item)=>{
@@ -608,7 +620,6 @@ export default {
               })
             return Object.assign({},item,{adminUserList: arr})
           })
-            console.log(newArr)
             if (totalPage > 1) {
               that.pageShow = true
             } else {
@@ -625,10 +636,6 @@ export default {
           this.$router.push('/login')
       }
     }
-  },
-  mounted() {
-    document.title = '蜜蜂平台管理———角色管理'
-    this.loadRole()
   },
   watch: {
     'flag':{

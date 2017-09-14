@@ -6,11 +6,11 @@
     <el-row class="watchButton">
       <el-col :span="2">
         <span class="orderNum"></span>
-        <i>实际收益</i>
+        <i>金额</i>
       </el-col>
       <el-col :span="2">
         <span class="orderMoney"></span>
-        <i>金额</i>
+        <i>单数</i>
       </el-col>
     </el-row>
     <div class="chartsRect">
@@ -126,7 +126,7 @@ export default {
   },
   methods: {
     handleClick () {
-      this.$router.push('/index/incomingRank?type=daily')
+      this.$router.push('/index/incomingRank?type=' + this.$route.query.type)
     }
   },
   components: {

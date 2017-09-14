@@ -23,6 +23,6 @@ export default [
 ]
 // Menu Should have 2 levels
 function generateRoutesFromMenu(menu = [], routes = []){
-    console.log(menu)
+    // console.log(menu)
    return routes
 }

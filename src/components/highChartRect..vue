@@ -54,7 +54,6 @@ export default {
               newArr.push(obj)
             }
             this.$store.dispatch('consumeData_action', { newArr })
-            alert(this.$store.state.users.consumeData)
             this.getChartDate()
             /**
              * 判断是否显示暂无数据
@@ -97,7 +96,7 @@ export default {
             }
           }, {
             title: {
-              text: '利润'
+              text: '金额'
             },
             opposite: true
           }],
@@ -132,7 +131,7 @@ export default {
             pointPadding: 0.3,
             pointPlacement: -0.2
           }, {
-            name: '利润',
+            name: '金额',
             color: '#00cdcd',
             data: this.consumeMoney,
             tooltip: {
@@ -228,7 +227,6 @@ export default {
     },
     time() {
       if (this.$store.state.users.timeline.length === 0) {
-        console.log('beforeUpdate is noy entrey')
         return
       } else {
         request

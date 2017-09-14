@@ -274,7 +274,6 @@ export default {
   },
   mounted () {
     document.title = '蜜蜂平台管理——收益明细'
-    // console.log(this.$route.query)
     this.$router.push('/index/earningsDetail?type=getAllRevenue')
     request
       .post(host + 'franchisee/revenue/getAllRevenue')
@@ -343,7 +342,6 @@ export default {
         type: 'warning'
       })
       .then(() => {
-        console.log('this is entry')
         require.ensure([], () => {
           this.$loading({customClass: 'loading_class'})
           var that = this
@@ -364,7 +362,6 @@ export default {
                 if (err) {
                   console.log('err:' + err)
                 } else {
-                  console.log(res)
                   // 数据处理
                   const data = this.formatJson(filterVal, list)
                   export_json_to_excel(tHeader, data, '列表excel')
@@ -398,7 +395,6 @@ export default {
         arrDeled.push(obj)
       }
 
-      console.log('arrDeled:', arrDeled)
       return arrDeled
     },
     getAllDate () {
@@ -420,7 +416,7 @@ export default {
           if (err) {
             console.log('err:' + err)
           } else {
-            console.log(res)
+            // console.log(res)
             var newArr = JSON.parse(res.text).list
             var pageNumber = JSON.parse(res.text).totalPage
             var arr2 = this.tableDataDel(newArr)
@@ -479,7 +475,6 @@ export default {
     },
     pageUpdate (e) {
       var that = this
-      console.log(this.pagetotal)
       clearTimeout(this.timer)
       if (e.target.tagName === 'A' || e.target.tagName === 'SPAN') {
         if (e.target.innerHTML === '首页') {
@@ -489,7 +484,6 @@ export default {
         } else if (e.target.innerHTML === '«') {
           e.target.innerHTML = Number($('.M-box span.active')[0].innerHTML) - 1
         } else if (e.target.innerHTML === '»') {
-          console.log($('.M-box span.active')[0].innerHTML)
           e.target.innerHTML = Number($('.M-box span.active')[0].innerHTML) + 1
         } else if (e.target.innerHTML === '...') {
           return
@@ -513,7 +507,6 @@ export default {
             if (error) {
               console.log('error:', error)
             } else {
-              console.log(JSON.parse(res.text))
               var pagedata = (JSON.parse(res.text)).list
               var arr2 = that.tableDataDel(pagedata)
               that.$store.dispatch('earningsDate_action', { arr2 })

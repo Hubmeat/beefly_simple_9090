@@ -3,7 +3,7 @@
     <div id="partner_header">
       <label>
         <span>关键字</span>
-          <input type="text" v-on:input='inputChange' ref="val1" placeholder="姓名\证件号码" v-model="name" class="partner_my_input1">
+          <input type="text" v-on:input='inputChange' ref="val1" placeholder="企业名称\联系人姓名\证件号码" v-model="name" class="partner_my_input1">
       </label>
       <label>
         <span>联系方式</span>
@@ -156,7 +156,6 @@
                     </el-select>
                     <el-select
                       @change="handleEditArea"
-                      v-show="areaShow"
                       v-model="editAccount.areaName"
                       placeholder="请选择区/县"
                       :loading="proloading">
@@ -693,6 +692,8 @@ export default {
     }
   },
   mounted() {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="20"]').addClass('is-active')
     document.title = '蜜蜂平台管理——合伙人管理'
     this.loadData()
   },
@@ -714,7 +715,6 @@ export default {
               console.log('err:' + err)
             } else {
               this.checkLogin(res)
-              console.log(JSON.parse(res.text).data)
               this.loading = false
               var newArr = JSON.parse(res.text).data
               var result = newArr.map((item)=>{
@@ -737,35 +737,31 @@ export default {
           })
       },
      handleEditProvince(val){
-      console.log(val)
        if(this.provinceList.length>0){
         this.provinceList.map((item)=>{
           if(val === item.name){
             this.editAccount.provinceId = item.id
           }
         })
-        this.editAccount.cityName = ''
+        // this.editAccount.cityName = ''
         this.filterCityMethod()
       }
     },
     handleEditCity(val){
-      console.log(val)
        if(this.cityList.length>0){
         this.cityList.map((item)=>{
           if(val === item.name){
             this.editAccount.cityId = item.id
           }
         })
-        this.editAccount.areaName = ''
+        // this.editAccount.areaName = ''
         this.filterAreaMethod()
       }
     },
     handleEditArea(val){
-        console.log(val)
        if(this.areaList.length>0){
         this.areaList.map((item)=>{
           if(val === item.name){
-            console.log(item)
             this.editAccount.areaId = item.id
             this.editAccount.cityId = item.code
           }
@@ -859,7 +855,6 @@ export default {
       }
     },
     handleAvatarSuccess (res, file) {
-      console.log('SUCCESS')
       // console.log(file)
       // console.log(URL.createObjectURL(file.raw))
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -939,7 +934,7 @@ export default {
       }
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       this.loading = true
@@ -963,7 +958,6 @@ export default {
             console.log('err:' + err)
           } else {
             this.checkLogin(res)
-            console.log(JSON.parse(res.text).data)
             this.loading = false
             var newArr = JSON.parse(res.text).data
             var result = newArr.map( (item) => {
@@ -1024,15 +1018,13 @@ export default {
       })
     },
     goDetail(scope) {
-      console.log(scope.row)
       this.$router.push('/index/partnerDetail/' + scope.row.id + '&' + scope.row.cityPartnerId)
     },
     openEdit(row,index) {
-      console.log(row)
       this.dialogVisible = true
       this.imageUrl = row.businessLicenseIconUrl
       this.userIDID = row.id
-      this.editAccount = Object.assign({},row,{editIndex:index},{cardType:row.cardType===0?'居民身份证':'护照'},{provinceName: row.provinceName},{cityName: row.cityName},{areaName: row.areaName},)
+      this.editAccount = Object.assign({},row,{editIndex:index},{percent: row.percent.toString()},{cardType:row.cardType===0?'居民身份证':'护照'},{provinceName: row.provinceName},{cityName: row.cityName},{areaName: row.areaName},)
       //this.editAccount = Object.assign({},row,{provinceName:''},{areaName:''})
       //this.editAccount.cityName = ' '
       this.filterProvinceMethod()
@@ -1115,6 +1107,7 @@ export default {
             }
           })
           that.$store.state.users.keepParnterAccount.splice(this.editAccount.editIndex, 1, this.editAccount)
+          that.loadData()
           that.dialogVisible = false
         }).catch(() => {
           // this.$message({
@@ -1123,13 +1116,12 @@ export default {
           // })
         })
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })
     },
     show_detail (row, column) {
-      console.log(row)
       if (column.label === '合伙人编号') {
         this.$router.push('/index/partnerDetail/' + row.id)
       } 
@@ -1155,7 +1147,6 @@ export default {
         var startTime = new Date(val).getTime()
         var endTime = new Date(this.startTime).getTime()
         endTime = isNaN(endTime) ? 0 : endTime
-        console.log(endTime.toString().length)
         if ((startTime > endTime) && endTime.toString().length > 1) {
           this.$message({
             type: 'warning',
@@ -1180,7 +1171,6 @@ export default {
         var endTime = new Date(val).getTime()
         var startTime = new Date(this.startTime).getTime()
         startTime = isNaN(startTime) ? 0 : startTime
-        console.log(startTime.toString().length)
         if ((endTime < startTime) && startTime.toString().length > 1) {
           this.$message({
             type: 'warning',

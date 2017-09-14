@@ -328,7 +328,6 @@ export default {
       return isJPG && isLt2M
     },
     handleAvatarSuccess (res, file) {
-      console.log(file)
       this.imageUrl = URL.createObjectURL(file.raw)
     },
 		uploadWay (file) {
@@ -377,7 +376,6 @@ export default {
         inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
         inputErrorMessage: '邮箱格式不正确'
       }).then(({ value }) => {
-				console.log(value)
 					// if(value) {
 					// 	updateEmail(
 					// 		{	
@@ -463,6 +461,8 @@ export default {
     }
 	},
 	mounted () {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="70"]').addClass('is-active')
     document.title = '蜜蜂平台管理——个人中心'
     // this.$store.state.users.isHeaderImg = false
 		this.getInfo()

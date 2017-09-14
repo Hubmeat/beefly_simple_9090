@@ -34,17 +34,14 @@ const getters = {
 }
 function generateMenuItems(state,authList){
   var arr = state.staticRoute[0].children
-  console.log(arr)
-  console.log(authList)
   var newArr = []
   for(var i=0;i<arr.length;i++){
-      console.log(arr[i])
+      // console.log(arr[i])
     if(authList.indexOf(arr[i].auth.toString())!==-1){
         newArr.push(arr[i])
     }
   }
   var res = Object.assign({},state.staticRoute[0],{children:newArr})
-  console.log(2,res)
   state.items = [res,state.staticRoute[1],state.staticRoute[2],state.staticRoute[3]]
   return
 }

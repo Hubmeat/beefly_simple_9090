@@ -25,28 +25,28 @@ const mutations = {
         state.joinTableData.push(obj)
     },
     consumeData_evaluation(state, { newArr }) {
-        console.log('[[ consumeData_evaluation is commited ]]')
+        // console.log('[[ consumeData_evaluation is commited ]]')
         state.consumeData = newArr.newArr
         // console.log(state.consumeData)
     },
     earningDate_detail(state, { arr }) {
-        console.log('[[ earningDate_detail is commited ]]')
+        // console.log('[[ earningDate_detail is commited ]]')
         state.earningsDate = arr
     },
     settlementDate_detail(state, { arr }) {
-        console.log('[[ settlementDate_detail is commited ]]')
+        // console.log('[[ settlementDate_detail is commited ]]')
         state.settlementDate = arr
     },
     setTimeLine(state, { obj }) {
-        console.log('[[ timeline is setted ]]')
+        // console.log('[[ timeline is setted ]]')
         state.timeline = obj
     },
     setAllData(state, { obj }) {
-        console.log('[[ setAllData is setted ]]')
+        // console.log('[[ setAllData is setted ]]')
         state.allData = obj
     },
     setPartnerList(state, { arr }) {
-        console.log('[[ setPartnerList ]]')
+        // console.log('[[ setPartnerList ]]')
         // console.log(arr.newArr)
         var arr2 = arr.newArr
         var arrDeled = []
@@ -67,7 +67,7 @@ const mutations = {
         state.keepParnterAccount.unshift(obj)
     },
     loginSign (state) {
-        console.log('loginsian change')
+        // console.log('loginsian change')
         state.loginSign = !state.loginSign
     }
 }

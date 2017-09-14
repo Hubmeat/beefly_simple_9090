@@ -4,7 +4,7 @@
       <el-tab-pane name="平台">
         <span slot="label">
           <i class="el-icon-date"></i> 平台</span>
-        <div class="am_search" style="border: 1px solid #e7ecf1;">
+        <div class="am_search">
           <label>
             <span>关键字</span>
             <input type="text" placeholder="账号/姓名" v-on:blur="initQuery" v-model="accountOrUsername" class="account_my_input">
@@ -349,7 +349,6 @@ export default {
                 that.options4 = []
               } else {
                 that.checkLogin(res)
-                console.log(JSON.parse(res.text))
                 var roles = JSON.parse(res.text).data.map((item) => {
                   var obj = {}
                   obj.value = item.roleName
@@ -367,7 +366,6 @@ export default {
       }
     },
     handleSizeChange(val) {
-      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       this.currentPage = val
@@ -461,7 +459,6 @@ export default {
             that.loading = false
             that.totalPage = Number(JSON.parse(res.text).totalPage)
             var arr = JSON.parse(res.text).data
-            console.log(arr)
             that.totalItems = Number(JSON.parse(res.text).totalItems)
             if (that.totalPage > 1) {
               that.emptyText = ' '
@@ -507,6 +504,7 @@ export default {
             that.$store.state.users.platTableData = that.handleData(arr)
             that.platTableData = that.$store.state.users.platTableData
             that.initData = that.platTableData
+            that.currentPage = 1
           }
         })
       } else {
@@ -800,7 +798,6 @@ export default {
           }
         })
       } else {
-        console.log('edit', that.editAccount)
         updateAccountByAdmin(newAccountInfo, function(error, res) {
           if (error) {
             console.log(error)
@@ -936,6 +933,7 @@ export default {
     },
     changeState(scope) {
       if (this.activeName === '平台') {
+        console.log(scope.row.status)
         var that = this
         var initObj = Object.assign({}, scope.row, { status: scope.row.status })
         var obj = Object.assign({}, scope.row, { status: !scope.row.status })
@@ -943,7 +941,7 @@ export default {
         modifyAdminState(
           {
             id: scope.row.id,
-            status: !scope.row.status ? 0 : 1
+            status: scope.row.status ? 1 : 0
           }, function(error, res) {
             if (error) {
               console.log(error)
@@ -960,6 +958,7 @@ export default {
                   type: 'success',
                   message: '恭喜你，修改成功'
                 })
+                that.loadData()
                 that.platTableData.splice(scope.$index, 1, obj)
               } else {
                 that.$message({
@@ -977,8 +976,7 @@ export default {
         this.phoneNo = ''
         var initObj = Object.assign({}, scope.row, { status: scope.row.status })
         var obj = Object.assign({}, scope.row, { status: !scope.row.status })
-        var obj2 = Object.assign({}, scope.row, { status: !scope.row.status ? 0 : 1 })
-        console.log(obj2)
+        var obj2 = Object.assign({}, scope.row, { status: scope.row.status ?  1 : 0 })
         modifyAccountStateByAdmin(
           {
             id: obj2.id,
@@ -1000,6 +998,7 @@ export default {
                   message: '恭喜你，修改成功'
                 })
                 that.joinTableData.splice(scope.$index, 1, obj)
+                that.loadData()
               } else {
                 that.$message({
                   type: 'error',
@@ -1151,7 +1150,6 @@ export default {
               that.options4 = []
             } else {
               that.checkLogin(res)
-              console.log(JSON.parse(res.text))
               var roles = JSON.parse(res.text).data.map((item) => {
                 var obj = {}
                 obj.value = item.roleName
@@ -1166,6 +1164,8 @@ export default {
     },
   },
   mounted() {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="80"]').addClass('is-active')
     document.title = '蜜蜂平台管理——账号管理'
     this.loadData()
     this.loadCity()
@@ -1173,15 +1173,11 @@ export default {
   watch: {
     'editAccount.alliance': {
       handler: function(val, oldVal) {
-        console.log(val)
-        console.log(this.cityList)
         this.cityList.map((item) => {
-          console.log(item.cityId, val)
           if (item.cityId == val) {
             this.editAccount.cityName = item.cityName
           }
         })
-        console.log(this.editAccount)
       },
       deep: true
     },
@@ -1379,7 +1375,7 @@ body {
 
 div.account {
   /* width: 100%; */
-  padding: 0 30px 0px 30px;
+  /* padding: 0 30px 0px 30px; */
   background: #fff;
   margin-top: 20px;
   /* border: 1px solid #e7ecf1; */
@@ -1414,7 +1410,7 @@ div.account>h1 button:hover {
 .am_search {
   width: 100%;
   height: 70px;
-  background: #fff;
+  background: #faebd7;
   /* border: 1px solid #e7ecf1; */
 }
 
@@ -1611,7 +1607,7 @@ div.el-input {
 div.el-pagination {
   padding-left: 0;
   border-left: 0;
-  margin-left: 30px;
+  /* margin-left: 30px; */
     margin-top: 10px;
 }
 
@@ -1621,6 +1617,7 @@ div.el-pagination {
   /* border: 1px solid #e7ecf1; */
   padding: 15px 10px 10px 30px;
   box-sizing: border-box;
+  background-color: #faebd7;
 }
 
 div.selectPlace address {

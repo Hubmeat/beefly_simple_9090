@@ -266,7 +266,7 @@ import request from 'superagent'
 import moment from 'moment'
 import incomingVueChart from '../../../components/highchartsIncoming.vue'
 import myCanvas from '../../../components/highChartAllData.vue'
-import Gamp from '../../../components/map.vue'
+// import Gamp from '../../../components/map.vue'
 import { siblings } from '../../../../utils/index.js'
 export default {
   data: function () {
@@ -314,10 +314,12 @@ export default {
   },
   components: {
     myCanvas,
-    Gamp,
+    // Gamp,
     incomingVueChart
   },
   mounted() {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="10"]').addClass('is-active')
     document.title = '蜜蜂平台管理——首页'
     this.getCityList()
   },

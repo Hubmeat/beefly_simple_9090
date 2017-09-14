@@ -170,9 +170,19 @@
                 newChartData.push(item.actualMoney)
                 return newChartData
               })
-              this.chartData = newChartData
-              this.cityList = newCity
-              this.initChart()
+
+              for (var i=0; i<newChartData.length; i++) {
+                // console.log(newChartData[i])
+                if (newChartData[i] != 0) {
+                  this.chartData = newChartData
+                  this.cityList = newCity
+                  this.noData = false
+                  this.initChart()
+                } else {
+                  this.noData = true
+                }
+              } 
+
             }
           })
       },

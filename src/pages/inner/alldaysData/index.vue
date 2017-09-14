@@ -267,10 +267,7 @@ export default {
     this.$router.push({ query: { type:  '0'}})
   },
   beforeUpdate: function () {
-    // setTimeout( function () {
-      // console.log(id)
-
-    // }, 200)
+    
   },
   methods: {
     handleChangeType (e) {
@@ -378,7 +375,6 @@ export default {
       } else {
         var timeStart = moment(this.value4[0]).format('YYYY-MM-DD ')
         var timeEnd = moment(this.value4[1]).format('YYYY-MM-DD ')
-        console.log(timeStart, timeEnd)
         var newObj = {}
         newObj.time1 = timeStart
         newObj.time2 = timeEnd
@@ -392,7 +388,6 @@ export default {
       }
       e.target.setAttribute('class', 'active')
       var id = e.target.getAttribute('myId')
-      // console.log(id)
       switch ($('.timeSelectBtn button.active')[0].innerText) {
         case '今日': {
           this.$router.push({ query: { type:  '0', 'cityId': id}})
@@ -430,7 +425,6 @@ export default {
           if (error) {
             console.log('error:', error)
           } else {
-            console.log(res)
             this.cityList = JSON.parse(res.text)
           }
         })

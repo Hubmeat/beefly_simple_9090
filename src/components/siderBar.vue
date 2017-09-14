@@ -136,8 +136,7 @@ div.el-submenu__title li i.el-icon-menu {
           this.authList = JSON.parse(this.userInfo)
         },
         checkSlideBar () {
-          console.log(this.$route)
-          console.log($('.sign is-active'))
+          
         }
       },
       watch: {

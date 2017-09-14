@@ -217,13 +217,15 @@ export default {
     }
   },
   mounted: function () {
+    $(".sign").removeClass('is-active')
+    $('.sign[name=30]').addClass('is-active')
     document.title = '蜜蜂平台管理——车辆管理'
     this.getCityList()
     this.getDateByTabName('0')
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       var radio = this.checkList.toString()
@@ -538,7 +540,6 @@ export default {
                   console.log('error:', error)
                 } else {
                   this.loading2 = false
-                  console.log((JSON.parse(res.text)))
                   var data = (JSON.parse(res.text)).data
                   var totalPage = Number(JSON.parse(res.text).totalPage)
                   this.totalItems = Number(JSON.parse(res.text).totalItems)
@@ -566,12 +567,15 @@ export default {
     "form.data1": {
       handler: function (val, oldVal) {
         if (val.toString().length === 0 && this.form.data2.toString().length === 0 && this.terminalNumber.length === 0 && this.checkList.length === 0) {
-          this.mountedWay()
+          if (this.activeName === '未分配') {
+            this.getDateByTabName('1')
+          } else {
+            this.getDateByTabName('0')
+          }
         }
         var startTime = new Date(val).getTime()
         var endTime = new Date(this.form.data2).getTime()
         endTime = isNaN(endTime) ? 0 : endTime
-        console.log(endTime.toString().length)
         if ((startTime > endTime) && endTime.toString().length > 1) {
           this.$message({
             type: 'warning',
@@ -591,12 +595,15 @@ export default {
     "form.data2": {
       handler: function (val, oldVal) {
         if (val.toString().length === 0 && this.form.data1.toString().length === 0 && this.terminalNumber.length === 0 && this.checkList.length === 0) {
-          this.mountedWay()
+          if (this.activeName === '未分配') {
+            this.getDateByTabName('1')
+          } else {
+            this.getDateByTabName('0')
+          }
         }
         var endTime = new Date(val).getTime()
         var startTime = new Date(this.form.data1).getTime()
         startTime = isNaN(startTime) ? 0 : startTime
-        console.log(startTime.toString().length)
         if ((endTime < startTime) && startTime.toString().length > 1) {
           this.$message({
             type: 'warning',
@@ -654,10 +661,10 @@ export default {
     /*  加盟端样式  */
 
   .carManager_content {
-    background: #fff;
+    background: #faebd7;
     padding: 10px 30px 5px 30px;
     margin-bottom: 20px;
-    border: 1px solid #e7ecf1;
+    /* border: 1px solid #e7ecf1; */
   }
 
   /*div.carManager div.queryCarInfo {
@@ -694,9 +701,9 @@ export default {
   }
 
   div.showCarInfo {
-    padding: 20px 30px 10px 30px;
+    padding: 20px 0 10px 0px;
     background: #fff;
-    border: 1px solid #e7ecf1;
+    /* border: 1px solid #e7ecf1; */
     /* border-bottom: none; */
   }
 

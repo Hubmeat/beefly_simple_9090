@@ -18,7 +18,7 @@
           <el-button @click='getAllDate' v-bind:class="{active: AllTime}">所有日期</el-button>
           <el-button @click='handleChangeType' v-bind:class="{active: spceTime}">指定时间段</el-button>
         </div>
-        <el-date-picker v-model="timeLine" style="vertical-align: top;margin-top: 3px;" v-show="show" type="datetimerange" :picker-options="pickerOptions2" placeholder="选择时间范围" align="right">
+        <el-date-picker v-model="timeLine" style="margin-top: 9px;" v-show="show" type="datetimerange" :picker-options="pickerOptions2" placeholder="选择时间范围" align="right">
         </el-date-picker>
         <el-button v-show="show2" class="earning_btn" style="margin-top: 2px;" @click="searchByTimeLine">查询</el-button>        
       </div>
@@ -150,9 +150,11 @@
     #earD_header {
       /* width: 100%; */
       min-height: 102px;
-      line-height: 36px;
+      line-height: 40px;
       background: #fff;
       border: 1px solid #e7ecf1;
+      overflow: hidden;
+      padding-bottom: 10px;
     }
 
     #earD_header div.time_earning {
@@ -345,6 +347,8 @@ export default {
     }
   },
   mounted () {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="40"]').addClass('is-active')
     document.title = '蜜蜂平台管理——收益明细'
     this.getCityList()
 
@@ -409,7 +413,6 @@ export default {
             console.log('err:' + err)
           } else {
             this.checkLogin(res)
-            console.log(JSON.parse(res.text).data)
             // 表单Loading
             this.loading2 = false
             var totalPage = Number(JSON.parse(res.text).totalPage)
@@ -428,7 +431,7 @@ export default {
         })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       var startTime, endTime;
@@ -475,7 +478,6 @@ export default {
         })
     },
     handleChangeType (e) {
-      // console.log(e.currentTarget.innerText)  
       if (e.currentTarget.innerText === '指定时间段') {
         this.$router.push('/index/earningsDetail?type=4')
         this.show = true
@@ -499,12 +501,10 @@ export default {
         type: 'warning'
       })
       .then(() => {
-        console.log('this is entry')
         require.ensure([], () => {
           var that = this
           that.$loading({customClass: 'loading_class'})
           setTimeout(() => {
-            that.$loading({customClass: 'loading_class'}).close()
             const { export_json_to_excel } = require('../../../assets/lib/js/Export2Excel.js')
             const tHeader = ['车辆编号', '加盟地区', '下单时间', '骑行时间（分钟）', '骑行里程（公里)', '订单费用', '优惠卷支付', '实际收益（元）']
             const filterVal = ['bikeCode','cityName', 'placeOrderTime', 'rideTime', 'rideMileage', 'orderMoney', 'couponAmount', 'balanceAmount']
@@ -541,6 +541,7 @@ export default {
                   } else {
                     const data = that.formatJson(filterVal, newList)
                     export_json_to_excel(tHeader, data, '列表excel')
+                    that.$loading({customClass: 'loading_class'}).close()
                     that.$message({
                       type: 'success',
                       message: '导出成功'
@@ -602,7 +603,6 @@ export default {
       } else {
         var startTime = moment(this.timeLine[0]).format('YYYY-MM-DD HH:mm:ss')
         var endTime = moment(this.timeLine[1]).format('YYYY-MM-DD HH:mm:ss')
-        console.log(startTime, endTime)
         this.loading2 = true
         request
           .post(host + 'beepartner/admin/order/findOrder4Admin')

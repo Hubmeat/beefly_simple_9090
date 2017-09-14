@@ -95,7 +95,7 @@
           </ul>
           <el-row class="allot">
             <button @click="confimBikes" class="btn_bike">确定</button> 
-            <button class="btn_bike">取消</button> 
+            <button class="btn_bike" @click="closeWindow">取消</button> 
           </el-row>
       </div>
 
@@ -381,6 +381,17 @@ export default {
       this.loadDate()
       this.countAllotCars = []
     },
+    closeWindow () {
+        this.$confirm('确定要关闭当前页面?', '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          window.close()
+        }).catch(() => {
+          
+        })
+    },
     loadDate () {
       this.signForQuery = false
       var id = this.$route.params.id.split('&')[0]
@@ -404,7 +415,6 @@ export default {
             this.checkLogin(res)
             this.loading2 = false
             var res = JSON.parse(res.text).data
-            console.log(res)
             // this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
             this.franchiseeDetail = res
             this.cityCode = res.cityId
@@ -467,10 +477,10 @@ export default {
       }
     },
     handleSelectionChange(selection){
-      console.log(selection)
+      // console.log(selection)
     },
     handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        // console.log(`每页 ${val} 条`);
       },
     handleCurrentChange(val) {
       if (this.signForQuery = false) {
@@ -666,8 +676,6 @@ export default {
           type: 'warning'
         })       
       } else {
-        console.log(this.$route.params.id.split('&')[0])
-        console.log(this.$route.params.id.split('&')[1])
         request
           .post(host + 'beepartner/admin/cityPartner/allotBikes')
           .withCredentials()

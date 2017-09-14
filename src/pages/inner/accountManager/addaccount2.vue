@@ -337,7 +337,6 @@ export default {
                                 that.options4 = []
                             } else {
                                 that.checkLogin(res)
-                                console.log(JSON.parse(res.text))
                                 var roles = JSON.parse(res.text).data.map((item) => {
                                     var obj = {}
                                     obj.value = item.roleName
@@ -396,7 +395,6 @@ export default {
                                         })
                                         var newAccount = Object.assign({},JSON.parse(JSON.parse(res.text).data),{state:true})
                                         //that.$store.state.joinTableData.unshift(newAccount)
-                                        console.log(that.$store.state.joinTableData)
                                         // this.$store.commit({
                                         //     type: 'addJoinAcount',
                                         //     obj: this.ruleForm

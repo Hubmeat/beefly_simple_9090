@@ -12,7 +12,7 @@ import queryLists from '../pages/inner/queryLists/index.vue'
 
 import incomingDetail from '../pages/inner/incomingDetail/index.vue'
 import allDaysData from '../pages/inner/alldaysData/index.vue'
-import hotMap from '../pages/inner/hotMap/index.vue'
+// import hotMap from '../pages/inner/hotMap/index.vue'
 import abnormalData from '../pages/inner/abnormalData/index.vue'
 
 // [ ====== partnerManager ====== ]

@@ -129,6 +129,8 @@ export default {
     }
   },
   mounted () {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="51"]').addClass('is-active')
     document.title = '蜜蜂平台管理——收益排行'
   }
 }

@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       var id = this.$route.params.id.split('&')[0]
@@ -331,7 +331,6 @@ export default {
           console.log('err:' + err)
         } else {
           this.checkLogin(res)
-          console.log(JSON.parse(res.text).data)
           var res = JSON.parse(res.text).data
           // this.franchiseeDetail = Object.assign({},res,{joinTime:moment(res.joinTime).format('YYYY年MM月DD号')})
           this.franchiseeDetail = res

@@ -397,7 +397,6 @@ export default {
        if(this.cityList.length>0){
         this.cityList.map((item)=>{
           if(val === item.name){
-            console.log(item)
             this.ruleForm.cityId = item.id
           }
         })
@@ -454,7 +453,6 @@ export default {
             if(error){
               console.log(error)
             }else{
-              console.log(JSON.parse(res.text).data)
               this.checkLogin(res)
               var result = JSON.parse(res.text).data
               var cityList = result.map((item)=>{
@@ -503,7 +501,6 @@ export default {
       }
     },
     submitForm (formName) {
-      console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.file === '') {
@@ -553,13 +550,11 @@ export default {
         })
         } else {
           this.loading8 = false
-          console.log('error submit!!')
           return false
         }
       })
     },
     handleAvatarSuccess (res, file) {
-      console.log('SUCCESS')
       // console.log(file)
       // console.log(URL.createObjectURL(file.raw))
       this.imageUrl = URL.createObjectURL(file.raw)

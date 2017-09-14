@@ -34,23 +34,18 @@ router.beforeEach((route, redirect, next) => {
   if(route.path === '/login'){
     window.sessionStorage.removeItem('permission')
     window.sessionStorage.removeItem('authList')
-    // store.state = [] 
-    console.log(store)
     store.commit(types.ADD_MENU, []) 
   }
   let authList = window.sessionStorage.getItem('authList')
   if (!authList && route.path !== '/login') {  
     next({ path: '/login' })
   } else {
-      console.log(route.name)
     if (route.name) {
       next()
         if (route.name === '首页') {
             return
         } else {
             if($('div.editcontainer')){
-                console.log($('div.editcontainer').position())
-                console.log($('div.editcontainer').offset().top)
                 $("div.scrollArea").animate({scrollTop: $('div.editcontainer').position().top}, 1000);    
             }
         }
@@ -68,7 +63,6 @@ new Vue({
     render: h => h(App),
     methods: {
         loginSignChange() {
-            console.log(this.$store.state.loginSign)
             if (this.$store.state.loginSign === false) {
                 this.$router.push('/login')
             } else {

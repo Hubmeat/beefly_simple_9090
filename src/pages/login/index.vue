@@ -349,7 +349,6 @@ export default {
               if (error) {
                 console.log(error)
               } else {
-                console.log(res)
                 var code = JSON.parse(res.text).resultCode
                 var message = JSON.parse(res.text).message
                 if(code===1){
@@ -405,7 +404,7 @@ export default {
               }
             })
         } else {
-          console.log('error submit!!');
+          // console.log('error submit!!');
           return false;
         }
       })

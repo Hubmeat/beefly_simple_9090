@@ -4,9 +4,12 @@
       <el-tab-pane name='待结算'>
         <span slot="label">
           <i class="el-icon-date"></i> 待结算</span>
-        <el-row class="selectPlace" style="padding: 0px 0 13px 0;">
+        <el-row class="selectPlace" style="padding: 0px 0px 13px;
+              background: #faebd7;
+              margin-bottom: 15px;
+              padding-top: 20px;">
             <div class="citys" style="margin-left: 76px;">
-              <address class="joinArea" style="margin-left: -74px;">加盟区域：</address>
+              <address class="joinArea" style="margin-left: -57px;">加盟区域：</address>
               <span @click="handleClick" myId='0' class="active">全部地区</span>
               <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
             </div>
@@ -33,25 +36,25 @@
                   <i class="el-icon-document"></i>
                 </a>
                 <!--dialog 弹窗开始-->
-                 <el-dialog title="结算确认" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
+                 <el-dialog id="settle_input" title="结算确认" :visible.sync="dialogVisible" :modal="true" :modal-append-to-body="false">
                     <el-form :model="editAccount">
-                      <el-form-item label="结算月份" :label-width="formLabelWidth" style="width: 300px;">
-                        <el-input v-model="editAccount.withDrawMonth" :readonly="true" auto-complete="off"></el-input>
+                      <el-form-item label="结算月份" :label-width="formLabelWidth" style="width: 300px; ">
+                        <el-input v-model="editAccount.withDrawMonth" :readonly="true" style="border:none;" auto-complete="off"></el-input>
                       </el-form-item>
                       <el-form-item label="加盟商编号" :label-width="formLabelWidth" style="width: 300px;" readonly>
-                        <el-input v-model="editAccount.cityPartnerId" :readonly="true"></el-input>
+                        <el-input v-model="editAccount.cityPartnerId" style="border:none;"  :readonly="true"></el-input>
                       </el-form-item>
                       <el-form-item label="加盟地区" :label-width="formLabelWidth" style="width: 300px;">
-                        <el-input v-model="editAccount.cityName" auto-complete="off" :readonly="true"></el-input>
+                        <el-input v-model="editAccount.cityName"  style="border:none;" auto-complete="off" :readonly="true"></el-input>
                       </el-form-item>
                       <el-form-item label="申请人" :label-width="formLabelWidth" style="width: 300px;">
-                        <el-input v-model="editAccount.applyUserName" auto-complete="off" :readonly="true"></el-input>
+                        <el-input v-model="editAccount.applyUserName" style="border:none;"  auto-complete="off" :readonly="true"></el-input>
                       </el-form-item>
                       <el-form-item label="结算金额" :label-width="formLabelWidth" style="width: 300px;">
-                        <el-input v-model="editAccount.applyMoney" auto-complete="off" :readonly="true"></el-input>
+                        <el-input v-model="editAccount.applyMoney" style="border:none;"  auto-complete="off" :readonly="true"></el-input>
                       </el-form-item>
                       <el-form-item label="备注" :label-width="formLabelWidth">
-                        <el-input type="textarea" v-model="editAccount.description"></el-input>
+                        <el-input type="textarea" v-model="editAccount.description" style="width: 400px;"></el-input>
                       </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
@@ -80,9 +83,12 @@
 
       <!-- 已结算  -->
       <el-tab-pane label="已结算" name='已结算'>
-        <el-row class="selectPlace" style="padding: 0px 0 13px 0;">
+        <el-row class="selectPlace" style="padding: 0px 0px 13px;
+              background: #faebd7;
+              margin-bottom: 15px;
+              padding-top: 20px;">
             <div class="citys2" style="margin-left: 90px;">
-              <address class="joinArea" style="margin-left: -88px;">加盟区域：</address>
+              <address class="joinArea" style="margin-left: -71px;">加盟区域：</address>
               <span @click="handleClick" myId='0' class="active">全部地区</span>
               <span @click="handleClick" :key='item.id' :myId='item.cityId' v-for="item in cityList">{{item.cityName}}</span>
             </div>
@@ -103,7 +109,7 @@
             </el-table-column>
             <el-table-column prop="confirmTime" label="结算日期" min-width="140">
             </el-table-column>
-            <el-table-column prop="remark" label="备注" min-width="140">
+            <el-table-column prop="description" label="备注" min-width="140">
             </el-table-column>
           </el-table>
 
@@ -157,7 +163,8 @@ export default {
     }
   },
   mounted: function () {
-
+    $(".sign").removeClass('is-active')
+    $('.sign[name="60"]').addClass('is-active')
     this.getCityList()
     this.getDateByTabName('0')
   },
@@ -197,7 +204,6 @@ export default {
             }
             var newData = this.tableDataDel(data)
             if (status === 0) {
-              console.log(newData)
               this.tableData = newData
               this.loading2 = false
             } else {
@@ -306,7 +312,6 @@ export default {
             }
             var newData = this.tableDataDel(data)
             if (status === '0') {
-              console.log(newData)
               this.tableData = newData
               this.loading2 = false
             } else {
@@ -339,7 +344,6 @@ export default {
       return arrDeled
     },
     openEdit(row) {
-      console.log(row)
       this.dialogVisible = true
       this.editAccount.withDrawMonth = row.withDrawMonth
       this.editAccount.cityPartnerId = row.cityPartnerId
@@ -349,47 +353,41 @@ export default {
       // this.editAccount.withdrawalCode = row.allianceId
     },
     editConfim (row, index) {
-      console.log(row)
-      this.$alert('请核对信息后确认结算', 'Warning', {
-        confirmButtonText: '确定',
-        callback: () => {
-        this.fullscreenLoading = true
-        request
-          .post(host + 'beepartner/admin/withDraw/confirmWithDraw')
-          .withCredentials()
-          .set({
-            'content-type': 'application/x-www-form-urlencoded'
-          })
-          .send({
-            'withDrawMonth': row.withDrawMonth,
-            'applyMoney': row.applyMoney,
-            'description': this.editAccount.description,
-            'cityPartnerId': row.cityPartnerId
-          })
-          .end((error, res) => {
-            if (error) {
-              console.log('error:', error)
+      this.fullscreenLoading = true
+      request
+        .post(host + 'beepartner/admin/withDraw/confirmWithDraw')
+        .withCredentials()
+        .set({
+          'content-type': 'application/x-www-form-urlencoded'
+        })
+        .send({
+          'withDrawMonth': row.withDrawMonth,
+          'applyMoney': row.applyMoney,
+          'description': this.editAccount.description,
+          'cityPartnerId': row.cityPartnerId
+        })
+        .end((error, res) => {
+          if (error) {
+            console.log('error:', error)
+          } else {
+            this.checkLogin(res)
+            if (JSON.parse(res.text).resultCode === 1) {
+              this.tableData.splice(index, 1)
+              this.loading2 = false
+              this.$message({
+                type: 'success',
+                message: '合伙人将收到你的结算信息'
+              })
             } else {
-              this.checkLogin(res)
-              if (JSON.parse(res.text).resultCode === 1) {
-                this.tableData.splice(index, 1)
-                this.loading2 = false
-                this.$message({
-                  type: 'success',
-                  message: '合伙人将收到你的结算信息'
-                })
-              } else {
-                this.$message('用户名不存在')
-              }
+              this.$message('用户名不存在')
             }
-            var that = this
-            setTimeout(function () {
-              that.fullscreenLoading = false
-              that.dialogVisible = false
-            }, 1000)
-          })
-        }
-      })
+          }
+          var that = this
+          setTimeout(function () {
+            that.fullscreenLoading = false
+            that.dialogVisible = false
+          }, 1000)
+        })
     },
     checkLogin (res) {
       if (JSON.parse(res.text).message === '用户登录超时') {

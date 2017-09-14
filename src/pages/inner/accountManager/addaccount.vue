@@ -289,7 +289,6 @@ export default {
               this.options4 = []
             } else {
               this.checkLogin(res)
-              console.log(JSON.parse(res.text))
               var roles = JSON.parse(res.text).data.map((item) => {
                 var obj = {}
                 obj.value = item.roleName
@@ -317,12 +316,10 @@ export default {
           ).then(() => {
             var obj = {}
             this.options4.map((item) => {
-              console.log(item)
               if (item.value === this.ruleForm.roleName) {
                 obj = Object.assign({}, this.ruleForm, { roleId: item.id })
               }
             })
-            console.log(obj)
             request.post(host + 'beepartner/admin/User/addAdminUser')
               .withCredentials()
               .set({
@@ -349,6 +346,7 @@ export default {
                     })
                     var newAccount = Object.assign({}, JSON.parse(JSON.parse(res.text).data), { state: true })
                     that.$store.state.platTableData.unshift(newAccount)
+                    // that.curr
                     //  this.$store.commit({
                     //    type: 'addAcount',
                     //    obj: this.ruleForm
@@ -363,7 +361,6 @@ export default {
             })
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -375,6 +372,8 @@ export default {
     }
   },
   mounted: function () {
+    $(".sign").removeClass('is-active')
+    $('.sign[name="80"]').addClass('is-active')
     document.title = '蜜蜂平台管理——添加平台账号'
     this.remoteMethod()
   }

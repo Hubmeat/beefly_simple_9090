@@ -214,7 +214,6 @@
               console.log('err:' + err)
             } else {
               this.checkLogin(res)
-              // console.log(JSON.parse(res.text).data)
               var arr = JSON.parse(res.text).data || []
               var newChartData = []
               arr.map( (item) => {
@@ -222,8 +221,16 @@
                 return newChartData
               })
 
-              this.chartData = newChartData
-              this.initChart()
+              for (var i = 0; i < newChartData.length; i++) {
+                if (newChartData[i] != 0) {
+                  this.chartData = newChartData
+                  this.noData = false
+                  this.initChart()
+                } else {
+                  this.noData = true
+                }
+              }
+
               if (JSON.parse(res.text).data.length === 0) {
                 this.noData = true
                 $('#container').html('')
